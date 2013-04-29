@@ -1,0 +1,31 @@
+{
+  "name": "website-panel",
+  "version": "0.0.1",
+  "description": "Goodybag website login panel",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "jam": {
+    "dependencies": {
+      "backbone":             "0.9.x",
+      "domReady":             "2.0.x",
+      "bootstrap-modal":      "2.3.x",
+      "hbt":                  "0.0.x",
+      "spin-js":              "1.2.5-jam.1",
+      "require-css":          "0.1.x",
+      "require-less":         "0.0.x"
+    }
+  },
+  "devDependencies": {
+    "requirejs":              "latest",
+    "grunt":                  "0.3.x",
+    "grunt-s3":               "0.0.9",
+    "grunt-contrib-mincss":   "0.3.x",
+    "jsdom":                  "0.3.x",
+    "wrench":                 "~1.4.4",
+    "grunt-jam":              "0.3.x"
+  },
+  "repository": "",
+  "author": "John Fawcett"
+}
