@@ -1,6 +1,6 @@
 define(function(require){
   var
-    utils = require('../lib/utils')
+    utils = require('utils')
   ;
 
   return utils.View.extend({

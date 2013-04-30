@@ -1,11 +1,16 @@
-@base: #f938ab;
+// Globals
+@import "variables.less";
 
-.box-shadow (@style, @c) when (iscolor(@c)) {
-  box-shadow:         @style @c;
-  -webkit-box-shadow: @style @c;
-  -moz-box-shadow:    @style @c;
+// Components
+@import "normalize.less";
+@import "grid.less";
+@import "header-navbar.less";
+
+html {
+  background: url('@{texture-linen}');
 }
 
-.box-shadow (@style, @alpha: 50%) when (isnumber(@alpha)) {
-  .box-shadow(@style, rgba(0, 0, 0, @alpha));
+body {
+  background: url('@{body-gradient}') top center repeat-y;
+  height: 1200px;
 }

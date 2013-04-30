@@ -1,11 +1,24 @@
+require.config({
+  paths: {
+    'utils':      './lib/utils'
+  // , 'components': './components/index'
+  }
+
+, map: {
+    '*': {
+      'css':  'jam/require-css/css', // or whatever the path to require-css and require-less are
+      'less': 'jam/require-less/less'
+    }
+  }
+});
+
 define(function(require){
   // Styles
-  require( 'css!./styles/bootstrap.css')
-  require('less!./styles/main');
+  require('less!styles/main');
 
   var
     utils       = require('utils')
-  , Components  = require('components')
+  , Components  = require('components/index')
 
   , app = {
       init: function(){
