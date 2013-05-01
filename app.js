@@ -24,6 +24,8 @@ define(function(require){
       init: function(){
         app.appView = new Components.App.Main();
 
+        app.appView.render();
+
         utils.domready(function(){
           document.body.appendChild( app.appView.el );
 

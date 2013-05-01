@@ -1,16 +1,39 @@
 // Globals
 @import "variables.less";
+@import "mixins.less";
 
 // Components
 @import "normalize.less";
+@import "scaffolding.less";
 @import "grid.less";
-@import "header-navbar.less";
+@import "navs.less";
+@import "dropdowns.less";
 
 html {
   background: url('@{texture-linen}');
 }
 
 body {
-  background: url('@{body-gradient}') top center repeat-y;
+  margin:         0;
+  font-family:    @font-family-base;
+  font-size:      @font-size-base;
+  line-height:    @line-height-base;
+  color:          @text-color;
+  background:     url('@{body-gradient}') top center repeat-y;
+  // temporary
   height: 1200px;
+}
+
+
+// Links
+// -------------------------
+
+a {
+  color: @link-color;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: @link-hover-color;
+  text-decoration: underline;
 }

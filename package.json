@@ -15,7 +15,7 @@
       "hbt":                  "0.0.x",
       "spin-js":              "1.2.5-jam.1",
       "require-css":          "0.1.x",
-      "require-less":         "0.0.x"
+      "require-less":         "0.0.1"
     }
   },
   "devDependencies": {

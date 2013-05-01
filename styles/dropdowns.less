@@ -77,7 +77,7 @@
     padding: 3px 20px;
     clear: both;
     font-weight: normal;
-    line-height: @baseLineHeight;
+    line-height: @line-height-base;
     color: @dropdownLinkColor;
     white-space: nowrap;
   }
@@ -111,7 +111,7 @@
 .dropdown-menu > .disabled > a,
 .dropdown-menu > .disabled > a:hover,
 .dropdown-menu > .disabled > a:focus {
-  color: @grayLight;
+  color: @gray-light;
 }
 // Nuke hover/focus effects
 .dropdown-menu > .disabled > a:hover,
@@ -233,5 +233,5 @@
 .typeahead {
   z-index: 1051;
   margin-top: 2px; // give it some space to breathe
-  .border-radius(@baseBorderRadius);
+  .border-radius(@border-radius-base);
 }
