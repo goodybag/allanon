@@ -17,6 +17,13 @@ define(function(require){
 
       // Current page
       this.current = null;
+
+      return this;
+    }
+
+  , providePages: function(Pages){
+      this.Pages = Pages;
+      return this;
     }
 
   , renderCurrent: function(){

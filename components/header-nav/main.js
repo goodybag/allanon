@@ -68,7 +68,7 @@ define(function(require){
       if (this.$badge.hasClass('active')){
         this.$badge.removeClass('active');
         this.$document.unbind('click', this.onDocumentClick);
-      }0
+      }
     }
   });
 });

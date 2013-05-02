@@ -8,7 +8,7 @@ define(function(require){
 
   , Views = {
       Nav:    require('../header-nav/component').Main
-    // , Pages:  require('../pages/component').Main
+    , Pages:  require('../pages/component').Main
     }
   ;
 
@@ -17,16 +17,27 @@ define(function(require){
 
   , children: {
       nav:    new Views.Nav()
-    // , pages:  new Views.Pages()
+    , pages:  new Views.Pages()
     }
 
   , initialize: function(){
       this.childOrder = [
         this.children.nav
-      // , this.children.pages
+      , this.children.pages
       ];
 
+      this.pages = {};
+
       return this;
+    }
+
+  , providePages: function(Pages){
+      this.pages.providePages(Pages);
+      return this;
+    }
+
+  , changePage: function(page, options){
+      this.pages.changePage(page, options);
     }
 
   , render: function(){

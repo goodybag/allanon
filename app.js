@@ -20,11 +20,19 @@ define(function(require){
   var
     utils       = require('utils')
   , config      = require('config')
+  , router      = require('lib/router')
   , Components  = require('components/index')
+
+    // Top level Pages
+  , Pages = {
+      explore:    require('./pages/explore/index')
+    }
 
   , app = {
       init: function(){
         app.appView = new Components.App.Main();
+
+        app.appView.providePages(Pages);
 
         app.appView.render();
 
@@ -37,6 +45,8 @@ define(function(require){
 
         app.loadTypekit();
       }
+
+    , router: new AppRouter()
 
     , loadTypekit: function(){
         var script = document.createElement('script');
