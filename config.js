@@ -19,6 +19,8 @@ define(function(require){
       , order:          'Order'
       }
 
+    , typekitUrl: '//use.typekit.net/vhr1yyf.js'
+
     , defaults: {}
 
     , spinner: {

@@ -7,7 +7,8 @@ define(function(require){
     utils = require('utils')
 
   , Views = {
-      Nav:  require('../header-nav/component').Main
+      Nav:    require('../header-nav/component').Main
+    // , Pages:  require('../pages/component').Main
     }
   ;
 
@@ -15,12 +16,14 @@ define(function(require){
     className: 'app-container'
 
   , children: {
-      nav: new Views.Nav()
+      nav:    new Views.Nav()
+    // , pages:  new Views.Pages()
     }
 
   , initialize: function(){
       this.childOrder = [
         this.children.nav
+      // , this.children.pages
       ];
 
       return this;

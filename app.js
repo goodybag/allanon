@@ -1,7 +1,8 @@
 require.config({
   paths: {
     'utils':      './lib/utils'
-  // , 'components': './components/index'
+  , 'troller':    './lib/troller'
+  , 'config':     './config'
   }
 
 , map: {
@@ -18,6 +19,7 @@ define(function(require){
 
   var
     utils       = require('utils')
+  , config      = require('config')
   , Components  = require('components/index')
 
   , app = {
@@ -32,6 +34,20 @@ define(function(require){
           utils.history = Backbone.history;
           utils.history.start();
         });
+
+        app.loadTypekit();
+      }
+
+    , loadTypekit: function(){
+        var script = document.createElement('script');
+        script.src = config.typekitUrl;
+        script.async = true;
+
+        script.onload = function(e){
+          try { Typekit.load(); } catch(e) {}
+        };
+
+        document.head.appendChild(script);
       }
     }
   ;
