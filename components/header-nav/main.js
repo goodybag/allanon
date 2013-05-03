@@ -67,6 +67,12 @@ define(function(require){
 
       if (this.$badge.hasClass('active')){
         this.$badge.removeClass('active');
+        // reset overflow - needs to be delayed because of a
+        // painting bug in chrome
+        var this_ = this;
+        setTimeout(function(){
+          this_.$badgeWrapper.css('overflow', '');
+        }, 10);
         this.$document.unbind('click', this.onDocumentClick);
       }
     }

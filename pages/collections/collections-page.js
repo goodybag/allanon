@@ -4,11 +4,11 @@ define(function(require){
   , config      = require('config')
   , Components  = require('../../components/index')
 
-  , template    = require('hbt!./explore-tmpl')
+  , template    = require('hbt!./collections-tmpl')
   ;
 
   return Components.Pages.Page.extend({
-    className: 'page page-explore'
+    className: 'page page-collections'
 
   , events: {
 

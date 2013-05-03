@@ -9,6 +9,7 @@
 @import "navs.less";
 @import "dropdowns.less";
 @import "sprite.less";
+@import "modals.less";
 
 html {
   background: url('@{texture-linen}');
@@ -37,4 +38,16 @@ a:hover,
 a:focus {
   color: @link-hover-color;
   text-decoration: underline;
+}
+
+
+// Loader
+// -------------------------
+
+#main-loader {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 100000;
 }

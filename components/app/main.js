@@ -10,6 +10,8 @@ define(function(require){
       Nav:    require('../header-nav/component').Main
     , Pages:  require('../pages/component').Main
     }
+
+  , template = require('hbt!./app-tmpl')
   ;
 
   return utils.View.extend({
@@ -18,34 +20,31 @@ define(function(require){
   , children: {
       nav:    new Views.Nav()
     , pages:  new Views.Pages()
+    , loader: utils.dom('<div id="main-loader" />')
     }
 
   , initialize: function(){
-      this.childOrder = [
-        this.children.nav
-      , this.children.pages
-      ];
-
       this.pages = {};
 
       return this;
     }
 
   , providePages: function(Pages){
-      this.pages.providePages(Pages);
+      this.children.pages.providePages(Pages);
       return this;
     }
 
-  , changePage: function(page, options){
-      this.pages.changePage(page, options);
+  , changePage: function(page, options, callback){
+      return this.children.pages.changePage(page, options, callback);
     }
 
   , render: function(){
-      this.$el.html("");
+      this.$el.html( template() );
 
-      for (var i = 0, l = this.childOrder.length; i < l; ++i){
-        this.$el.append( this.childOrder[i].render().$el );
-      }
+      this.$el.append(this.children.loader);
+
+      this.children.nav.setElement(   this.$el.find('.header-navbar')[0] ).render();
+      this.children.pages.setElement( this.$el.find('.pages')[0] ).render();
 
       return this;
     }

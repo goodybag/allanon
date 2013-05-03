@@ -1,7 +1,7 @@
 define(function(require){
   var
-    utils = require('../lib/utils')
-  , config = require('../config')
+    utils = require('../../lib/utils')
+  , config = require('../../config')
   ;
 
   return utils.View.extend({
@@ -21,6 +21,11 @@ define(function(require){
   , hide: function(options){
       this.$el.css('display', 'none');
       if (this.onHide) this.onHide(options);
+      return this;
+    }
+
+  , provideData: function(data){
+      this.data = data;
       return this;
     }
 

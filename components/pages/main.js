@@ -7,6 +7,8 @@ define(function(require){
     className: 'pages'
 
   , initialize: function(options){
+      options = options || {};
+
       // Non-instantiated views
       this.Pages = options.Pages;
 
@@ -34,10 +36,20 @@ define(function(require){
       return this;
     }
 
-  , changePage: function(page, options){
+  , changePage: function(page, options, callback){
       // if (this.current === page) return this;
 
-      if (!this.Pages[page]) return this;
+      if (typeof options == 'function'){
+        callback = options;
+        options = null;
+      }
+
+      callback = callback || utils.noop;
+
+      if (!this.Pages[page]) return callback({
+        message: "Cannot find page: " + page
+      , page: page
+      }), this;
 
       if (!this.pages[page]){
         // Attach parent view to Page
@@ -60,6 +72,8 @@ define(function(require){
       // Now show the new page
       this.pages[page].show(options);
       this.current = page;
+
+      callback(null, this.pages[page]);
 
       return this;
     }
