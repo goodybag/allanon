@@ -61,8 +61,8 @@
 
 @font-size-base:          17px;
 @font-size-large:         (@font-size-base * 1.25); // ~18px
-@font-size-small:         (@font-size-base * 0.85); // ~12px
-@font-size-mini:          (@font-size-base * 0.75); // ~11px
+@font-size-small:         (@font-size-base * 0.85); // ~15px
+@font-size-mini:          (@font-size-base * 0.70); // ~12px
 
 @line-height-base:        20px;
 
@@ -73,37 +73,39 @@
 // -------------------------
 // Based on 14px font-size and 1.5 line-height
 
-@padding-large:           11px 14px;  // 44px
-@padding-small:           2px 10px;   // 26px
-@padding-mini:            0 6px;      // 22px
+@padding-large:           10px 28px;
+@padding-small:           2px 10px;
+@padding-mini:            0 6px;
 
-@border-radius-base:      4px;
-@border-radius-large:     6px;
-@border-radius-small:     3px;
+@border-radius-base:      8px;
+@border-radius-large:     10px;
+@border-radius-small:     4px;
 
 @component-active-bg:            @brand-primary;
 
 // Buttons
 // -------------------------
+@btnBackground:                     @white;
+@btnBackgroundHighlight:            darken(@white, 10%);
+@btnBorder:                         #ccc;
 
-@btn-color:                      #fff;
-@btn-bg:                         #a7a9aa;
-@btn-border:                     @btn-bg;
+@btnPrimaryBackground:              @link-color;
+@btnPrimaryBackgroundHighlight:     spin(@btnPrimaryBackground, 20%);
 
-@btn-primary-bg:                 @brand-primary;
-@btn-primary-border:             @btn-primary-bg;
+@btnInfoBackground:                 #5bc0de;
+@btnInfoBackgroundHighlight:        #2f96b4;
 
-@btn-success-bg:                 @brand-success;
-@btn-success-border:             @btn-success-bg;
+@btnSuccessBackground:              #62c462;
+@btnSuccessBackgroundHighlight:     #51a351;
 
-@btn-warning-bg:                 @brand-warning;
-@btn-warning-border:             @btn-warning-bg;
+@btnWarningBackground:              lighten(@orange, 15%);
+@btnWarningBackgroundHighlight:     @orange;
 
-@btn-danger-bg:                  @brand-danger;
-@btn-danger-border:              @btn-danger-bg;
+@btnDangerBackground:               #ee5f5b;
+@btnDangerBackgroundHighlight:      #bd362f;
 
-@btn-info-bg:                    @brand-info;
-@btn-info-border:                @btn-info-bg;
+@btnInverseBackground:              #444;
+@btnInverseBackgroundHighlight:     @gray-darker;
 
 // Forms
 // -------------------------
@@ -121,6 +123,24 @@
 @input-height-small:             (@line-height-base + 6px);  // base line-height + 4px vertical padding + 2px top/bottom border
 
 @form-actions-bg:                 #f5f5f5;
+
+// Form states and alerts
+// -------------------------
+@warningText:             #c09853;
+@warningBackground:       #fcf8e3;
+@warningBorder:           darken(spin(@warningBackground, -10), 3%);
+
+@errorText:               #b94a48;
+@errorBackground:         #f2dede;
+@errorBorder:             darken(spin(@errorBackground, -10), 3%);
+
+@successText:             #468847;
+@successBackground:       #dff0d8;
+@successBorder:           darken(spin(@successBackground, -10), 5%);
+
+@infoText:                #3a87ad;
+@infoBackground:          #d9edf7;
+@infoBorder:              darken(spin(@infoBackground, -10), 7%);
 
 // Z-index master list
 // -------------------------
@@ -185,11 +205,16 @@
 // Forms
 // -------------------------
 @inputBackground:               @white;
-@inputBorder:                   #ccc;
+@inputBorder:                   #aaa;
 @inputBorderRadius:             @border-radius-base;
 @inputDisabledBackground:       @gray-lighter;
 @formActionsBackground:         #f5f5f5;
 @inputHeight:                   @line-height-base + 10px; // base line-height + 8px vertical padding + 2px top/bottom border
+@inputPaddingTop:               6px;
+@inputPaddingRight:             6px;
+@inputPaddingBottom:            5px;
+@inputPaddingLeft:              12px;
+@inputPadding:                  @inputPaddingTop @inputPaddingRight @inputPaddingBottom @inputPaddingLeft;
 
 
 // Input placeholder text color

@@ -1,25 +1,25 @@
-<header class="page-header">
+<header class="page-header-box">
   <h1 class="page-title">Explore</h1>
 
   <div class="row">
     {{! Search }}
-    <div class="span1 search-wrapper">
+    <div class="span2 search-wrapper">
       {{! Wrap input in form to use onSubmit event }}
       <form id="explore-search-form">
-        <input class="field-search" type="text">
+        <input class="span2 field-search" placeholder="Search Gallery" type="text">
       </form>
     </div>
 
     {{! Filters Button Group }}
     <div class="span6 filters-wrapper">
       <div class="btn-group filters-btn-group">
-        <button class="btn filter-popular">
+        <button class="btn btn-large filter-popular">
           Popular
         </button>
-        <button class="btn filter-nearby">
+        <button class="btn btn-large filter-nearby">
           Nearby
         </button>
-        <button class="btn filter-random">
+        <button class="btn btn-large filter-random">
           Mix-It-Up!
         </button>
       </div>

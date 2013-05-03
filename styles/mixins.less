@@ -84,12 +84,15 @@
 .placeholder(@color: @input-color-placeholder) {
   &:-moz-placeholder {
     color: @color;
+    font-style: italic;
   }
   &:-ms-input-placeholder {
     color: @color;
+    font-style: italic;
   }
   &::-webkit-input-placeholder {
     color: @color;
+    font-style: italic;
   }
 }
 
@@ -683,7 +686,7 @@
     .spanX (0) {}
 
     .span(@columns) {
-      width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 14;
+      width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 2 - @inputPaddingLeft - @inputPaddingRight;
     }
 
     input,
