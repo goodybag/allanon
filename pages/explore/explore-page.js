@@ -15,11 +15,26 @@ define(function(require){
     }
 
   , initialize: function(){
+      this.children = {
+        products: new Components.ProductsList.Main()
+      };
+    }
 
+  , provideData: function(data){
+      this.products = data;
+      this.children.products.provideData(data);
+
+      return this;
     }
 
   , render: function(){
       this.$el.html( template() );
+
+      // Attach products list
+      this.children.products.setElement(
+        this.$el.find('.products-list')[0]
+      );
+
       return this;
     }
   });

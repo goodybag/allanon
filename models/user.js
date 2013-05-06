@@ -7,11 +7,29 @@ define(function(require){
 
   return new (utils.Model.extend({
     defaults: {
-      loggedIn: false
-    , email: null
+      loggedIn:   false
+    , email:      null
+    , screenName: 'Goodybagger'
     }
 
   , initialize: function(){
+      return this;
+    }
+
+  , getConsumerRecord: function(callback){
+      var this_ = this;
+
+      // Uhmm. yeah
+      if (!this.get('id')) throw new Error('Cannot get consumer record when id is null');
+
+      api.consumers.get(this.get('id'), function(error, result){
+        if (error) return callback ? callback(error) : troller.error(error);
+
+        this_.set(result);
+
+        callback();
+      });
+
       return this;
     }
 
@@ -34,6 +52,7 @@ define(function(require){
           this_.set(result);
 
           this_.trigger('auth');
+          troller.trigger('user.auth')
 
           callback();
         });
@@ -51,6 +70,7 @@ define(function(require){
         this_.set(result);
 
         this_.trigger('auth');
+        troller.trigger('user.auth')
 
         callback(null, result);
       });
@@ -66,6 +86,7 @@ define(function(require){
 
         this_.set('loggedIn', false);
         this_.trigger('deauth');
+        troller.trigger('user.deauth')
 
         callback();
       })
@@ -88,9 +109,14 @@ define(function(require){
         this_.set(result);
         callback(null, true);
         this_.trigger('auth');
+        troller.trigger('user.auth')
       });
 
       return this;
+    }
+
+  , updateProductFeelings: function(pid, feelings, callback){
+
     }
   }))();
 });

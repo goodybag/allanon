@@ -1,15 +1,34 @@
 @import "/styles/variables.less";
 @import "/styles/mixins.less";
 
-.product-list-item {
-  width: @gridColumnWidth * 2;
-  margin-left: @gridGutterWidth;
-  border: solid #e3e2e2 1px;
-  border-bottom: solid #aaa9a9 1px;
-  border-radius: 6px;
-  box-shadow: 0 1px 1px rgba(0,0,0, 0.05);
+.products-list {
+  width: 100%;
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.product-list-item.first {
+.products-list .product-list-item {
+  width: @gridColumnWidth * 2;
+  margin: 0;
+  margin-left: @gridGutterWidth;
+  padding: 0;
+  border-radius: 6px;
+
+  overflow: hidden;
+
+  box-shadow: 0 1px 1px rgba(0,0,0, 0.2);
+}
+
+.products-list .product-list-item.first {
   margin-left: 0;
+}
+
+.products-list .product-footer {
+  padding: 6px 0;
+  text-align: center;
+  font-size: 16px;
+  color: @gray-dark;
+  text-shadow: 0 -1px 0 rgba(0,0,0, 0.5);
 }

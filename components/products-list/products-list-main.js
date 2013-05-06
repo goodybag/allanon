@@ -9,6 +9,8 @@ define(function(require){
   return utils.View.extend({
     className: 'products-list'
 
+  , tagName: 'ul'
+
   , initialize: function(options){
       this.products = [];
 

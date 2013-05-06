@@ -6,6 +6,7 @@ define(function(require){
   var
     utils     = require('utils')
   , troller   = require('troller')
+  , user      = require('user')
 
   , template  = require('hbt!./main')
   ;
@@ -29,7 +30,7 @@ define(function(require){
     }
 
   , render: function(){
-      this.$el.html( template() );
+      this.$el.html( template({ user: user.toJSON() }) );
 
       this.$badge = this.$el.find('.badge');
       this.$badgeWrapper = this.$el.find('.badge-wrapper');
