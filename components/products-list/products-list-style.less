@@ -1,0 +1,15 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.product-list-item {
+  width: @gridColumnWidth * 2;
+  margin-left: @gridGutterWidth;
+  border: solid #e3e2e2 1px;
+  border-bottom: solid #aaa9a9 1px;
+  border-radius: 6px;
+  box-shadow: 0 1px 1px rgba(0,0,0, 0.05);
+}
+
+.product-list-item.first {
+  margin-left: 0;
+}
