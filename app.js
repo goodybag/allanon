@@ -3,6 +3,7 @@ require.config({
     'utils':      './lib/utils'
   , 'troller':    './lib/troller'
   , 'api':        './lib/api'
+  , 'user':       './models/user'
   , 'config':     './config'
   }
 
@@ -17,6 +18,9 @@ require.config({
 define(function(require){
   // Styles
   require('less!styles/main');
+
+  // Helpers
+  require('./lib/hbt-helpers');
 
   var
     utils       = require('utils')

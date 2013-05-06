@@ -1,7 +1,7 @@
 define(function(require){
   var
     utils     = require('utils')
-  , ItemView  = require('./product-list-item')
+  , ItemView  = require('./products-list-item')
   ;
 
   require('less!./products-list-style');
@@ -12,6 +12,8 @@ define(function(require){
   , tagName: 'ul'
 
   , initialize: function(options){
+      options = options || {};
+
       this.products = [];
 
       this.ItemView = options.ItemView || ItemView;
@@ -38,6 +40,7 @@ define(function(require){
       }
 
       this.$el.html("");
+      console.log("hey, ma!");
       this.$el.html(fragment);
 
       return this;

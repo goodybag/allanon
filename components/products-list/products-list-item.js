@@ -32,6 +32,8 @@ define(function(require){
       this.template({
         product: this.product
       });
+
+      return this;
     }
 
   , onWantClick: function(e){

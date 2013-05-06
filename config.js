@@ -21,7 +21,9 @@ define(function(require){
 
     , typekitUrl: '//use.typekit.net/vhr1yyf.js'
 
-    , defaults: {}
+    , defaults: {
+        photoUrl: 'http://cdn.filepicker.io/api/file/TovGkwF7TCeFj3MQowEr'
+      }
 
     , spinner: {
         lines: 13             // The number of lines to draw

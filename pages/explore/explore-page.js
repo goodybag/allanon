@@ -11,7 +11,8 @@ define(function(require){
     className: 'page page-explore'
 
   , events: {
-
+      'submit #explore-search-form':        'onSearchSubmit'
+    , 'click .search-form-btn':             'onSearchSubmit'
     }
 
   , initialize: function(){
@@ -31,11 +32,17 @@ define(function(require){
       this.$el.html( template() );
 
       // Attach products list
-      this.children.products.setElement(
+      this.children.products.render().setElement(
         this.$el.find('.products-list')[0]
       );
 
       return this;
+    }
+
+  , onSearchSubmit: function(e){
+      e.preventDefault();
+
+      //TODO
     }
   });
 });

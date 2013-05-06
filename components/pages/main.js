@@ -61,8 +61,8 @@ define(function(require){
 
         // Set initial display to none so we can switch them out
         if (options && options.renderFn) options.renderFn();
-        else this.pages[page].render();
-        this.pages[page].delegateEvents();
+        // else this.pages[page].render();
+        // this.pages[page].delegateEvents();
         this.$el.append(this.pages[page].$el);
       }
 
