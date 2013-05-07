@@ -27,6 +27,7 @@ define(function(require){
     utils       = require('utils')
   , troller     = require('troller')
   , config      = require('config')
+  , user        = require('user')
   , Router      = require('lib/router')
   , Components  = require('components/index')
 
@@ -39,6 +40,9 @@ define(function(require){
 
   , app = {
       init: function(){
+        // Initial call to session
+        user.isLoggedIn();
+
         app.appView = new Components.App.Main();
 
         app.appView.providePages(Pages);

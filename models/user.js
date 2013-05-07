@@ -36,25 +36,27 @@ define(function(require){
   , auth: function(email, password, callback){
       var this_ = this;
 
-      callback = callback || utils.noop;
-
       this.isLoggedIn(function(error, loggedIn){
-        if (error) return callback(error);
+        if (error) return callback ? callback(error) : troller.error(error);
 
-        if (loggedIn) return callback();
+        if (loggedIn) return callback ? callback() : null;
 
         this_.set('email', email);
 
         api.session.auth(email, password, function(error, result){
-          if (error) return callback(error);
+          if (error) return callback ? callback(error) : troller.error(error);
 
           this_.set('loggedIn', true);
           this_.set(result);
 
-          this_.trigger('auth');
-          troller.trigger('user.auth')
+          this_.getConsumerRecord(function(error, result){
+            if (error) return callback ? callback(error) : troller.error(error);
 
-          callback();
+            this_.trigger('auth');
+            troller.trigger('user.auth')
+
+            if (callback) callback();
+          });
         });
       });
     }
@@ -64,7 +66,7 @@ define(function(require){
 
       api.session.oauth(code, function(error, result){
         // Maybe leave it to the callback to tell app about error
-        if (error) return troller.app.error(error), callback(error);
+        if (error) return callback ? callback(error) : troller.app.error(error);
 
         this_.set('loggedIn', true);
         this_.set(result);
@@ -84,7 +86,7 @@ define(function(require){
       api.session.destroy(function(error){
         if (error) return callback(error);
 
-        this_.set('loggedIn', false);
+        this_.set(this_.defaults);
         this_.trigger('deauth');
         troller.trigger('user.deauth')
 
@@ -93,24 +95,27 @@ define(function(require){
     }
 
   , isLoggedIn: function(callback){
-      callback = callback || utils.noop;
-
       var this_ = this;
       // We previously set this to true, so it must be true!
-      if (this.get('loggedIn') === true) return callback(null, true);
+      if (this.get('loggedIn') === true) return callback ? callback(null, true) : null;
 
       // We're uncertain, so make an api call
       api.session.get(function(error, result){
-        if (error) return callback(error);
+        if (error) return callback ? callback(error) : troller.app.error(error);
 
-        if (!result || !result.id) return callback(null, false);
+        if (!result || !result.id) return callback ? callback(null, false) : null;
 
         this_.set('loggedIn', true);
         this_.set(result);
-        console.log(result);
-        callback(null, true);
-        this_.trigger('auth');
-        troller.trigger('user.auth');
+
+        this_.getConsumerRecord(function(error, result){
+          if (error) return callback ? callback(error) : troller.error(error);
+
+          this_.trigger('auth');
+          troller.trigger('user.auth')
+
+          if (callback) callback();
+        });
       });
 
       return this;

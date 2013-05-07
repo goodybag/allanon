@@ -1,6 +1,7 @@
 define(function(require){
   var config = {
-    default: {
+    // A name for default that IE won't bitch at me for
+    __def: {
 
       niceNames: {
         lat:            'Latitude'
@@ -49,6 +50,8 @@ define(function(require){
       , top: 'auto'           // Top position relative to parent in px
       , left: 'auto'          // Left position relative to parent in px
       }
+
+    , proxyUrl: "http://magic.goodybag.com/proxy.html"
     }
 
   , dev: {
@@ -60,9 +63,9 @@ define(function(require){
     }
   };
 
-  for (var key in config.default){
-    if (!(key in config.dev)) config.dev[key]   = config.default[key];
-    if (!(key in config.prod)) config.prod[key] = config.default[key];
+  for (var key in config.__def){
+    if (!(key in config.dev)) config.dev[key]   = config.__def[key];
+    if (!(key in config.prod)) config.prod[key] = config.__def[key];
   }
 
   // Build step will change this to prod
