@@ -20,7 +20,6 @@ define(function(require){
   , children: {
       nav:    new Views.Nav()
     , pages:  new Views.Pages()
-    , loader: utils.dom('<div id="main-loader" />')
     }
 
   , initialize: function(){
@@ -40,8 +39,6 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template() );
-
-      this.$el.append(this.children.loader);
 
       this.children.nav.setElement(   this.$el.find('.header-navbar')[0] ).render();
       this.children.pages.setElement( this.$el.find('.pages')[0] ).render();

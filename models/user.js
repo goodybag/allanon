@@ -7,8 +7,7 @@ define(function(require){
 
   return new (utils.Model.extend({
     defaults: {
-      id:         18746
-    , loggedIn:   false
+      loggedIn:   false
     , email:      null
     , screenName: 'Goodybagger'
     }
@@ -108,9 +107,10 @@ define(function(require){
 
         this_.set('loggedIn', true);
         this_.set(result);
+        console.log(result);
         callback(null, true);
         this_.trigger('auth');
-        troller.trigger('user.auth')
+        troller.trigger('user.auth');
       });
 
       return this;
@@ -158,7 +158,6 @@ define(function(require){
           });
         }
       });
-
     }
   }))();
 });

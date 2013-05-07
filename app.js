@@ -46,6 +46,7 @@ define(function(require){
         app.appView.render();
 
         utils.domready(function(){
+          document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
           document.body.appendChild( app.appView.el );
 
           utils.history = Backbone.history;
