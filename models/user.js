@@ -7,7 +7,8 @@ define(function(require){
 
   return new (utils.Model.extend({
     defaults: {
-      loggedIn:   false
+      id:         18746
+    , loggedIn:   false
     , email:      null
     , screenName: 'Goodybagger'
     }
@@ -116,6 +117,47 @@ define(function(require){
     }
 
   , updateProductFeelings: function(pid, feelings, callback){
+      var this_ = this
+
+      this.isLoggedIn(function(error, result){
+        if (error) return callback ? callback(error) : troller.error(error);
+
+        // For now, manually throw this guy in. We need to bring in
+        // errors.js from magic
+        if (!result){
+          var error = {
+            type:     'AUTHENTICATION'
+          , message:  'You must be authenticated to perform this action'
+          };
+
+          return callback ? callback(error) : troller.error(error);
+        }
+
+        var
+          batch = [
+            function(done){ api.products.feelings(pid, feelings, done); }
+          , function(done){ api.collections.add(this_.get('id'), 'all', pid, done); }
+          , function(done){ api.collections.add(this_.get('id'), 'food', pid, done); }
+          ]
+
+        , total   = batch.length
+        , current = 0
+        , cancel  = false
+        ;
+
+        while (batch.length > 0){
+          batch.pop()(function(error){
+            if (cancel) return;
+
+            if (error){
+              cancel = true;
+              return callback ? callback(error) : troller.error(error);
+            }
+
+            if (++current >= current && callback) callback();
+          });
+        }
+      });
 
     }
   }))();
