@@ -261,7 +261,7 @@
 }
 
 // Transitions
-.transition(@transition) {
+.transition(@transition; ...) {
   -webkit-transition: @transition;
      -moz-transition: @transition;
        -o-transition: @transition;
@@ -431,7 +431,7 @@
     filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
   }
   .vertical(@startColor: #555, @endColor: #333) {
-    background-color: mix(@startColor, @endColor, 60%);
+    *background-color: mix(@startColor, @endColor, 60%);
     background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.6+
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
     background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.1+, Chrome 10+
@@ -704,4 +704,18 @@
     .spanX (@gridColumns);
 
   }
+}
+
+// Icons Position and Dimensions
+// -----------------------------
+
+#icons {
+  .chevron-down   { background-position: -4px     -5px; width: 16px; }
+
+  .like           { background-position: -76px    -7px; width: 18px; height: 15px; }
+  .like-active    { background-position: -76px   -48px; width: 18px; height: 15px; }
+  .want           { background-position: -39px    -5px; width: 18px; height: 18px; }
+  .want-active    { background-position: -39px   -45px; width: 18px; height: 18px; }
+  .try            { background-position: -116px   -5px; width: 19px; height: 17px; }
+  .try-active     { background-position: -116px  -42px; width: 19px; height: 17px; }
 }

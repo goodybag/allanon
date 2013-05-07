@@ -39,8 +39,7 @@ define(function(require){
         fragment.appendChild( item.el );
       }
 
-      this.$el.html("");
-      console.log("hey, ma!");
+      this.$el.html("<h1>hello</h1>");
       this.$el.html(fragment);
 
       return this;

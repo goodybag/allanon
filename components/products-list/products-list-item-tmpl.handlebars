@@ -3,31 +3,31 @@
   {{! Header }}
   <div class="header">
     <h4 class="product-name">{{product.name}}</h4>
-    <a href="#">{{product.businessName}}</a>
+    <a class="business-name" href="#">@ {{product.businessName}}</a>
   </div>
 
   {{! Photo }}
-  <img class="product-photo" src="{{filepicker product.photoUrl}}" alt="{{#if product.description}}{{product.description}}{{else}}{{product.name}}{{/if}}">
+  <img class="product-photo" src="{{filepicker product.photoUrl 227 227}}" alt="{{#if product.description}}{{product.description}}{{else}}{{product.name}}{{/if}}">
 
 
   {{! Update Feelings }}
-  <ul class="feeling-actions">
+  <ul class="product-feelings">
     <li class="{{#if product.userWants}}active{{/if}}">
       <a href="#">
-        <i class="icon-want"></i>
-        Want
+        <i class="icon-want{{#if product.userWants}}-active{{/if}}"></i>
+        <span class="feeling">Want</span>
       </a>
     </li>
-    <li>
+    <li class="{{#if product.userLikes}}active{{/if}}">
       <a href="#">
-        <i class="icon-like"></i>
-        Like It
+        <i class="icon-like{{#if product.userLikes}}-active{{/if}}"></i>
+        <span class="feeling">Like It</span>
       </a>
     </li>
-    <li>
+    <li class="{{#if product.userTried}}active{{/if}}">
       <a href="#">
-        <i class="icon-tried"></i>
-        Tried
+        <i class="icon-try{{#if product.userTried}}-active{{/if}}"></i>
+        <span class="feeling">Tried</span>
       </a>
     </li>
   </ul>

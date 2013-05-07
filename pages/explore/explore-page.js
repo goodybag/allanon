@@ -32,9 +32,9 @@ define(function(require){
       this.$el.html( template() );
 
       // Attach products list
-      this.children.products.render().setElement(
+      this.children.products.setElement(
         this.$el.find('.products-list')[0]
-      );
+      ).render();
 
       return this;
     }

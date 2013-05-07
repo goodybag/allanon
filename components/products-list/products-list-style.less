@@ -1,6 +1,8 @@
 @import "/styles/variables.less";
 @import "/styles/mixins.less";
 
+@productHoverTransition: ease-in-out 0.3s;
+
 .products-list {
   width: 100%;
   position: relative;
@@ -10,15 +12,16 @@
 }
 
 .products-list .product-list-item {
-  width: @gridColumnWidth * 2;
+  width: (@gridColumnWidth * 2) + @gridGutterWidth;
   margin: 0;
   margin-left: @gridGutterWidth;
+  margin-top: @gridGutterWidth;
+  display: inline-block;
+  vertical-align: top;
   padding: 0;
   border-radius: 6px;
-
   overflow: hidden;
-
-  box-shadow: 0 1px 1px rgba(0,0,0, 0.2);
+  box-shadow: 0 1px 2px rgba(0,0,0, 0.4);
 }
 
 .products-list .product-list-item.first {
@@ -26,9 +29,138 @@
 }
 
 .products-list .product-footer {
+  position: relative;
   padding: 6px 0;
   text-align: center;
   font-size: 16px;
   color: @gray-dark;
   text-shadow: 0 -1px 0 rgba(0,0,0, 0.5);
+  box-shadow: 0 -1px 2px rgba(0,0,0,0.3);
+
+  #gradient > .vertical(#fff, #ebebeb);
+}
+
+.products-list .photo-wrapper {
+  position: relative;
+  overflow: hidden;
+  line-height: 0;
+}
+
+// Restore line-height
+.photo-wrapper > .header,
+.photo-wrapper > .product-feelings, {
+  line-height: @line-height-base;
+}
+
+.products-list .header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 10px 8px 3px 8px;
+
+  // Initial top value large enough to ensure most inputs
+  // Do not show until hovered
+  top: -400px;
+
+  .transition(top @productHoverTransition);
+
+  box-shadow: 0 1px 2px rgba(0,0,0, 0.4);
+
+  #gradient > .vertical(rgba(255,255,255, 1), rgba(255,255,255, 0.78));
+}
+
+.product-list-item .product-name {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 16px;
+  margin: 0;
+  color: #4c4c4c;
+}
+
+.product-list-item .business-name {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 13px;
+  color: #4c4c4c;
+}
+
+.product-list-item .product-feelings {
+  position: absolute;
+  display: table;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  // Initial top value large enough to ensure most inputs
+  // Do not show until hovered
+  bottom: -400px;
+
+  .transition(bottom @productHoverTransition);
+
+  box-shadow: 0 -1px 2px rgba(0,0,0, 0.25);
+
+  #gradient > .vertical(#fff, #fbfbfb);
+}
+
+.product-list-item .product-feelings > li {
+  margin: 0;
+  padding: 0;
+  display: table-cell;
+  width: 33.33333333333333%;
+  border-left: solid #bebebe 1px;
+}
+
+.product-list-item .product-feelings > li:first-child {
+  border-left: none;
+}
+
+.product-list-item .product-feelings > li.active {
+  font-weight: 600;
+  background: #dbdbdb;
+}
+
+.product-list-item .product-feelings a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+.product-list-item .product-feelings a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-feelings a:hover .icon-like,
+.product-feelings li.active .icon-like {
+  #icons > .like-active();
+}
+
+.product-feelings a:hover .icon-want,
+.product-feelings li.active .icon-want {
+  #icons > .want-active();
+}
+
+.product-feelings a:hover .icon-try,
+.product-feelings li.active .icon-try {
+  #icons > .try-active();
+}
+
+.product-list-item:hover .header {
+  top: 0 !important;
+}
+
+.product-list-item:hover .product-feelings {
+  bottom: 0 !important;
+}
+
+.product-list-item .product-feelings {
+  font-size: 11px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.product-list-item .product-feelings .feeling {
+  color: #888;
+  display: block;
 }
