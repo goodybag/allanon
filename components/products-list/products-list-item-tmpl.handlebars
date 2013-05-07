@@ -12,21 +12,21 @@
 
   {{! Update Feelings }}
   <ul class="product-feelings">
-    <li class="{{#if product.userWants}}active{{/if}}">
+    <li class="feeling-want {{#if product.userWants}}active{{/if}}">
       <a href="#">
-        <i class="icon-want{{#if product.userWants}}-active{{/if}}"></i>
+        <i class="icon-want"></i>
         <span class="feeling">Want</span>
       </a>
     </li>
-    <li class="{{#if product.userLikes}}active{{/if}}">
+    <li class="feeling-like {{#if product.userLikes}}active{{/if}}">
       <a href="#">
-        <i class="icon-like{{#if product.userLikes}}-active{{/if}}"></i>
+        <i class="icon-like"></i>
         <span class="feeling">Like It</span>
       </a>
     </li>
-    <li class="{{#if product.userTried}}active{{/if}}">
+    <li class="feeling-try {{#if product.userTried}}active{{/if}}">
       <a href="#">
-        <i class="icon-try{{#if product.userTried}}-active{{/if}}"></i>
+        <i class="icon-try"></i>
         <span class="feeling">Tried</span>
       </a>
     </li>

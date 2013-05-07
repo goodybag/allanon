@@ -13,15 +13,18 @@
     {{! Filters Button Group }}
     <div class="span6 filters-wrapper">
       <div class="btn-group filters-btn-group">
-        <button class="btn btn-large filter-popular">
+        <a class="btn btn-large filter-popular{{#in options.sort "popular"}} active{{/in}}"
+            href="/#/explore/popular">
           Popular
-        </button>
-        <button class="btn btn-large filter-nearby">
+        </a>
+        <a class="btn btn-large filter-nearby{{#in options.sort "distance"}} active{{/in}}"
+            href="/#/explore/nearby">
           Nearby
-        </button>
-        <button class="btn btn-large filter-random">
+        </a>
+        <a class="btn btn-large filter-random{{#in options.sort "random"}} active{{/in}}"
+            href="/#/explore/random">
           Mix-It-Up!
-        </button>
+        </a>
       </div>
     </div>
   </div>

@@ -11,9 +11,9 @@ define(function(require){
   , tagName: 'li'
 
   , events: {
-      'click .like':      'onLikeClick'
-    , 'click .try':       'onTriedClick'
-    , 'click .want':      'onWantClick'
+      'click .feeling-like':      'onLikeClick'
+    , 'click .feeling-try':       'onTriedClick'
+    , 'click .feeling-want':      'onWantClick'
     }
 
   , initialize: function(options){
@@ -54,9 +54,13 @@ define(function(require){
     }
 
   , onWantClick: function(e){
+      e.preventDefault();
+
       this.model.userWants = !this.model.userWants;
 
-      this.user.updateProductFeelings(this.model.id, {
+      this.$el.find('.feeling-want')[(this.model.userWants ? 'add' : 'remove') + 'Class']('active');
+
+      user.updateProductFeelings(this.model.id, {
         isWanted: this.model.userWants
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
@@ -64,9 +68,13 @@ define(function(require){
     }
 
   , onTriedClick: function(e){
+      e.preventDefault();
+
       this.model.userTried = !this.model.userTried;
 
-      this.user.updateProductFeelings(this.model.id, {
+      this.$el.find('.feeling-try')[(this.model.userTried ? 'add' : 'remove') + 'Class']('active');
+
+      user.updateProductFeelings(this.model.id, {
         isWanted: this.model.userWants
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
@@ -74,9 +82,13 @@ define(function(require){
     }
 
   , onLikeClick: function(e){
+      e.preventDefault();
+
       this.model.userLikes = !this.model.userLikes;
 
-      this.user.updateProductFeelings(this.model.id, {
+      this.$el.find('.feeling-like')[(this.model.userLikes ? 'add' : 'remove') + 'Class']('active');
+
+      user.updateProductFeelings(this.model.id, {
         isWanted: this.model.userWants
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried

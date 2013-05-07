@@ -23,6 +23,12 @@ define(function(require){
 
     , defaults: {
         photoUrl: 'http://cdn.filepicker.io/api/file/TovGkwF7TCeFj3MQowEr'
+
+        // Around Guadalup and E MLK blvd
+      , position: {
+          lat: 30.2818
+        , lon: -97.7421
+        }
       }
 
     , spinner: {

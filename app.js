@@ -3,6 +3,7 @@ require.config({
     'utils':      './lib/utils'
   , 'troller':    './lib/troller'
   , 'api':        './lib/api'
+  , 'geo':        './lib/geo-location'
   , 'user':       './models/user'
   , 'config':     './config'
   }
