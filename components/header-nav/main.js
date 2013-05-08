@@ -25,8 +25,10 @@ define(function(require){
       // Manually bind onDocClick since it's outside of element scope
       // we can't use typical event binding
       this.onDocumentClick = utils.bind( this.onDocumentClick, this );
-user.on('auth', function(){ console.log('ON USER AUTH NAVBAR HAHAHAHA'); })
+
+      // When we get/lose session data, update header
       user.on('auth', utils.bind(this.render, this));
+      user.on('deauth', utils.bind(this.render, this));
 
       return this;
     }
