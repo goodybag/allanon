@@ -1,0 +1,51 @@
+<div class="modal-close"></div>
+
+<div class="row">
+
+  <div class="span4">
+    {{! Photo Viewer }}
+    <div class="product-photo-viewer" style="text-align: center">
+      {{! For now, just put a photo in }}
+      <img src="{{filepicker product.photoUrl 430 430}}" alt="">
+    </div>
+  </div>
+
+  <div class="span3">
+    {{! Product Details }}
+    <section class="product-details">
+      <h1>{{product.name}}</h1>
+      <a class="product-business" href="#">@ {{product.businessName}}</a>
+
+      <div class="stats">
+        {{! Likes }}
+        <div class="product-stat product-stat-likes">
+          <i class="icon-heart-big"></i>
+          <span class="product-stat-value">
+            {{product.likes}}
+          </span>
+        </div>
+
+        {{! Price }}
+        {{#if product.price}}
+        <div class="product-stat product-stat-likes">
+          <span class="product-stat-value">
+            ${{product.price}}
+          </span>
+        </div>
+        {{/if}}
+      </div>
+
+      <p class="product-description">
+        {{product.description}}
+      </p>
+    </section>
+
+    {{! Want Like Try Component }}
+    <div class="wlt"></div>
+
+    {{! Add to Collection }}
+    <button class="btn btn-darker btn-add-to-collection">
+      Add to Collections
+    </button>
+  </div>
+</div>

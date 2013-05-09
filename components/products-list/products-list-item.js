@@ -2,6 +2,7 @@ define(function(require){
   var
     utils     = require('utils')
   , user      = require('user')
+  , troller   = require('troller')
   , template  = require('hbt!./products-list-item-tmpl')
   ;
 
@@ -14,6 +15,8 @@ define(function(require){
       'click .feeling-like':      'onLikeClick'
     , 'click .feeling-try':       'onTriedClick'
     , 'click .feeling-want':      'onWantClick'
+
+    , 'click .product-photo':     'onProductPhotoClick'
     }
 
   , initialize: function(options){
@@ -93,6 +96,16 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+    }
+
+  , onProductPhotoClick: function(e){
+      utils.history.navigate(
+        utils.history.location.hash.substring(1) + '/products/' + this.model.id
+      );
+
+      var options = { product: this.model, productId: this.model.id };
+
+      troller.modals.open('product-details', options);
     }
   });
 });

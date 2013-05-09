@@ -31,11 +31,16 @@ define(function(require){
   , Router      = require('lib/router')
   , Components  = require('components/index')
 
-    // Top level Pages
+    // Pages provided to app-level page manager
   , Pages = {
       explore:        require('./pages/explore/index')
     , collections:    require('./pages/collections/index')
     , settings:       require('./pages/settings/index')
+    }
+
+    // Modals provided to app-level modal manager
+  , Modals = {
+      'product-details':    require('./modals/product-details/index')
     }
 
   , app = {
@@ -46,6 +51,7 @@ define(function(require){
         app.appView = new Components.App.Main();
 
         app.appView.providePages(Pages);
+        app.appView.provideModals(Modals);
 
         app.appView.render();
 
@@ -144,6 +150,13 @@ define(function(require){
         utils.dom('#main-loader').css('display', 'none');
         app.spinner.stop();
       }
+
+    , openModal: function(modal, options){
+        return app.appView.children.modals.open(modal, options);
+      }
+    , closeModal: function(modal){
+        return app.appView.children.modals.close(modal);
+      }
     }
   ;
 
@@ -155,6 +168,9 @@ define(function(require){
 
   troller.add('spinner.spin',   app.spin);
   troller.add('spinner.stop',   app.stopSpinning)
+
+  troller.add('modals.open',    app.openModal);
+  troller.add('modals.close',   app.closeModal);
 
   return app;
 });

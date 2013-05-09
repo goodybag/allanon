@@ -1,5 +1,5 @@
 define(function(require){
   return {
-    Main: require('./main-view')
+    Main: require('./modal')
   };
 });
