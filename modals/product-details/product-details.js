@@ -12,15 +12,24 @@ define(function(require){
   return Modal.extend({
     className: 'modal hide fade modal-span7 product-details-modal'
 
+  , children: {
+      wlt: new Components.WLT.Main()
+    }
+
+  , regions: {
+      wlt: '.wlt'
+    }
+
   , initialize: function(options){
       Modal.prototype.initialize.apply(this, options);
 
       this.productId = options.productId;
-      this.product = options.product || {}
+      this.product = options.product || {};
+
+      if (this.product && this.product.id) this.children.wlt.provideModel(this.product);
 
       this.on('open',   this.onOpen);
-      console.log('register ProductDetails.close');
-      this.on('close',  this.onClose);
+      this.on('close',  this.onClose);;
 
       return this;
     }
@@ -29,6 +38,8 @@ define(function(require){
       this.$el.html(
         template({ product: this.product })
       );
+
+      this.applyRegions();
 
       return this;
     }
@@ -40,6 +51,7 @@ define(function(require){
       if (options.product){
         this.product = options.product;
         this.productId = this.product.id;
+        this.children.wlt.provideModel(this.product);
         return this.render();
       }
 
@@ -57,6 +69,8 @@ define(function(require){
         troller.spinner.stop();
 
         if (error) return troller.error(error);
+
+        if (this_.product) this_.children.wlt.provideModel(this_.product);
 
         this_.render();
       });

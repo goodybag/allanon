@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <div class="span3">
+  <div class="span3 details-wrapper">
     {{! Product Details }}
     <section class="product-details">
       <h1>{{product.name}}</h1>
@@ -29,7 +29,7 @@
         {{#if product.price}}
         <div class="product-stat product-stat-likes">
           <span class="product-stat-value">
-            ${{product.price}}
+            ${{money product.price}}
           </span>
         </div>
         {{/if}}
@@ -40,12 +40,14 @@
       </p>
     </section>
 
-    {{! Want Like Try Component }}
-    <div class="wlt"></div>
+    <div class="product-actions">
+      {{! Want Like Try Component }}
+      <div class="wlt"></div>
 
-    {{! Add to Collection }}
-    <button class="btn btn-darker btn-add-to-collection">
-      Add to Collections
-    </button>
+      {{! Add to Collection }}
+      <button class="btn btn-darker btn-add-to-collection">
+        Add to Collections
+      </button>
+    </div>
   </div>
 </div>

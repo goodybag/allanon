@@ -1,6 +1,18 @@
 @import "/styles/variables.less";
 @import "/styles/mixins.less";
 
+.product-details-modal .details-wrapper {
+  // size of photo
+  min-height: 430px;
+  // So we can position product actions to the bottom
+  position: relative;
+}
+
+.product-details-modal .product-actions {
+  position: absolute;
+  bottom: 0;
+}
+
 .product-details-modal .product-details h1 {
   font-size: 28px;
   line-height: 32px;

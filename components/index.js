@@ -6,5 +6,6 @@ define(function(require){
   , ProductsList:     require('./products-list/component')
   , Modal:            require('./modal/component')
   , ModalManager:     require('./modal-manager/component')
+  , WLT:              require('./wlt/component')
   }
 });
