@@ -29,7 +29,9 @@ define(function(require){
       if (this.product && this.product.id) this.children.wlt.provideModel(this.product);
 
       this.on('open',   this.onOpen);
-      this.on('close',  this.onClose);;
+      this.on('close',  this.onClose);
+
+      this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
 
       return this;
     }
@@ -77,7 +79,6 @@ define(function(require){
     }
 
   , onClose: function(){
-    console.log('ProductDetailsModal.onClose');
       // The modal was closed by navigating away
       if (utils.history.location.hash.indexOf('/products/') == -1) return;
 
@@ -85,6 +86,12 @@ define(function(require){
       utils.history.navigate(
         utils.history.location.hash.replace('/products/' + this.productId, '').substring(1)
       );
+    }
+
+  , onWltChange: function(change, model){
+      // Update like count if necessary
+      if (change == 'like')
+        this.$el.find('.product-stat-likes > .product-stat-value').text(model.likes);
     }
 
   , fetchProduct: function(callback){

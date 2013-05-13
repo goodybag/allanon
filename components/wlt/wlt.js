@@ -46,6 +46,9 @@ define(function(require){
 
       this.model.userWants = !this.model.userWants;
 
+      if (this.model.userWants) this.model.wants++;
+      else this.model.wants--;
+
       this.$el.find('.btn-want')[(this.model.userWants ? 'add' : 'remove') + 'Class']('active');
 
       user.updateProductFeelings(this.model.id, {
@@ -53,12 +56,19 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'want', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.trigger('wlt:change', 'want', this.model);
     }
 
   , onTriedClick: function(e){
       e.preventDefault();
 
       this.model.userTried = !this.model.userTried;
+
+      if (this.model.userTried) this.model.tries++;
+      else this.model.tries--;
 
       this.$el.find('.btn-try')[(this.model.userTried ? 'add' : 'remove') + 'Class']('active');
 
@@ -67,12 +77,19 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'try', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.trigger('wlt:change', 'tried', this.model);
     }
 
   , onLikeClick: function(e){
       e.preventDefault();
 
       this.model.userLikes = !this.model.userLikes;
+
+      if (this.model.userLikes) this.model.likes++;
+      else this.model.likes--;
 
       this.$el.find('.btn-like')[(this.model.userLikes ? 'add' : 'remove') + 'Class']('active');
 
@@ -81,6 +98,10 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'like', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.trigger('wlt:change', 'like', this.model);
     }
   });
 });
