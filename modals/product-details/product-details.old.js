@@ -7,50 +7,58 @@ define(function(require){
   , Modal       = Components.Modal.Main
 
   , template    = require('hbt!./product-details-tmpl')
-
-  , Pages = {
-      'details':            require('./pages/details/index')
-    , 'add-to-collections': require('./pages/add-to-collections/index')
-    }
   ;
 
   return Modal.extend({
     className: 'modal hide fade modal-span7 product-details-modal'
 
   , children: {
-      pages: new Components.Pages.Main()
+      wlt:              new Components.WLT.Main()
+    , addToCollections: new Componenets.AddToCollections.Main()
     }
 
   , regions: {
-      pages: '.pages'
+      wlt:              '.wlt'
+    , addToCollections: '.add-to-collections'
     }
 
   , initialize: function(options){
-      var this_ = this;
-
       Modal.prototype.initialize.apply(this, options);
 
       this.productId = options.productId;
       this.product = options.product || {};
 
-      this.children.pages.providePages(Pages);
+      if (this.product && this.product.id) this.children.wlt.provideModel(this.product);
 
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
 
-      return this;
-    }
+      this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
 
-  , changePage: function(page, options){
-      this.children.pages.changePage(page, options);
+      this.currentPage = options.currentPage || 'details';
+
       return this;
     }
 
   , render: function(){
-    console.log('rendering with', this.product);
-      this.$el.html( template({ product: this.product }) );
-console.log(this.$el.html());
+      this.$el.html(
+        template({
+          product: this.product
+        })
+      );
+
       this.applyRegions();
+
+      return this;
+    }
+
+    // Whatever - we should generalize view switching
+    // we've got the page manager, but the abstraction seemd overkill for this
+  , showPage: function(page){
+      if (this.currentPage == page) return this;
+
+      this.$el.find('.' + this.currentPage + '-page').fade(0);
+      this.$el.find('.' + (this.currentPage = page) + '-page').fade(1);
 
       return this;
     }
@@ -58,20 +66,11 @@ console.log(this.$el.html());
   , onOpen: function(options){
       if (!this.productId || (!options && options.productId)) return this;
 
-      var this_ = this;
-
       // If they provided a product already, no need to fetch
       if (options.product){
         this.product = options.product;
         this.productId = this.product.id;
-
-        this.children.pages.changePage('details', function(error, page){
-          if (error) return troller.error(error);
-
-          page.provideModel(this_.product);
-          page.render();
-        });
-
+        this.children.wlt.provideModel(this.product);
         return this.render();
       }
 
@@ -83,19 +82,14 @@ console.log(this.$el.html());
 
       troller.spinner.spin();
 
-console.log('fetching product');
+      var this_ = this;
 
       return this.fetchProduct(function(error, product){
         troller.spinner.stop();
 
         if (error) return troller.error(error);
 
-        this_.children.pages.changePage('details', function(error, page){
-          if (error) return troller.error(error);
-
-          page.provideModel(this_.product);
-          page.render();
-        });
+        if (this_.product) this_.children.wlt.provideModel(this_.product);
 
         this_.render();
       });
@@ -109,6 +103,12 @@ console.log('fetching product');
       utils.history.navigate(
         utils.history.location.hash.replace('/products/' + this.productId, '').substring(1)
       );
+    }
+
+  , onWltChange: function(change, model){
+      // Update like count if necessary
+      if (change == 'like')
+        this.$el.find('.product-stat-likes > .product-stat-value').text(model.likes);
     }
 
   , fetchProduct: function(callback){

@@ -10,45 +10,9 @@
     </div>
   </div>
 
-  <div class="span3 details-wrapper">
+  <div class="span3 details-wrapper pages">
+    <h1>Hi</h1>
     {{! Product Details }}
-    <section class="product-details">
-      <h1>{{product.name}}</h1>
-      <a class="product-business" href="#">@ {{product.businessName}}</a>
-
-      <div class="stats">
-        {{! Likes }}
-        <div class="product-stat product-stat-likes">
-          <i class="icon-heart-big"></i>
-          <span class="product-stat-value">
-            {{product.likes}}
-          </span>
-        </div>
-
-        {{! Price }}
-        {{#if product.price}}
-        <div class="product-stat product-stat-price">
-          <span class="product-stat-value">
-            ${{money product.price}}
-          </span>
-        </div>
-        {{/if}}
-      </div>
-
-      <p class="product-description">
-        {{product.description}}
-      </p>
-    </section>
-
-    <div class="product-actions">
-      {{! Want Like Try Component }}
-      <div class="wlt"></div>
-
-      {{! Add to Collection }}
-      <button class="btn btn-darker btn-add-to-collection">
-        <i class="icon-green-plus"></i>
-        Add to Collections
-      </button>
-    </div>
+    {{! Add to Collection }}
   </div>
 </div>

@@ -23,10 +23,18 @@ define(function(require){
       return this;
     }
 
+  , get: function(name){
+      return this.pages[name];
+    }
+
   , providePages: function(Pages){
       this.Pages = Pages;
       return this;
     }
+
+  // , render: function(){
+  //     return this.renderCurrent();
+  //   }
 
   , renderCurrent: function(){
       if (this.current){
@@ -63,11 +71,15 @@ define(function(require){
         this.pages[page] = new this.Pages[page](options);
         this.pages[page].hide(options);
 
+        // Allow child pages to request change pages
+        this.pages[page].setPageManager(this);
+
         // Set initial display to none so we can switch them out
         if (options && options.renderFn) options.renderFn();
         // else this.pages[page].render();
         // this.pages[page].delegateEvents();
         this.$el.append(this.pages[page].$el);
+        console.log(this.$el.html());
       }
 
       // Hide the current

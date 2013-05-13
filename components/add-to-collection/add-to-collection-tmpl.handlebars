@@ -1,0 +1,13 @@
+<a href="#" class="add-to-collection">
+  <i class="icon-green-plus-large"></i>
+  Add A New Collection
+</a>
+<ul class="collections">
+  {{#each collections}}
+    <li class="collection">
+      <label class="checkbox-label"></label>
+      <input type="checkbox" value="this.id">
+      {{this.name}}
+    </li>
+  {{/each}}
+</ul>

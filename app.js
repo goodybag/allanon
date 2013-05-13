@@ -6,6 +6,7 @@ require.config({
   , 'geo':        './lib/geo-location'
   , 'user':       './models/user'
   , 'config':     './config'
+  // , 'cmpnts':     './lib/components'
   }
 
 , map: {
