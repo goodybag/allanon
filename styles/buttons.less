@@ -252,3 +252,45 @@ input[type="submit"].btn {
   margin-top: 0;
   #sprite > #wlt > .try();
 }
+
+// Add to collections
+// ------------------
+
+.btn-add-to-collection {
+  width: 100%;
+  padding: 9px 0 6px 0;
+  border: solid #979797 1px;
+  border-top: solid #b2b2b2 1px;
+  border-bottom: solid #767676 1px;
+  box-shadow: 0 1px 1px rgba(0,0,0, 0.2);
+
+  font-weight: 600;
+  color: lighten(@gray, 5%);
+
+  // Easier to not use mixin for this one
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(255,255,255,1) 30%, rgba(178,178,178,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,rgba(255,255,255,1)), color-stop(100%,rgba(178,178,178,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 30%,rgba(178,178,178,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(255,255,255,1) 30%,rgba(178,178,178,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(255,255,255,1) 30%,rgba(178,178,178,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(255,255,255,1) 30%,rgba(178,178,178,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#b2b2b2',GradientType=0 ); /* IE6-9 */
+}
+
+.btn-add-to-collection:hover {
+  // Easier to not use mixin for this one
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(255,255,255,1) 10%, rgba(178,178,178,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(10%,rgba(255,255,255,1)), color-stop(100%,rgba(178,178,178,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 10%,rgba(178,178,178,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(255,255,255,1) 10%,rgba(178,178,178,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(255,255,255,1) 10%,rgba(178,178,178,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(255,255,255,1) 10%,rgba(178,178,178,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#b2b2b2',GradientType=0 ); /* IE6-9 */
+}
+
+.btn-add-to-collection > .icon-green-plus {
+  vertical-align: middle;
+  margin: -2px 8px 0 0;
+}
