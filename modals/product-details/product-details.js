@@ -47,10 +47,19 @@ define(function(require){
     }
 
   , render: function(){
-    console.log('rendering with', this.product);
+      var this_ = this;
+
       this.$el.html( template({ product: this.product }) );
-console.log(this.$el.html());
+
       this.applyRegions();
+
+      // Show default page
+      this.children.pages.changePage('details', function(error, page){
+        if (error) return troller.error(error);
+
+        page.provideModel(this_.product);
+        page.render();
+      });
 
       return this;
     }
@@ -65,13 +74,6 @@ console.log(this.$el.html());
         this.product = options.product;
         this.productId = this.product.id;
 
-        this.children.pages.changePage('details', function(error, page){
-          if (error) return troller.error(error);
-
-          page.provideModel(this_.product);
-          page.render();
-        });
-
         return this.render();
       }
 
@@ -83,19 +85,10 @@ console.log(this.$el.html());
 
       troller.spinner.spin();
 
-console.log('fetching product');
-
       return this.fetchProduct(function(error, product){
         troller.spinner.stop();
 
         if (error) return troller.error(error);
-
-        this_.children.pages.changePage('details', function(error, page){
-          if (error) return troller.error(error);
-
-          page.provideModel(this_.product);
-          page.render();
-        });
 
         this_.render();
       });
