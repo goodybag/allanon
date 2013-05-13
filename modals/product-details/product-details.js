@@ -56,7 +56,6 @@ define(function(require){
       // Show default page
       this.children.pages.changePage('details', function(error, page){
         if (error) return troller.error(error);
-
         page.provideModel(this_.product);
         page.render();
       });
