@@ -3,6 +3,7 @@ define(function(require){
     utils       = require('utils')
   , config      = require('config')
   , api         = require('api')
+  , user        = require('user')
   , troller     = require('troller')
   , Components  = require('../../../../components/index')
 
@@ -12,16 +13,67 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-add-to-collections'
 
+  , events: {
+      'click .btn-back':        'onCancelClick'
+    }
+
   , children: {
-      'add-to-collections': new Components.AddToCollections.Main()
+      addToCollections: new Components.AddToCollections.Main()
     }
 
   , regions: {
-      'add-to-collections':    '.add-to-collections'
+      addToCollections:    '.add-to-collections'
     }
 
   , initialize: function(options){
+      this.product = {};
       return this;
+    }
+
+  , onShow: function(options){
+      this.product = options.product;
+
+      var this_ = this;
+
+      troller.spinner.spin();
+
+      user.getCollections(function(error, collections){
+        if (error) return troller.error(error);
+
+        this_.provideCollections(collections);
+
+        troller.spinner.stop();
+
+        this_.render();
+      });
+    }
+
+  , provideCollections: function(collections){
+      this.collections = collections;
+      this.children.addToCollections.provideCollections(collections);
+      return this;
+    }
+
+  , provideProduct: function(product){
+      this.product = product;
+      this.children.addToCollections.provideProduct(product);
+      return this;
+    }
+
+  , render: function(){
+      this.$el.html(
+        template({ collections: this.collections })
+      );
+
+      this.applyRegions();
+
+      this.delegateEvents();
+
+      return this;
+    }
+
+  , onCancelClick: function(e){
+      this.pageManager.changePage('details');
     }
   });
 });

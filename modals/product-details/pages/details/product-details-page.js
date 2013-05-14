@@ -32,6 +32,7 @@ define(function(require){
     console.log('product-details-page.provideModel', model);
       this.model = model;
       this.children.wlt.provideModel(this.model);
+      this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
       return this;
     }
 
@@ -51,16 +52,9 @@ define(function(require){
         this.$el.find('.product-stat-likes > .product-stat-value').text(model.likes);
     }
 
-  , onShow: function(options){
-console.log('called onshow');
-    }
-
-  , onHide: function(){
-
-    }
-
   , onAddToCollections: function(e){
-      this.pageManager.changePage('add-to-collections');
+      var this_ = this;
+      this.pageManager.changePage('add-to-collections', { product: this.product });
     }
   });
 });

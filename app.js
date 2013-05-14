@@ -4,8 +4,9 @@ require.config({
   , 'troller':    './lib/troller'
   , 'api':        './lib/api'
   , 'geo':        './lib/geo-location'
-  , 'user':       './models/user'
+  , 'user':       './lib/user'
   , 'config':     './config'
+  , 'models':     './models/index'
   // , 'cmpnts':     './lib/components'
   }
 

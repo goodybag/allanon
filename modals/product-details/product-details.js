@@ -60,6 +60,7 @@ define(function(require){
         if (error) return troller.error(error);
         page.provideModel(this_.product);
         page.render();
+        page.delegateEvents();
       });
 
       return this;

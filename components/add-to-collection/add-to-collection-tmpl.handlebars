@@ -5,8 +5,8 @@
 <ul class="collections">
   {{#each collections}}
     <li class="collection">
-      <label class="checkbox-label"></label>
-      <input type="checkbox" value="this.id">
+      <input type="checkbox" value="{{this.id}}" id="chk-collection-{{this.id}}">
+      <label class="checkbox-label" for="chk-collection-{{this.id}}"></label>
       {{this.name}}
     </li>
   {{/each}}

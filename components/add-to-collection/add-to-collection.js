@@ -9,12 +9,21 @@ define(function(require){
   return utils.View.extend({
     className: 'add-to-collection-view'
 
+  , events: {
+      'change input[type="checkbox"]':      'onCheckboxChange'
+    }
+
   , initialize: function(options){
       return this;
     }
 
   , provideCollections: function(collections){
       this.collections = collections;
+      return this;
+    }
+
+  , provideProduct: function(product){
+      this.product = product;
       return this;
     }
 
@@ -25,6 +34,10 @@ define(function(require){
         })
       );
       return this;
+    }
+
+  , onCheckboxChange: function(e){
+      user[(e.target.checked ? 'addTo' : 'removeFrom') + 'Collection'](e.value, this.product.id);
     }
   });
 });
