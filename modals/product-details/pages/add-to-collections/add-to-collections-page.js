@@ -14,7 +14,8 @@ define(function(require){
     className: 'page page-add-to-collections'
 
   , events: {
-      'click .btn-back':        'onCancelClick'
+      'click .btn-back':            'onCancelClick'
+    , 'click a.add-new-collection': 'onNewCollectionClick'
     }
 
   , children: {
@@ -74,6 +75,14 @@ define(function(require){
 
   , onCancelClick: function(e){
       this.pageManager.changePage('details');
+    }
+
+  , onNewCollectionClick: function(e){
+      e.preventDefault();
+      utils.history.navigate(
+        utils.history.location.hash + e.target.href
+      );
+      troller.modals.open('add-new-collection');
     }
   });
 });
