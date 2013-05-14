@@ -36,7 +36,7 @@ define(function(require){
     }
 
   , render: function(){
-    console.log('product-details-page.render');
+    console.log('product-details-page.render', this.$el);
       this.$el.html(
         template({
           product: this.model
