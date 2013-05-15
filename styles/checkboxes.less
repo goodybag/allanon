@@ -1,0 +1,32 @@
+//
+// Checkboxes
+// --------------------------------------------------
+
+.checkbox-label {
+  display: inline-block;
+  vertical-align: middle;
+  width: 37px;
+  height: 37px;
+  background-image: url('@{sprite-path}');
+  background-repeat: no-repeat;
+
+  #sprite > .checkbox()
+}
+
+// Give feedback when clicking
+.checkbox-label:active {
+  opacity: 0.6;
+}
+
+// In IE8, we'll have to add this class with javascript
+.checkbox-label.active,
+input[type="checkbox"]:checked + .checkbox-label {
+  #sprite > .checkbox-checked()
+}
+
+input[type="checkbox"] {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}

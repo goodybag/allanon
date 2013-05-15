@@ -7,8 +7,9 @@ define(function(require){
     utils = require('utils')
 
   , Views = {
-      Nav:    require('../header-nav/component').Main
-    , Pages:  require('../pages/component').Main
+      Nav:      require('../header-nav/component').Main
+    , Pages:    require('../pages/component').Main
+    , Modals:   require('../modal-manager/component').Main
     }
 
   , template = require('hbt!./app-tmpl')
@@ -20,16 +21,21 @@ define(function(require){
   , children: {
       nav:    new Views.Nav()
     , pages:  new Views.Pages()
+    , modals: new Views.Modals()
     }
 
   , initialize: function(){
       this.pages = {};
-
       return this;
     }
 
   , providePages: function(Pages){
       this.children.pages.providePages(Pages);
+      return this;
+    }
+
+  , provideModals: function(Modals){
+      this.children.modals.provide(Modals);
       return this;
     }
 
@@ -40,8 +46,9 @@ define(function(require){
   , render: function(){
       this.$el.html( template() );
 
-      this.children.nav.setElement(   this.$el.find('.header-navbar')[0] ).render();
-      this.children.pages.setElement( this.$el.find('.pages')[0] ).render();
+      this.children.nav.setElement(   this.$el.find('#app-header')[0] ).render();
+      this.children.pages.setElement( this.$el.find('#app-pages') [0] ).render();
+      this.children.modals.setElement(this.$el.find('#app-modals')[0] ).render();
 
       return this;
     }

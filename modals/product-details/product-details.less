@@ -1,0 +1,73 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.product-details-modal .pages {
+  // size of photo
+  height: 430px;
+  overflow-y: scroll;
+  // So we can position product actions to the bottom
+  position: relative;
+}
+
+.product-details-modal .page-actions {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.product-details-modal .product-photo {
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(25,24,25, 0.2);
+}
+
+.product-details-modal .product-details {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 24px;
+  color: lighten(@text-color, 10%);
+}
+
+.product-details-modal .product-details h1 {
+  font-size: 28px;
+  line-height: 32px;
+  margin-bottom: 0;
+}
+
+.product-details-modal .product-details .product-business {
+  font-size: 14px;
+  color: #808080;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.product-details .stats {
+  display: table;
+  width: 100%;
+  margin: 16px 0;
+  font-size: 18px;
+  color: #b2b2b2;
+  text-shadow: 0 -1px 0 rgba(0,0,0, 0.8);
+}
+
+.product-details .stats > .product-stat {
+  display: table-cell;
+  width: 1%;
+}
+
+.product-details-modal .wlt {
+  display: block;
+  margin-bottom: 24px;
+}
+
+a.add-to-collection {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #4d4d4d;
+  font-style: italic;
+  font-size: 19px;
+}
+
+a.add-to-collection > .icon {
+  vertical-align: middle;
+  margin-right: 13px;
+}

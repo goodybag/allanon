@@ -23,10 +23,18 @@ define(function(require){
       return this;
     }
 
+  , get: function(name){
+      return this.pages[name];
+    }
+
   , providePages: function(Pages){
       this.Pages = Pages;
       return this;
     }
+
+  // , render: function(){
+  //     return this.renderCurrent();
+  //   }
 
   , renderCurrent: function(){
       if (this.current){
@@ -37,19 +45,23 @@ define(function(require){
     }
 
   , changePage: function(page, options, callback){
-      // if (this.current === page) return this;
-
       if (typeof options == 'function'){
         callback = options;
         options = null;
       }
 
-      callback = callback || utils.noop;
+      if (!this.Pages[page]){
+        // TODO: don't do this
+        var error = {
+          message: "Cannot find page: " + page
+        , page: page
+        };
 
-      if (!this.Pages[page]) return callback({
-        message: "Cannot find page: " + page
-      , page: page
-      }), this;
+        if (callback) callback(error);
+        else troller.error(error);
+
+        return this;
+      }
 
       if (!this.pages[page]){
         // Attach parent view to Page
@@ -59,11 +71,15 @@ define(function(require){
         this.pages[page] = new this.Pages[page](options);
         this.pages[page].hide(options);
 
+        // Allow child pages to request change pages
+        this.pages[page].setPageManager(this);
+
         // Set initial display to none so we can switch them out
         if (options && options.renderFn) options.renderFn();
         // else this.pages[page].render();
         // this.pages[page].delegateEvents();
         this.$el.append(this.pages[page].$el);
+        console.log(this.$el.html());
       }
 
       // Hide the current
@@ -73,7 +89,7 @@ define(function(require){
       this.pages[page].show(options);
       this.current = page;
 
-      callback(null, this.pages[page]);
+      if (callback) callback(null, this.pages[page]);
 
       return this;
     }

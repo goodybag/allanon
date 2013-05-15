@@ -7,6 +7,11 @@ define(function(require){
   return utils.View.extend({
     className: 'page'
 
+  , setPageManager: function(manager){
+      this.pageManager = manager;
+      return this;
+    }
+
   , render: function(){
       this.$el.html(this.template());
       return this;
