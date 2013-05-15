@@ -1,5 +1,8 @@
 define(function(require){
-  var utils = require('utils');
+  var
+    utils   = require('utils')
+  , troller = require('troller')
+  ;
 
   return utils.View.extend({
     className: 'pages'
@@ -15,6 +18,9 @@ define(function(require){
 
       // Currently open modals
       this.openModals = {};
+
+      // Useful to know when deciding on whether to hide backdrop or not
+      this.numOpen = 0;
 
       return this;
     }
@@ -33,7 +39,6 @@ define(function(require){
     }
 
   , open: function(modal, options, callback){
-    console.log('ModalManager.open', modal, options, this.Modals);
       if (typeof options == 'function'){
         callback = options;
         options = null;
@@ -55,8 +60,13 @@ define(function(require){
 
       if (!this.modals[modal]){
         this.modals[modal] = new this.Modals[modal](options);
-        this.$el.append(this.Modals[modal].$el);
+        this.modals[modal].on('close', utils.bind(this.onModalClose, this));
+        this.modals[modal].on('open', utils.bind(this.onModalOpen, this));
+        this.$el.append(this.modals[modal].$el);
       }
+
+      // Only show backdrop if we have 0 open
+      this.modals[modal].modal.options.backdrop = this.numOpen == 0;
 
       // Now open the new modal
       this.modals[modal].open(options);
@@ -79,6 +89,14 @@ define(function(require){
       }
 
       return this;
+    }
+
+  , onModalOpen: function(modal){
+      this.numOpen++;
+    }
+
+  , onModalClose: function(modal){
+      this.numOpen--;
     }
   });
 });

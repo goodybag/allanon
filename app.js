@@ -42,7 +42,8 @@ define(function(require){
 
     // Modals provided to app-level modal manager
   , Modals = {
-      'product-details':    require('./modals/product-details/index')
+      'product-details':        require('./modals/product-details/index')
+    , 'add-new-collection':     require('./modals/add-new-collection/index')
     }
 
   , app = {
