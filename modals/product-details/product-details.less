@@ -1,12 +1,18 @@
 @import "/styles/variables.less";
 @import "/styles/mixins.less";
 
+@product-photo-height: 430px;
+
 .product-details-modal .pages {
   // size of photo
-  height: 430px;
-  overflow-y: scroll;
+  height: @product-photo-height;
   // So we can position product actions to the bottom
   position: relative;
+}
+
+.product-details-modal .pages > .page {
+  height: @product-photo-height - 50px;
+  overflow: scroll;
 }
 
 .product-details-modal .page-actions {

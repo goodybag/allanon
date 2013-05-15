@@ -29,7 +29,6 @@ define(function(require){
     }
 
   , provideModel: function(model){
-    console.log('product-details-page.provideModel', model);
       this.model = model;
       this.children.wlt.provideModel(this.model);
       this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
@@ -37,7 +36,6 @@ define(function(require){
     }
 
   , render: function(){
-    console.log('product-details-page.render', this.$el);
       this.$el.html(
         template({
           product: this.model
@@ -54,7 +52,7 @@ define(function(require){
 
   , onAddToCollections: function(e){
       var this_ = this;
-      this.pageManager.changePage('add-to-collections', { product: this.product });
+      this.pageManager.changePage('add-to-collections', { product: this.model });
     }
   });
 });

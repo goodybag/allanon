@@ -27,13 +27,20 @@ define(function(require){
     }
 
   , initialize: function(options){
-      this.product = {};
-      troller.on('collections.change', utils.bind(this.render, this));
+      options = options || {};
+      this.product = options.product || {};
+
+      if (options.product) this.children.addToCollections.provideProduct(this.product);
+
+      troller.on('user:collections:change', utils.bind(this.render, this));
+
       return this;
     }
 
   , onShow: function(options){
+    console.log("add-to-collections.onShow", options);
       this.product = options.product;
+      this.children.addToCollections.provideProduct(this.product);
 
       var this_ = this;
 
