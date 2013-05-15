@@ -43,6 +43,11 @@ define(function(require){
       return this;
     }
 
+  , goToAddToCollections: function(){
+      this.children.pages.changePage('add-to-collections', { product: this.product });
+      return this;
+    }
+
   , changePage: function(page, options){
       this.children.pages.changePage(page, options);
       return this;

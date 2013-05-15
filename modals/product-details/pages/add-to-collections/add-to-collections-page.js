@@ -82,6 +82,7 @@ define(function(require){
     }
 
   , onCancelClick: function(e){
+      e.preventDefault();
       this.pageManager.changePage('details');
     }
 

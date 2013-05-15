@@ -42,11 +42,18 @@ define(function(require){
         if (error) return troller.error(error);
 
         this_.$el.find('#add-new-collection-name').val("");
+
+        utils.history.navigate(
+          utils.history.location.hash.replace('/add-new-collection', '')
+        );
+
         this_.close();
       });
     }
 
   , onCancelClick: function(e){
+      e.preventDefault();
+
       utils.history.navigate(
         utils.history.location.hash.replace('/add-new-collection', '')
       );
