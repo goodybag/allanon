@@ -79,7 +79,6 @@ define(function(require){
         // else this.pages[page].render();
         // this.pages[page].delegateEvents();
         this.$el.append(this.pages[page].$el);
-        console.log(this.$el.html());
       }
 
       // Hide the current

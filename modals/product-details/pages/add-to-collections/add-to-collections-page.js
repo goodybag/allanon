@@ -28,6 +28,7 @@ define(function(require){
 
   , initialize: function(options){
       this.product = {};
+      troller.on('collections.change', utils.bind(this.render, this));
       return this;
     }
 
@@ -80,7 +81,7 @@ define(function(require){
   , onNewCollectionClick: function(e){
       e.preventDefault();
       utils.history.navigate(
-        utils.history.location.hash + e.target.href
+        utils.history.location.hash + e.target.href.split('#')[1]
       );
       troller.modals.open('add-new-collection');
     }
