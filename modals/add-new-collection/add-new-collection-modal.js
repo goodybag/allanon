@@ -41,6 +41,7 @@ define(function(require){
 
         if (error) return troller.error(error);
 
+        this_.$el.find('#add-new-collection-name').val("");
         this_.close();
       });
     }
