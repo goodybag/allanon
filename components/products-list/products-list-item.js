@@ -2,6 +2,7 @@ define(function(require){
   var
     utils     = require('utils')
   , user      = require('user')
+  , troller   = require('troller')
   , template  = require('hbt!./products-list-item-tmpl')
   ;
 
@@ -14,15 +15,15 @@ define(function(require){
       'click .feeling-like':      'onLikeClick'
     , 'click .feeling-try':       'onTriedClick'
     , 'click .feeling-want':      'onWantClick'
+
+    , 'click .product-photo':     'onProductPhotoClick'
     }
 
   , initialize: function(options){
       this.template = options.template || template;
 
-      return this;
-    }
+      troller.on('product:' + this.model.id + ':change:wlt', utils.bind(this.onWltChange, this));
 
-  , save: function(){
       return this;
     }
 
@@ -53,24 +54,46 @@ define(function(require){
       return this;
     }
 
+  , onWltChange: function(change, model){
+    console.log('ProductListItem.onWltChange', change);
+      var userAction = (
+        change == 'want' ? 'userWants' : (
+        change == 'like' ? 'userLikes' : 'userTried'
+      ));
+
+      // Could potentially be two different models, so sync them
+      this.model = model;
+
+      this.$el.find('.feeling-' + change)[(this.model[userAction] ? 'add' : 'remove') + 'Class']('active');
+
+      if (change == 'like') this.$el.find('.like-count').text(this.model.likes);
+    }
+
   , onWantClick: function(e){
       e.preventDefault();
 
       this.model.userWants = !this.model.userWants;
 
-      this.$el.find('.feeling-want')[(this.model.userWants ? 'add' : 'remove') + 'Class']('active');
+      if (this.model.userWants) this.model.wants++;
+      else this.model.wants--;
 
       user.updateProductFeelings(this.model.id, {
         isWanted: this.model.userWants
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'want', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
     }
 
   , onTriedClick: function(e){
       e.preventDefault();
 
       this.model.userTried = !this.model.userTried;
+
+      if (this.model.userTried) this.model.tries++;
+      else this.model.tries--;
 
       this.$el.find('.feeling-try')[(this.model.userTried ? 'add' : 'remove') + 'Class']('active');
 
@@ -79,12 +102,18 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'try', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
     }
 
   , onLikeClick: function(e){
       e.preventDefault();
 
       this.model.userLikes = !this.model.userLikes;
+
+      if (this.model.userLikes) this.model.likes++;
+      else this.model.likes--;
 
       this.$el.find('.feeling-like')[(this.model.userLikes ? 'add' : 'remove') + 'Class']('active');
 
@@ -93,6 +122,19 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.trigger('product:' + this.model.id + ':change:wlt', 'like', this.model);
+      troller.trigger('product:' + this.model.id + ':change', this.model);
+    }
+
+  , onProductPhotoClick: function(e){
+      utils.history.navigate(
+        utils.history.location.hash.substring(1) + '/products/' + this.model.id
+      );
+
+      var options = { product: this.model, productId: this.model.id };
+
+      troller.modals.open('product-details', options);
     }
   });
 });
