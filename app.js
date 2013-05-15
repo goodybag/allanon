@@ -154,8 +154,8 @@ define(function(require){
         app.spinner.stop();
       }
 
-    , openModal: function(modal, options){
-        return app.appView.children.modals.open(modal, options);
+    , openModal: function(modal, options, callback){
+        return app.appView.children.modals.open(modal, options, callback);
       }
     , closeModal: function(modal){
         return app.appView.children.modals.close(modal);
