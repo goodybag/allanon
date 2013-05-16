@@ -5,6 +5,7 @@
 @collection-margin-x:             18px;
 @collection-margin-bottom:        44px;
 @collection-hover-border-weight:  3px;
+@collection-margins:              0 @collection-margin-x @collection-margin-bottom @collection-margin-x;
 
 .collections-list {
   list-style: none;
@@ -15,8 +16,9 @@
 
 .collections-list > .collection {
   display: inline-block;
+  vertical-align: top;
   width: 322px;
-  margin: 0 @collection-margin-x @collection-margin-bottom @collection-margin-x;
+  margin: @collection-margins;
   padding-bottom: 30px;
 
   // Require less/css is doing stupid shit with the URI
@@ -41,6 +43,16 @@
   margin-right:   @collection-margin-x - @collection-hover-border-weight;
   margin-bottom:  @collection-margin-bottom - (@collection-hover-border-weight * 3);
   margin-top:    -@collection-hover-border-weight;
+}
+
+.collections-list > .collection.collection-new {
+  background: transparent;
+  box-shadow: none;
+  border: dashed #c2c2c2 2px;
+}
+
+.collections-list > .collection.collection-new:hover {
+  margin: @collection-margins;
 }
 
 .collections-list .product-shadow-wrapper {
