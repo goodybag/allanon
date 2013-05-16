@@ -44,6 +44,7 @@ define(function(require){
   , Modals = {
       'product-details':        require('./modals/product-details/index')
     , 'add-new-collection':     require('./modals/add-new-collection/index')
+    , 'enter-keytag':           require('./modals/enter-keytag/index')
     }
 
   , app = {
