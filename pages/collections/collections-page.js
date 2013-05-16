@@ -15,10 +15,11 @@ define(function(require){
     }
 
   , initialize: function(){
-
+      console.log('colelctions');
     }
 
   , render: function(){
+    console.log(template());
       this.$el.html( template() );
       return this;
     }
