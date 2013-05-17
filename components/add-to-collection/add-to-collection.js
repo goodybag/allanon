@@ -37,7 +37,10 @@ define(function(require){
     }
 
   , onCheckboxChange: function(e){
-      user[(e.target.checked ? 'addTo' : 'removeFrom') + 'Collection'](e.value, this.product.id);
+      user[(e.target.checked ? 'addTo' : 'removeFrom') + 'Collection'](
+        parseInt(e.target.value)
+      , this.product.id
+      );
     }
   });
 });

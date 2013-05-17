@@ -49,7 +49,18 @@ define(function(require){
   , app = {
       init: function(){
         // Initial call to session
-        user.isLoggedIn();
+        utils.parallel({
+          session: function(done){ user.isLoggedIn(done); }
+        , domready: function(done){ utils.domready(function(){ done() }); }
+        }, function(error){
+          if (error) troller.error(error);
+
+          document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
+          document.body.appendChild( app.appView.el );
+
+          utils.history = Backbone.history;
+          utils.history.start();
+        });
 
         app.appView = new Components.App.Main();
 
@@ -57,14 +68,6 @@ define(function(require){
         app.appView.provideModals(Modals);
 
         app.appView.render();
-
-        utils.domready(function(){
-          document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
-          document.body.appendChild( app.appView.el );
-
-          utils.history = Backbone.history;
-          utils.history.start();
-        });
 
         app.loadTypekit();
       }

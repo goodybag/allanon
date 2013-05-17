@@ -11,17 +11,29 @@ define(function(require){
     className: 'page page-collections'
 
   , events: {
-
+      'click .new-collection':          'onNewCollectionClick'
     }
 
   , initialize: function(){
-      console.log('colelctions');
+
+    }
+
+  , onShow: function(options){
+
+    }
+
+  , provideCollections: function(collections){
+      this.collections = collections;
+      return this;
     }
 
   , render: function(){
-    console.log(template());
-      this.$el.html( template() );
+      this.$el.html( template({ collections: this.collections }) );
       return this;
+    }
+
+  , onNewCollectionClick: function(e){
+      troller.modals.open('add-new-collection');
     }
   });
 });
