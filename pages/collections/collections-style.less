@@ -49,10 +49,45 @@
   background: transparent;
   box-shadow: none;
   border: dashed #c2c2c2 2px;
+  padding-bottom: 24px;
 }
 
 .collections-list > .collection.collection-new:hover {
   margin: @collection-margins;
+}
+
+.collection-new .product-main-wrapper,
+.collection-new .product-secondary-wrapper {
+  display: inline-block;
+  background: #f5f5f5;
+  border: solid #e1e1e1 1px;
+  border-radius: @photo-border-radius;
+}
+
+.collection-new .product-main-wrapper {
+  margin-top: 58px;
+  line-height: 205px;
+}
+
+.collection-new .add-new-wrap {
+  display: inline-block;
+  margin-top: 92px;
+  line-height: 28px;
+  font-size: 26px;
+  font-style: italic;
+  color: @gray-light;
+}
+
+.collection-new .icon {
+  vertical-align: middle;
+}
+
+.collection-new .text {
+  display: inline-block;
+  vertical-align: middle;
+  width: 52%;
+  margin-left: 4px;
+  text-align: left;
 }
 
 .collections-list .product-shadow-wrapper {
@@ -98,6 +133,8 @@
 }
 
 .collections-list .product-secondary-wrapper {
+  width: 76px;
+  height: 76px;
   margin-left: 16px;
   border-radius: @photo-border-radius;
 }
