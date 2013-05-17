@@ -14,7 +14,7 @@
   text-align: center;
 }
 
-.collections-list > .collection {
+.collections-list .collection {
   display: inline-block;
   vertical-align: top;
   width: 322px;
@@ -32,7 +32,7 @@
   color: lighten(@text-color, 6%);
 }
 
-.collections-list > .collection:hover {
+.collections-list .collection:hover {
   opacity: 0.8;
   border: solid #39c3e6 3px;
 
@@ -46,14 +46,14 @@
   margin-top:    -@collection-hover-border-weight;
 }
 
-.collections-list > .collection.collection-new {
+.collections-list .collection.collection-new {
   background: transparent;
   box-shadow: none;
   border: dashed #c2c2c2 2px;
   padding-bottom: 24px;
 }
 
-.collections-list > .collection.collection-new:hover {
+.collections-list .collection.collection-new:hover {
   margin: @collection-margins;
 }
 

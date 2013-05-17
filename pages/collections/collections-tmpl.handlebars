@@ -16,24 +16,26 @@
   </li>
 
   {{#each collections}}
-  <li class="collection">
-    <h3 class="collection-title">
-      {{truncate this.name 15}} ({{this.numProducts}})
-    </h3>
+  <a href="/#/collections/{{this.id}}">
+    <li class="collection">
+      <h3 class="collection-title">
+        {{truncate this.name 15}} ({{this.numProducts}})
+      </h3>
 
-    <div class="product-main-wrapper product-shadow-wrapper">
-      <div class="product-shadow product-main-shadow"></div>
-      <img src="{{filepicker this.photoUrl 300 300}}" alt="" class="product-main">
-    </div>
-
-    <aside class="product-secondaries">
-      {{#each this.secondaries}}
-      <div class="product-secondary-wrapper product-shadow-wrapper">
-        <div class="product-shadow"></div>
-        <img src="{{filepicker this.photoUrl 76 76}}" alt="" class="product-secondary">
+      <div class="product-main-wrapper product-shadow-wrapper">
+        <div class="product-shadow product-main-shadow"></div>
+        <img src="{{filepicker this.photoUrl 300 300}}" alt="" class="product-main">
       </div>
-      {{/each}}
-    </aside>
-  </li>
+
+      <aside class="product-secondaries">
+        {{#each this.secondaries}}
+        <div class="product-secondary-wrapper product-shadow-wrapper">
+          <div class="product-shadow"></div>
+          <img src="{{filepicker this.photoUrl 76 76}}" alt="" class="product-secondary">
+        </div>
+        {{/each}}
+      </aside>
+    </li>
+  </a>
   {{/each}}
 </ul>

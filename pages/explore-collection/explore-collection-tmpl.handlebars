@@ -1,0 +1,33 @@
+<header class="page-header-box">
+  <h1 class="page-title">{{collection.name}}</h1>
+
+  <div class="row">
+    {{! Search }}
+    <div class="span2 search-wrapper">
+      {{! Wrap input in form to use onSubmit event }}
+      <form id="explore-search-form">
+        <input class="span2 field-search" placeholder="Search Gallery" type="text">
+      </form>
+    </div>
+
+    {{! Filters Button Group }}
+    <div class="span6 filters-wrapper">
+      <div class="btn-group filters-btn-group">
+        <a class="btn btn-large filter-popular{{#in options.sort "popular"}} active{{/in}}"
+            href="/#/explore/popular">
+          Popular
+        </a>
+        <a class="btn btn-large filter-nearby{{#in options.sort "distance"}} active{{/in}}"
+            href="/#/explore/nearby">
+          Nearby
+        </a>
+        <a class="btn btn-large filter-random{{#in options.sort "random"}} active{{/in}}"
+            href="/#/explore/random">
+          Mix-It-Up!
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<ul class="products-list"></ul>

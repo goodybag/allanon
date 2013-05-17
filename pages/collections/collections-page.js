@@ -2,6 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , config      = require('config')
+  , troller     = require('troller')
   , Components  = require('../../components/index')
 
   , template    = require('hbt!./collections-tmpl')
@@ -11,11 +12,11 @@ define(function(require){
     className: 'page page-collections'
 
   , events: {
-      'click .new-collection':          'onNewCollectionClick'
+      'click .add-new-collection':          'onNewCollectionClick'
     }
 
   , initialize: function(){
-
+      troller.on('user:collections:change', utils.bind(this.render, this));
     }
 
   , onShow: function(options){
@@ -28,6 +29,12 @@ define(function(require){
     }
 
   , render: function(){
+      // Ensure secondaries
+      for (var i = 0, l = this.collections.length; i < l; ++i){
+        if (!this.collections[i].secondaries)
+          this.collections[i].secondaries = [{}, {}, {}];
+      }
+
       this.$el.html( template({ collections: this.collections }) );
       return this;
     }
