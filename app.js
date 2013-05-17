@@ -35,15 +35,17 @@ define(function(require){
 
     // Pages provided to app-level page manager
   , Pages = {
-      explore:        require('./pages/explore/index')
-    , collections:    require('./pages/collections/index')
-    , settings:       require('./pages/settings/index')
+      explore:                  require('./pages/explore/index')
+    , collections:              require('./pages/collections/index')
+    , 'explore-collection':     require('./pages/explore-collection/index')
+    , settings:                 require('./pages/settings/index')
     }
 
     // Modals provided to app-level modal manager
   , Modals = {
       'product-details':        require('./modals/product-details/index')
     , 'add-new-collection':     require('./modals/add-new-collection/index')
+    , 'edit-collection':        require('./modals/edit-collection/index')
     }
 
   , app = {
@@ -58,8 +60,7 @@ define(function(require){
           document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
           document.body.appendChild( app.appView.el );
 
-          utils.history = Backbone.history;
-          utils.history.start();
+          utils.startHistory();
         });
 
         app.appView = new Components.App.Main();
@@ -96,7 +97,7 @@ define(function(require){
 
     , error: function(error, $el, action){
         // No XHR errors - they probably just canceled the request
-        // if (error.hasOwnProperty('status') && error.status == 0) return;
+        if (error.hasOwnProperty('status') && error.status == 0) return;
 
         if (typeof $el == 'function'){
           action = $el;

@@ -13,14 +13,11 @@ define(function(require){
 
   , events: {
       'click .add-new-collection':          'onNewCollectionClick'
+    , 'click .collection':                  'onCollectionClick'
     }
 
   , initialize: function(){
       troller.on('user:collections:change', utils.bind(this.render, this));
-    }
-
-  , onShow: function(options){
-
     }
 
   , provideCollections: function(collections){
@@ -37,6 +34,25 @@ define(function(require){
 
       this.$el.html( template({ collections: this.collections }) );
       return this;
+    }
+
+  , onCollectionClick: function(e){
+      if (e.target.className.indexOf('add-new-collection') > -1) return;
+
+      // Get parent LI
+      while (e.target.tagName != 'LI') e.target = e.target.parentElement;
+
+      var id = $(e.target).data('id'), collection;
+
+      for (var i = 0, l = this.collections.length; i < l; ++i){
+        if (this.collections[i].id == id){
+          collection = this.collections[i];
+          break;
+        }
+      }
+
+      utils.navigate('/collections/' + collection.id + '/explore');
+      troller.app.changePage('explore-collection', { collection: collection });
     }
 
   , onNewCollectionClick: function(e){
