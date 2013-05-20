@@ -1,6 +1,7 @@
 define(function(require){
   var
-    utils = require('utils')
+    utils   = require('utils')
+  , troller = require('troller')
   ;
 
   return utils.View.extend({
@@ -76,8 +77,7 @@ define(function(require){
 
         // Set initial display to none so we can switch them out
         if (options && options.renderFn) options.renderFn();
-        // else this.pages[page].render();
-        // this.pages[page].delegateEvents();
+
         this.$el.append(this.pages[page].$el);
       }
 
@@ -87,6 +87,11 @@ define(function(require){
       // Now show the new page
       this.pages[page].show(options);
       this.current = page;
+
+      if (!callback){
+        this.pages[page].render();
+        this.pages[page].delegateEvents();
+      }
 
       if (callback) callback(null, this.pages[page]);
 

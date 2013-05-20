@@ -35,9 +35,10 @@ define(function(require){
 
     // Pages provided to app-level page manager
   , Pages = {
-      explore:        require('./pages/explore/index')
-    , collections:    require('./pages/collections/index')
-    , settings:       require('./pages/settings/index')
+      explore:                  require('./pages/explore/index')
+    , collections:              require('./pages/collections/index')
+    , 'explore-collection':     require('./pages/explore-collection/index')
+    , settings:                 require('./pages/settings/index')
     }
 
     // Modals provided to app-level modal manager
@@ -45,12 +46,23 @@ define(function(require){
       'product-details':        require('./modals/product-details/index')
     , 'add-new-collection':     require('./modals/add-new-collection/index')
     , 'enter-keytag':           require('./modals/enter-keytag/index')
+    , 'edit-collection':        require('./modals/edit-collection/index')
     }
 
   , app = {
       init: function(){
         // Initial call to session
-        user.isLoggedIn();
+        utils.parallel({
+          session: function(done){ user.isLoggedIn(done); }
+        , domready: function(done){ utils.domready(function(){ done() }); }
+        }, function(error){
+          if (error) troller.error(error);
+
+          document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
+          document.body.appendChild( app.appView.el );
+
+          utils.startHistory();
+        });
 
         app.appView = new Components.App.Main();
 
@@ -58,14 +70,6 @@ define(function(require){
         app.appView.provideModals(Modals);
 
         app.appView.render();
-
-        utils.domready(function(){
-          document.body.appendChild( utils.dom('<div id="main-loader" />')[0] )
-          document.body.appendChild( app.appView.el );
-
-          utils.history = Backbone.history;
-          utils.history.start();
-        });
 
         app.loadTypekit();
       }
@@ -94,7 +98,7 @@ define(function(require){
 
     , error: function(error, $el, action){
         // No XHR errors - they probably just canceled the request
-        // if (error.hasOwnProperty('status') && error.status == 0) return;
+        if (error.hasOwnProperty('status') && error.status == 0) return;
 
         if (typeof $el == 'function'){
           action = $el;

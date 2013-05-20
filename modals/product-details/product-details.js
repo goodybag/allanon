@@ -37,6 +37,10 @@ define(function(require){
 
       this.children.pages.providePages(Pages);
 
+      this.dataOptions = {
+        include: ['collections']
+      }
+
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
 
@@ -114,7 +118,7 @@ define(function(require){
   , fetchProduct: function(callback){
       var this_ = this;
 
-      api.products.get(this.productId, function(error, result){
+      api.products.get(this.productId, this.dataOptions, function(error, result){
         if (error) return callback ? callback(error) : troller.error(error);
 
         this_.product = result;

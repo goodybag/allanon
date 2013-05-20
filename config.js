@@ -61,13 +61,18 @@ define(function(require){
   , prod: {
       apiUrl: 'http://magic.goodybag.com/'
     }
+
+  , staging: {
+      apiUrl: 'http://magic.staging.goodybag.com/'
+    }
   };
 
   for (var key in config.__def){
-    if (!(key in config.dev)) config.dev[key]   = config.__def[key];
-    if (!(key in config.prod)) config.prod[key] = config.__def[key];
+    if (!(key in config.dev))     config.dev[key]     = config.__def[key];
+    if (!(key in config.prod))    config.prod[key]    = config.__def[key];
+    if (!(key in config.staging)) config.staging[key] = config.__def[key];
   }
 
   // Build step will change this to prod
-  return config.prod;
+  return config.staging;
 });
