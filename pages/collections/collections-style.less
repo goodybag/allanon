@@ -1,0 +1,149 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+@photo-border-radius:             8px;
+@collection-margin-x:             18px;
+@collection-margin-bottom:        44px;
+@collection-hover-border-weight:  3px;
+@collection-margins:              0 @collection-margin-x @collection-margin-bottom @collection-margin-x;
+
+.collections-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.collections-list .collection {
+  display: inline-block;
+  vertical-align: top;
+  width: 322px;
+  margin: @collection-margins;
+  padding-bottom: 30px;
+
+  // Require less/css is doing stupid shit with the URI
+  // background-image: url('@{texture-wood}');
+  background-image: url('../../img/texture-wood.jpg');
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.36);
+  border-radius: 8px;
+
+  text-align: center;
+  line-height: 0;
+  color: lighten(@text-color, 6%);
+}
+
+.collections-list .collection:hover {
+  opacity: 0.8;
+  border: solid #39c3e6 3px;
+
+  cursor: pointer;
+  box-shadow: none;
+
+  // Margin Magic!
+  margin-left:    @collection-margin-x - @collection-hover-border-weight;
+  margin-right:   @collection-margin-x - @collection-hover-border-weight;
+  margin-bottom:  @collection-margin-bottom - (@collection-hover-border-weight * 3);
+  margin-top:    -@collection-hover-border-weight;
+}
+
+.collections-list .collection.collection-new {
+  background: transparent;
+  box-shadow: none;
+  border: dashed #c2c2c2 2px;
+  padding-bottom: 24px;
+}
+
+.collections-list .collection.collection-new:hover {
+  margin: @collection-margins;
+}
+
+.collection-new .product-main-wrapper,
+.collection-new .product-secondary-wrapper {
+  display: inline-block;
+  background: #f5f5f5;
+  border: solid #e1e1e1 1px;
+  border-radius: @photo-border-radius;
+}
+
+.collection-new .product-main-wrapper {
+  margin-top: 58px;
+  line-height: 205px;
+}
+
+.collection-new .add-new-wrap {
+  display: inline-block;
+  margin-top: 92px;
+  line-height: 28px;
+  font-size: 26px;
+  font-style: italic;
+  color: @gray-light;
+}
+
+.collection-new .icon {
+  vertical-align: middle;
+}
+
+.collection-new .text {
+  display: inline-block;
+  vertical-align: middle;
+  width: 52%;
+  margin-left: 4px;
+  text-align: left;
+}
+
+.collections-list .product-shadow-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.collections-list .product-main-wrapper {
+  width: 260px;
+  height: 260px;
+}
+
+.collections-list .product-shadow {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: @photo-border-radius;
+}
+
+.collections-list .product-main-shadow {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.collections-list .product-main {
+  width: 100%;
+  height: 100%;
+  border-radius: @photo-border-radius;
+}
+
+.collections-list .collection-title {
+  text-align: left;
+  font-style: italic;
+  margin-left: 32px;
+}
+
+.collections-list .product-secondaries {
+  display: block;
+  margin-top: 16px;
+  font-size: 0;
+}
+
+.collections-list .product-secondary-wrapper {
+  width: 76px;
+  height: 76px;
+  margin-left: 16px;
+  border-radius: @photo-border-radius;
+}
+
+.collections-list .product-secondary-wrapper:first-child {
+  margin-left: 0;
+}
+
+.collections-list .product-secondary {
+  border-radius: @photo-border-radius;
+}

@@ -4,10 +4,12 @@
 </a>
 <ul class="collections">
   {{#each collections}}
+    {{#dneq this.id "all"}}
     <li class="collection">
-      <input type="checkbox" value="{{this.id}}" id="chk-collection-{{this.id}}">
+      <input type="checkbox" value="{{this.id}}" id="chk-collection-{{this.id}}" {{#in ../../product.collections this.id}} checked{{/in}}>
       <label class="checkbox-label" for="chk-collection-{{this.id}}"></label>
       {{this.name}}
     </li>
+    {{/dneq}}
   {{/each}}
 </ul>
