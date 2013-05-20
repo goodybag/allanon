@@ -18,6 +18,7 @@ define(function(require){
 
   , events: {
       'click .badge':         'onBadgeClick'
+    , 'click .logo':          'onLogoClick'
     }
 
   , initialize: function(){
@@ -80,6 +81,10 @@ define(function(require){
         }, 10);
         this.$document.unbind('click', this.onDocumentClick);
       }
+    }
+
+  , onLogoClick: function(e){
+      utils.history.navigate('/explore/popular', { trigger: true });
     }
   });
 });

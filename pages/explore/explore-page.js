@@ -30,6 +30,7 @@ define(function(require){
         sort:       '-popular'
       , limit:      30
       , offset:     0
+      , include:    ['collections']
       // , filter:     null
       }, options);
     }
