@@ -37,6 +37,7 @@ define(function(require){
       this.options = {
         limit:      30
       , offset:     0
+      , include:    ['collections']
       // , filter:     null
       };
     }
@@ -91,13 +92,32 @@ define(function(require){
     }
 
   , onFiltersClick: function(e){
+      troller.spinner.spin();
+
       var $target = utils.dom(e.target);
+
+      var filter = (
+        $target.hasClass('btn-like') ? 'userLikes' : (
+        $target.hasClass('btn-want') ? 'userWants' : 'userTried'
+      ));
+
       if ($target.hasClass('active')){
         $target.removeClass('active');
+        delete this.options[filter];
       } else {
         $target.addClass('active');
+        this.options[filter] = true;
       }
 
+      var this_ = this;
+
+      api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
+        if (error) return troller.error(error);
+
+        troller.spinner.stop();
+        this_.products = products;
+        this_.children.products.provideData(this_.products).render();
+      });
     }
 
   , onEditCollectionClick: function(e){

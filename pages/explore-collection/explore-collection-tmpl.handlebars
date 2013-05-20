@@ -15,21 +15,21 @@
       <div class="btn-group filters-btn-group">
         <button class="btn btn-large btn-want"
           <i class="icon"></i>
-          Want
+          Want <span class="count">({{collection.totalMyWants}})</span>
         </button>
         <button class="btn btn-large btn-like"
           <i class="icon"></i>
-          Like
+          Like <span class="count">({{collection.totalMyLikes}})</span>
         </button>
         <button class="btn btn-large btn-tried"
           <i class="icon"></i>
-          Tried
+          Tried <span class="count">({{collection.totalMyTries}})</span>
         </button>
       </div>
     </div>
 
     {{! Edit Collection}}
-    <div class="span2 edit-collectin-wrapper">
+    <div class="span2 edit-collection-wrapper header-actions-right">
       <button class="btn btn-edit-collection">
         Edit Collection
       </button>
