@@ -38,7 +38,6 @@ define(function(require){
     }
 
   , onShow: function(options){
-    console.log("add-to-collections.onShow", options);
       this.product = options.product;
       this.children.addToCollections.provideProduct(this.product);
 
@@ -71,7 +70,7 @@ define(function(require){
 
   , render: function(){
       this.$el.html(
-        template({ collections: this.collections })
+        template({ collections: this.collections, product: this.product })
       );
 
       this.applyRegions();

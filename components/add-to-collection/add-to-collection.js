@@ -28,19 +28,28 @@ define(function(require){
     }
 
   , render: function(){
+    console.log(this.product, this.collections);
       this.$el.html(
         template({
-          collections: this.collections
+          collections:  this.collections
+        , product:      this.product
         })
       );
       return this;
     }
 
   , onCheckboxChange: function(e){
-      user[(e.target.checked ? 'addTo' : 'removeFrom') + 'Collection'](
-        parseInt(e.target.value)
-      , this.product.id
-      );
+      var val = e.target.value;
+      if (e.target.checked){
+        if (this.product.collections.indexOf(val) == -1)
+          this.product.collections.push(val);
+
+        user.addToCollection( e.target.value, this.product.id );
+      } else {
+        this.product.collections = utils.without(this.product.collections, val);
+        user.removeFromCollection( e.target.value, this.product.id );
+      }
+console.log(val, this.product.collections, this.collections);
     }
   });
 });

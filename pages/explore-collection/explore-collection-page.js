@@ -91,9 +91,13 @@ define(function(require){
     }
 
   , onFiltersClick: function(e){
-      if (utils.dom(e.target).hasClass('active')) e.preventDefault();
-      this.$el.find('.filters-btn-group > .btn').removeClass('active');
-      utils.dom(e.target).addClass('active');
+      var $target = utils.dom(e.target);
+      if ($target.hasClass('active')){
+        $target.removeClass('active');
+      } else {
+        $target.addClass('active');
+      }
+
     }
 
   , onEditCollectionClick: function(e){
