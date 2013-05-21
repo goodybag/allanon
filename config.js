@@ -20,6 +20,8 @@ define(function(require){
       , order:          'Order'
       }
 
+    , filepickerKey: 'AF52P8LtHSd6VMD07XdOQz'
+
     , typekitUrl: '//use.typekit.net/vhr1yyf.js'
 
     , defaults: {

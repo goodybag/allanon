@@ -62,6 +62,9 @@ define(function(require){
           document.body.appendChild( app.appView.el );
 
           utils.startHistory();
+
+          // Load in File picker
+          require(['./lib/filepicker'], function(filepicker){});
         });
 
         app.appView = new Components.App.Main();

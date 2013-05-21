@@ -14,6 +14,7 @@ define(function(require){
 
   , events: {
       'submit #form-settings':      'onFormSubmit'
+    , 'click .btn-change-photo':    'onChangePhotoClick'
     }
 
   , initialize: function(){
@@ -62,6 +63,18 @@ define(function(require){
       });
 
       this.$el.find('.field-password').val("");
+    }
+
+  , onChangePhotoClick: function(e){
+      var this_ = this;
+      utils.pickFile(function(error, file){
+        if (error) return troller.error(error);
+
+        this_.model.set('avatarUrl', file.url);
+        this_.model.trigger('change:avatarUrl');
+        this_.render();
+        this_.model.save();
+      });
     }
   });
 });
