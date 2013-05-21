@@ -26,29 +26,42 @@ define(function(require){
     }
 
   , onFormSubmit: function(e){
-      troller.spinner.spin();
       var this_ = this, password;
       e.preventDefault();
-      this.updateModelWithFormData();
-      this.$el.find('form .error').removeClass('error');
 
-      if ((password = this.$el.find('#form-settings-password').val()).length > 0){
-        if (this.$el.find('#form-settings-password-confirm').val() != password){
-          troller.spinner.stop();
-          return troller.error({ message: "Passwords must match", details: { password: null } }, this.$el);
-        }
-      }
-
-      this.model.save(function(error){
-        troller.spinner.stop();
-        if (error){
-          if (error.name == 'SCREENNAME_TAKEN') error.details = {
-            screenName: null
+      (function(next){
+        if ((password = this_.$el.find('#form-settings-password').val()).length > 0){
+          if (this_.$el.find('#form-settings-password-confirm').val() != password){
+            return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el);
           }
-          return troller.error(error, this_.$el)
+
+          return troller.modals.open('update-password', {
+            password: password
+          , onDone:   next
+          });
         }
+
+        next();
+      })(function(){
+        troller.spinner.spin();
+
+        this_.updateModelWithFormData();
+        this_.$el.find('form .error').removeClass('error');
+
+        this_.model.save(function(error){
+          troller.spinner.stop();
+
+          if (error){
+            if (error.name == 'SCREENNAME_TAKEN') error.details = {
+              screenName: null
+            }
+
+            return troller.error(error, this_.$el)
+          }
+        });
       });
 
+      this.$el.find('.field-password').val("");
     }
   });
 });
