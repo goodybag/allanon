@@ -17,7 +17,6 @@ define(function(require){
         this.el
       , utils.extend({
           backdrop: true
-        , keyboard: true
         , show:     true
         }, options)
       );
@@ -42,6 +41,7 @@ define(function(require){
   , open: function(options){
       this.modal.show();
       this.trigger('open', options, this);
+      if (this.onOpen) this.onOpen(options);
       return this;
     }
 
