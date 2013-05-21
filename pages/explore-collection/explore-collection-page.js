@@ -38,7 +38,6 @@ define(function(require){
         limit:      30
       , offset:     0
       , include:    ['collections']
-      // , filter:     null
       };
     }
 

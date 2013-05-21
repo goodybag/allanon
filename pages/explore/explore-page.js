@@ -15,7 +15,6 @@ define(function(require){
   , events: {
       'submit #explore-search-form':        'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
-    // , 'keyup .field-search':                'onSearchSubmit'
 
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
