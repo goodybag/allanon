@@ -27,9 +27,11 @@ define(function(require){
       // we can't use typical event binding
       this.onDocumentClick = utils.bind( this.onDocumentClick, this );
 
-      // When we get/lose session data, update header
-      user.on('auth', utils.bind(this.render, this));
-      user.on('deauth', utils.bind(this.render, this));
+      // When we get/lose session data, user model changes, update header
+      user.on('auth',               utils.bind(this.render, this));
+      user.on('deauth',             utils.bind(this.render, this));
+      user.on('change:avatarUrl',   utils.bind(this.render, this));
+      user.on('change:screenName',  utils.bind(this.render, this));
 
       return this;
     }

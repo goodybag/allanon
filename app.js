@@ -46,6 +46,7 @@ define(function(require){
       'product-details':        require('./modals/product-details/index')
     , 'add-new-collection':     require('./modals/add-new-collection/index')
     , 'edit-collection':        require('./modals/edit-collection/index')
+    , 'update-password':        require('./modals/update-password/index')
     }
 
   , app = {
@@ -61,6 +62,9 @@ define(function(require){
           document.body.appendChild( app.appView.el );
 
           utils.startHistory();
+
+          // Load in File picker
+          require(['./lib/filepicker'], function(filepicker){});
         });
 
         app.appView = new Components.App.Main();
