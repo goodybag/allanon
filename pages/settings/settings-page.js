@@ -3,6 +3,7 @@ define(function(require){
     utils       = require('utils')
   , config      = require('config')
   , user        = require('user')
+  , troller     = require('troller')
   , Components  = require('../../components/index')
 
   , template    = require('hbt!./settings-tmpl')
@@ -25,12 +26,29 @@ define(function(require){
     }
 
   , onFormSubmit: function(e){
-      var this_ = this;
+      troller.spinner.spin();
+      var this_ = this, password;
       e.preventDefault();
       this.updateModelWithFormData();
+      this.$el.find('form .error').removeClass('error');
+
+      if ((password = this.$el.find('#form-settings-password').val()).length > 0){
+        if (this.$el.find('#form-settings-password-confirm').val() != password){
+          troller.spinner.stop();
+          return troller.error({ message: "Passwords must match", details: { password: null } }, this.$el);
+        }
+      }
+
       this.model.save(function(error){
-        if (error) return troller.error(error, this_.$el);
+        troller.spinner.stop();
+        if (error){
+          if (error.name == 'SCREENNAME_TAKEN') error.details = {
+            screenName: null
+          }
+          return troller.error(error, this_.$el)
+        }
       });
+
     }
   });
 });
