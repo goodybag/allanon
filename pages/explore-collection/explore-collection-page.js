@@ -32,7 +32,6 @@ define(function(require){
     }
 
   , initialize: function(options){
-
       // Page state
       this.options = {
         limit:      30
@@ -46,20 +45,26 @@ define(function(require){
 
       this.collection = options.collection;
 
-      // Put on loader and get products for collection
-      troller.spinner.spin();
-
-      var this_ = this;
-
-      api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
-        if (error) return troller.error(error);
-
-        troller.spinner.stop();
-        this_.products = products;
-        this_.children.products.provideData(this_.products).render();
-      });
+      this.fetchData();
 
       return this;
+    }
+
+  , fetchData: function(callback){
+      var this_ = this;
+
+      troller.spinner.spin();
+
+      api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
+        troller.spinner.stop();
+
+        if (error) return callback ? callback(error) : troller.error(error);
+
+        this_.products = products;
+        this_.children.products.provideData(this_.products).render();
+
+        if (callback) callback(null, products);
+      });
     }
 
   , provideCollection: function(collection){
@@ -80,14 +85,21 @@ define(function(require){
   , onSearchSubmit: function(e){
       e.preventDefault();
 
-      if (!this.$search.val()) return;
+      var value = this.$search.val(), this_ = this;
 
-      utils.history.navigate(
-        '/#/explore/'
-        + this.options.sort.replace('-', '')
-        + '/search/'
-        + this.$search.val()
-      );
+      if (!value){
+        if (this.options.filter)
+          delete this.options.filter;
+        else return;
+      } else {
+        this.options.filter = value;
+      }
+
+      this.fetchData(function(error){
+        if (error) return troller.error(error);
+
+        this_.children.products.render()
+      });
     }
 
   , onFiltersClick: function(e){
@@ -108,15 +120,7 @@ define(function(require){
         this.options[filter] = true;
       }
 
-      var this_ = this;
-
-      api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
-        if (error) return troller.error(error);
-
-        troller.spinner.stop();
-        this_.products = products;
-        this_.children.products.provideData(this_.products).render();
-      });
+      this.fetchData();
     }
 
   , onEditCollectionClick: function(e){

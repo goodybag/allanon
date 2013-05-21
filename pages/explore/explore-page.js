@@ -64,7 +64,11 @@ define(function(require){
   , fetchData: function(callback){
       var this_ = this;
 
+      troller.spinner.spin();
+
       api.products.list(this.options, function(error, results){
+        troller.spinner.stop();
+
         if (error) return callback ? callback(error) : troller.error(error);
 
         this_.provideData(results);
@@ -96,14 +100,21 @@ define(function(require){
   , onSearchSubmit: function(e){
       e.preventDefault();
 
-      if (!this.$search.val()) return;
+      var value = this.$search.val(), this_ = this;
 
-      utils.history.navigate(
-        '/#/explore/'
-        + this.options.sort.replace('-', '')
-        + '/search/'
-        + this.$search.val()
-      );
+      if (!value){
+        if (this.options.filter)
+          delete this.options.filter;
+        else return;
+      } else {
+        this.options.filter = value;
+      }
+
+      this.fetchData(function(error){
+        if (error) return troller.error(error);
+
+        this_.children.products.render()
+      });
     }
 
   , onFiltersClick: function(e){
