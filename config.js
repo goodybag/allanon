@@ -20,10 +20,13 @@ define(function(require){
       , order:          'Order'
       }
 
+    , filepickerKey: 'AF52P8LtHSd6VMD07XdOQz'
+
     , typekitUrl: '//use.typekit.net/vhr1yyf.js'
 
     , defaults: {
         photoUrl: 'http://cdn.filepicker.io/api/file/TovGkwF7TCeFj3MQowEr'
+      , avatarUrl:'http://cdn.filepicker.io/api/file/waj6E0kDQNKN9npxHIPR'
 
         // Around Guadalup and E MLK blvd
       , position: {
