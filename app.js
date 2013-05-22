@@ -35,18 +35,19 @@ define(function(require){
 
     // Pages provided to app-level page manager
   , Pages = {
-      explore:                  require('./pages/explore/index')
-    , collections:              require('./pages/collections/index')
-    , 'explore-collection':     require('./pages/explore-collection/index')
-    , settings:                 require('./pages/settings/index')
+      'explore':                  require('./pages/explore/index')
+    , 'collections':              require('./pages/collections/index')
+    , 'explore-collection':       require('./pages/explore-collection/index')
+    , 'settings':                 require('./pages/settings/index')
+    , 'my-punchcards':            require('./pages/punch-cards/index')
     }
 
     // Modals provided to app-level modal manager
   , Modals = {
-      'product-details':        require('./modals/product-details/index')
-    , 'add-new-collection':     require('./modals/add-new-collection/index')
-    , 'edit-collection':        require('./modals/edit-collection/index')
-    , 'update-password':        require('./modals/update-password/index')
+      'product-details':          require('./modals/product-details/index')
+    , 'add-new-collection':       require('./modals/add-new-collection/index')
+    , 'edit-collection':          require('./modals/edit-collection/index')
+    , 'update-password':          require('./modals/update-password/index')
     }
 
   , app = {
