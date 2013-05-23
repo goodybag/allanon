@@ -88,7 +88,7 @@ define(function(require){
       this.pages[page].show(options);
       this.current = page;
 
-      if (!callback){
+      if (!callback && !this.pages[page].manualRender){
         this.pages[page].render();
         this.pages[page].delegateEvents();
       }
