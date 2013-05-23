@@ -29,8 +29,86 @@
 }
 
 .punch-indicator,
+.punch-seal-indicator,
+.num-rewards-badge,
+.punchcard-stack,
+.dotted-arrow-right,
+.banner-elite,
+.banner-regular,
+.banner-elite-small,
+.banner-regular-small,
 .elite-punch-indicator {
   .sprite();
+}
+
+.num-rewards-badge {
+  display: inline-block;
+  width: 55px;
+  height: 55px;
+  background-position: -10px -198px;
+  text-align: center;
+}
+
+.num-rewards-badge > .num-rewards {
+  margin-top: 27px;
+  padding-right: 2px;
+  color: #28DD5C;
+  font-weight: 800;
+}
+
+.punchcard-stack {
+  display: inline-block;
+  position: relative;
+  width: 648px;
+  height: 380px;
+  background-position: -18px -521px;
+}
+
+.dotted-arrow-right {
+  display: inline-block;
+  width: 100px;
+  height: 18px;
+  background-position: -310px -398px;
+}
+
+.banner-elite {
+  display: inline-block;
+  width: 144px;
+  height: 120px;
+  background-position: -142px -386px;
+}
+
+.banner-regular {
+  display: inline-block;
+  width: 144px;
+  height: 120px;
+  background-position: -142px -239px;
+}
+
+.banner-elite-small {
+  display: inline-block;
+  width: 72px;
+  height: 69px;
+  background-position: -313px -316px;
+}
+
+.banner-regular-small {
+  display: inline-block;
+  width: 72px;
+  height: 69px;
+  background-position: -313px -239px;
+}
+
+.punch-seal-indicator {
+  display: inline-block;
+  width: 76px;
+  height: 80px;
+  margin-right: 6px;
+  background-position: -9px -331px;
+}
+
+.punch-seal-indicator.punched {
+  background-position: -9px -417px;
 }
 
 .icon-chevron-down                { #sprite > .chevron-down() }
