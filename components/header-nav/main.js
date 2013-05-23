@@ -19,6 +19,7 @@ define(function(require){
   , events: {
       'click .badge':         'onBadgeClick'
     , 'click .logo':          'onLogoClick'
+    , 'click .edit-keytag-link': 'onEditKeytag'
     }
 
   , initialize: function(){
@@ -88,5 +89,9 @@ define(function(require){
   , onLogoClick: function(e){
       utils.history.navigate('/explore/popular', { trigger: true });
     }
+
+  , onEditKeytag: function(e) {
+    troller.modals.open('enter-keytag');
+  }
   });
 });
