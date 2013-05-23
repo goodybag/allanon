@@ -1,0 +1,69 @@
+{{! Business Logo }}
+<div class="business-logo-inset">
+  <img class="business-logo" src="{{filepicker punchcard.businessLogo 90 90}}" alt="{{punchcard.businessName}}">
+</div>
+
+{{! Actual Punchcard Stack}}
+<div class="punchcard-wrapper">
+  <div class="punchcard-stack">
+    {{! Name and Details }}
+    <h2 class="business-name">{{punchcard.businessName}}</h2>
+    <p class="description">
+      <span class="requirement">{{#if punchcard.isElite}}{{punchcard.elitePunchesRequired}}{{else}}{{punchcard.regularPunchesRequired}}{{/if}} {{punchcard.requiredItem}}</span>
+      <span class="reward">= {{punchcard.reward}}</span>
+    </p>
+
+    {{! Punchcard Type Ribbon }}
+    {{#if punchcard.isElite}}
+    <div class="banner-elite"></div>
+    {{else}}
+    <div class="banner-regular"></div>
+    {{/if}}
+
+    {{! Punchcard Number of Rewards }}
+    {{#if punchcard.numRewards}}
+    <div class="num-rewards-badge">
+      <div class="num-rewards">{{punchcard.numRewards}}</div>
+    </div>
+    {{/if}}
+
+    {{! Punchcard Punch Indicators }}
+    <div class="punch-seal-indicators">
+      {{#if punchcard.isElite}}
+        {{#for punchcard.elitePunchesRequired}}
+          {{#lt this.index ../punchcard.numPunches}}
+          <div class="punch-seal-indicator punched"></div>
+          {{else}}
+          <div class="punch-seal-indicator"></div>
+          {{/lt}}
+        {{/for}}
+      {{else}}
+        {{#for punchcard.regularPunchesRequired}}
+          {{#lt this.index ../punchcard.numPunches}}
+          <div class="punch-seal-indicator punched"></div>
+          {{else}}
+          <div class="punch-seal-indicator"></div>
+          {{/lt}}
+        {{/for}}
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+{{! Punch Legend }}
+<div class="punch-legend">
+  {{! Arrow }}
+  <div class="dotted-arrow-right"></div>
+
+  {{! Regular }}
+  <div class="item item-regular">
+    <div class="banner-regular-small"></div>
+    <div class="item-detail">Your Total Punches: {{punchcard.totalPunches}}</div>
+  </div>
+
+  {{! Elite }}
+  <div class="item item-elite">
+    <div class="banner-elite-small"></div>
+    <div class="item-detail">After {{punchcard.punchesRequiredToBecomeElite}} Punches</div>
+  </div>
+</div>
