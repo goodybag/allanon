@@ -24,7 +24,7 @@
       <div class="punchcard row">
         {{! Puncard Details }}
         <div class="details span5">
-          <img src="{{filepicker this.photoUrl 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
+          <img src="{{filepicker this.businessLogo 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
           <div class="title-and-description">
             <h3 class="title">{{this.businessName}}</h3>
             <p class="description">{{this.elitePunchesRequired}} {{this.requiredItem}} = {{this.reward}}</p>
@@ -32,7 +32,7 @@
         </div>
 
         {{! Punchcard Number of Rewards }}
-        <div class="num-rewards span1">
+        <div class="num-rewards-wrapper span1">
           {{#if this.numRewards}}
           <div class="num-rewards-badge">
             <div class="num-rewards">{{this.numRewards}}</div>
@@ -84,7 +84,7 @@
       <div class="punchcard row">
         {{! Puncard Details }}
         <div class="details span5">
-          <img src="{{filepicker this.photoUrl 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
+          <img src="{{filepicker this.businessLogo 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
           <div class="title-and-description">
             <h3 class="title">{{this.businessName}}</h3>
             <p class="description">{{this.regularPunchesRequired}} {{this.requiredItem}} = {{this.reward}}</p>
@@ -92,7 +92,7 @@
         </div>
 
         {{! Punchcard Number of Rewards }}
-        <div class="num-rewards span1">
+        <div class="num-rewards-wrapper span1">
           {{#if this.numRewards}}
           <div class="num-rewards-badge">
             <div class="num-rewards">{{this.numRewards}}</div>
