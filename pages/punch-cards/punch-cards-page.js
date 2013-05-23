@@ -16,7 +16,7 @@ define(function(require){
   , manualRender: true
 
   , events: {
-
+      'click .punchcard.row':         'onPunchcardClick'
     }
 
   , initialize: function(){
@@ -57,12 +57,15 @@ define(function(require){
 
   , providePunchcards: function(punchcards){
       this.punchcards = punchcards;
+      this.punchcards_ = {};
 
       this.elite = [];
       this.regular = [];
 
-      for (var i = 0, l = punchcards.length; i < l; ++i)
+      for (var i = 0, l = punchcards.length; i < l; ++i){
         this[punchcards[i].isElite ? 'elite' : 'regular'].push(punchcards[i]);
+        this.punchcards_[punchcards[i].id] = punchcards[i];
+      }
 
       return this;
     }
@@ -75,6 +78,15 @@ define(function(require){
         })
       );
       return this;
+    }
+
+  , onPunchcardClick: function(e){
+      // Get the punchcard row element
+      while (e.target.className.indexOf('row') == -1) e.target = e.target.parentElement;
+
+      troller.modals.open('punchcard', {
+        punchcard: this.punchcards_[ utils.dom(e.target).data('id') ]
+      });
     }
   });
 });
