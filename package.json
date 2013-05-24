@@ -28,6 +28,15 @@
     "wrench":                 "~1.4.4",
     "grunt-jam":              "0.3.x"
   },
-  "repository": "",
-  "author": "John Fawcett"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goodybag/website-panel"
+  },
+  "author": "John Fawcett <johnfawcett@goodybag.com>",
+  "contributers": [
+    {
+      "name": "Geoffery Parker",
+      "email": "geoffparker@goodybag.com"
+    }
+  ]
 }
