@@ -24,6 +24,8 @@ define(function(require){
         products: new Components.ProductsList.Main()
       };
 
+      this.products = [];
+
       // Page state
       this.options = utils.extend({
         sort:       '-popular'
@@ -71,6 +73,8 @@ define(function(require){
 
         if (error) return callback ? callback(error) : troller.error(error);
 
+        this_.options.offset += this_.options.limit; // bump the page
+
         this_.provideData(results);
 
         if (callback) callback(null, results);
@@ -78,7 +82,7 @@ define(function(require){
     }
 
   , provideData: function(data){
-      this.products = data;
+      this.products = this.products.concat(data);
       this.children.products.provideData(data);
 
       return this;
@@ -93,6 +97,11 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
+
+      this.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
+
+      troller.scrollWatcher.once('scroll-' + this.paginationTrigger, this.fetchData, this);
+      troller.scrollWatcher.addEvent(this.paginationTrigger);
 
       return this;
     }
@@ -117,7 +126,7 @@ define(function(require){
       });
     }
 
-  , onFiltersClick: function(e){
+ , onFiltersClick: function(e){
       if (utils.dom(e.target).hasClass('active')) e.preventDefault();
       this.$el.find('.filters-btn-group > .btn').removeClass('active');
       utils.dom(e.target).addClass('active');

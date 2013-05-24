@@ -20,7 +20,7 @@ define(function(require){
     }
 
   , provideData: function(data){
-      this.products = data;
+      this.products = this.products.concat(data);
 
       return this;
     }
