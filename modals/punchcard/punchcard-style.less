@@ -1,0 +1,76 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.punchcard-modal {
+  text-align: center;
+}
+
+.punchcard-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.punchcard-wrapper .punchcard-stack {
+  text-align: left;
+}
+
+.business-logo-inset {
+  display: inline-block;
+  padding: 4px 4px 3px 4px;
+  font-size: 0;
+  line-height: 0;
+
+  border-radius: 5px;
+  border: 1px #d6d3c9 solid;
+  border-top: 1px #c3bfb3 solid;
+  border-bottom: 1px #eae9e6 solid;
+
+  box-shadow:
+    inset 0  6px 10px rgba(0,0,0, 0.08)
+  ,       0  0   20px rgba(255, 255, 255, 0.3)
+  ,       0  1px  0   #fff
+  ;
+
+  background: -moz-linear-gradient(top,  rgba(236,236,236,0.3) 0%, rgba(251,251,251,0.3) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(236,236,236,0.3)), color-stop(100%,rgba(251,251,251,0.3))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(236,236,236,0.3) 0%,rgba(251,251,251,0.3) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(236,236,236,0.3) 0%,rgba(251,251,251,0.3) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(236,236,236,0.3) 0%,rgba(251,251,251,0.3) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(236,236,236,0.3) 0%,rgba(251,251,251,0.3) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4dececec', endColorstr='#4dfbfbfb',GradientType=0 ); /* IE6-9 */
+}
+
+.business-logo-inset > .business-logo {
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.punch-legend {
+  position: relative;
+  display: inline-block;
+  width: 332px;
+  height: 88px;
+  margin-top: 14px;
+  color: #666;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.punch-legend > .item {
+  position: absolute;
+  top: 0;
+}
+
+.punch-legend > .item-elite {
+  right: 0;
+}
+
+.punch-legend .item-detail {
+  margin-top: -6px;
+}
+
+.punch-legend .dotted-arrow-right {
+  position: absolute;
+  top: 11px;
+  left: 131px;
+}

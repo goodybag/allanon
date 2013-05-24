@@ -51,6 +51,7 @@ define(function(require){
     , 'enter-keytag':             require('./modals/enter-keytag/index')
     , 'edit-collection':          require('./modals/edit-collection/index')
     , 'update-password':          require('./modals/update-password/index')
+    , 'punchcard':                require('./modals/punchcard/index')
     }
 
   , app = {
@@ -104,6 +105,9 @@ define(function(require){
       }
 
     , error: function(error, $el, action){
+        // No filepicker "they cancelled the modal error"
+        if (error.code && error.code == 104) return;
+
         // No XHR errors - they probably just canceled the request
         if (error.hasOwnProperty('status') && error.status == 0) return;
 

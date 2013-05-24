@@ -21,7 +21,7 @@
     <h2 class="no-punch-cards">Oh no! You have no Elite Punchcards</h2>
     {{else}}
       {{#each elite}}
-      <div class="punchcard row">
+      <div class="punchcard row" data-id="{{this.id}}">
         {{! Puncard Details }}
         <div class="details span5">
           <img src="{{filepicker this.businessLogo 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
@@ -81,7 +81,7 @@
     <h2 class="no-punch-cards">Oh no! You have no Punchcards</h2>
     {{else}}
       {{#each regular}}
-      <div class="punchcard row">
+      <div class="punchcard row" data-id="{{this.id}}">
         {{! Puncard Details }}
         <div class="details span5">
           <img src="{{filepicker this.businessLogo 50 50}}" width="50" height="50" alt="{{this.businessName}}" class="punchcard-business-logo">
