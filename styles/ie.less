@@ -1,0 +1,10 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.btn.btn-primary {
+  background: mix(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight, 60%);
+}
+
+.btn.btn-primary:hover {
+  background: darken(mix(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight, 60%), 5%);
+}

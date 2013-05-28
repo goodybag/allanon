@@ -39,7 +39,7 @@ define(function(require){
 
       this.dataOptions = {
         include: ['collections']
-      }
+      };
 
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
