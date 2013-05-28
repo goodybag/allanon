@@ -82,15 +82,15 @@ define(function(require){
 
         this_.options.offset += this_.options.limit; // bump the page
 
-        this_.provideData(results);
+        this_.provideData(this_.products.concat(results));
 
         if (callback) callback(null, results);
       });
     }
 
   , provideData: function(data){
-      this.products = this.products.concat(data);
-      this.children.products.provideData(data);
+      this.products = data;
+      this.children.products.provideData(data); // multiple references to the same piece of mutable state break modularity.  TODO: fix
 
       return this;
     }
