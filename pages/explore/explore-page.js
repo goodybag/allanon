@@ -44,7 +44,6 @@ define(function(require){
         if (this.options[key] == options[key]) continue;
 
         this.options[key] = options[key];
-        if(key === 'sort') this.resetData(); // reset the list
         isDifferent = true;
       }
 
@@ -64,6 +63,7 @@ define(function(require){
         this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
 
         // only trigger fetching the next page once
+        if (results.length < this_.options.limit) return;
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
         troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
@@ -71,12 +71,14 @@ define(function(require){
       return this;
     }
 
-  , resetData: function() {
-      this.products = []; // reset
-      this.options.offset = 0;
-  }
+  , fetchData: function(options, callback){
+      if (typeof options == 'function'){
+        callback = options;
+        options = null;
+      }
 
-  , fetchData: function(callback){
+      options = options || {};
+
       var this_ = this;
 
       troller.spinner.spin();
@@ -86,9 +88,7 @@ define(function(require){
 
         if (error) return callback ? callback(error) : troller.error(error);
 
-        this_.options.offset += this_.options.limit; // bump the page
-
-        this_.provideData(this_.products.concat(results));
+        this_.provideData(options.append ? this_.products.concat(results) : results);
 
         if (callback) callback(null, results);
       });
@@ -111,6 +111,9 @@ define(function(require){
 
       this.$search = this.$el.find('.field-search');
 
+      // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
+      this.paginationTrigger = parseInt(utils.dom(document).height() - (utils.dom(window).height() / 4)) //parseInt(document.height - (window.innerHeight / 4));
+
       return this;
     }
 
@@ -127,10 +130,18 @@ define(function(require){
         this.options.filter = value;
       }
 
-      this.fetchData(function(error){
+      // Reset offset so results don't get effed
+      this.options.offset = 0;
+
+      this.fetchData(function(error, results){
         if (error) return troller.error(error);
 
-        this_.children.products.render()
+        this_.children.products.render();
+
+        // Reset scroll watcher
+        if (results.length < this_.options.limit) return;
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
     }
 
@@ -142,15 +153,18 @@ define(function(require){
 
   , onScrollNearEnd: function() {
       var this_ = this;
-      this.fetchData(function(error, results) {
+
+      this.options.offset += this.options.limit; // bump the page
+
+      this.fetchData({ append: true }, function(error, results) {
         if (error) troller.error(error);
 
         this_.children.products.render();
 
-        // setup the next page fetch
+        // Do not setup next fetch
+        if (results.length < this_.options.limit) return;
 
-        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
-        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
+        // setup the next page fetch
 
         // only trigger fetching the next page once
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
