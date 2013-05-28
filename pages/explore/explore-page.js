@@ -56,8 +56,15 @@ define(function(require){
       this.fetchData(function(error, results){
         if (error) troller.error(error), troller.spinner.stop();
 
-        troller.spinner.stop();
+        troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
+
+        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
+        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
+
+        // only trigger fetching the next page once
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
 
       return this;
@@ -98,11 +105,6 @@ define(function(require){
 
       this.$search = this.$el.find('.field-search');
 
-      this.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
-
-      troller.scrollWatcher.once('scroll-' + this.paginationTrigger, this.fetchData, this);
-      troller.scrollWatcher.addEvent(this.paginationTrigger);
-
       return this;
     }
 
@@ -126,10 +128,29 @@ define(function(require){
       });
     }
 
- , onFiltersClick: function(e){
+  , onFiltersClick: function(e){
       if (utils.dom(e.target).hasClass('active')) e.preventDefault();
       this.$el.find('.filters-btn-group > .btn').removeClass('active');
       utils.dom(e.target).addClass('active');
     }
+
+  , onScrollNearEnd: function() {
+      var this_ = this;
+      this.fetchData(function(error, results) {
+        if (error) troller.error(error);
+
+        this_.children.products.render();
+
+        // setup the next page fetch
+
+        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
+        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
+
+        // only trigger fetching the next page once
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+      })
+    }
   });
+
 });
