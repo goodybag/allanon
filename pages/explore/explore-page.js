@@ -44,6 +44,7 @@ define(function(require){
         if (this.options[key] == options[key]) continue;
 
         this.options[key] = options[key];
+        if(key === 'sort') this.resetData(); // reset the list
         isDifferent = true;
       }
 
@@ -69,6 +70,11 @@ define(function(require){
 
       return this;
     }
+
+  , resetData: function() {
+      this.products = []; // reset
+      this.options.offset = 0;
+  }
 
   , fetchData: function(callback){
       var this_ = this;

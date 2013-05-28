@@ -47,10 +47,17 @@ define(function(require){
 
       this.collection = options.collection;
 
+      this.resetData();
+
       this.fetchData();
 
       return this;
     }
+
+  , resetData: function() {
+    this.products = [];
+    this.options.offset = 0;
+  }
 
   , fetchData: function(callback){
       var this_ = this;
