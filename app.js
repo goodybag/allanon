@@ -81,7 +81,7 @@ define(function(require){
 
         // The only browser we support that doesn't support ajax is
         // IE, so we can reasonably use this to check for IE
-        if (!utils.support.cors) app.loadIEStyles();
+        if (!utils.support.cors) app.loadIEModules();
       }
 
     , changePage: function(page, options){
@@ -102,8 +102,8 @@ define(function(require){
         document.head.appendChild(script);
       }
 
-    , loadIEStyles: function(){
-        require(['less!./styles/ie'], function(){});
+    , loadIEModules: function(){
+        require(config.ieOnlyModules, function(){});
       }
 
     , confirm: function(msg){

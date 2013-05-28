@@ -55,6 +55,8 @@ define(function(require){
       }
 
     , proxyUrl: "http://magic.goodybag.com/proxy.html"
+
+    , ieOnlyModules: ['less!./styles/ie']
     }
 
   , dev: {

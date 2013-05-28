@@ -72,6 +72,10 @@ define(function(require){
         page.delegateEvents();
       });
 
+      console.log('############################');
+      console.log(this.$el.html());
+      console.log('############################');
+
       return this;
     }
 
