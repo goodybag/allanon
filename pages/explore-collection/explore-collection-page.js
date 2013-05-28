@@ -32,6 +32,8 @@ define(function(require){
     }
 
   , initialize: function(options){
+      this.products = [];
+
       // Page state
       this.options = {
         limit:      30
@@ -60,8 +62,16 @@ define(function(require){
 
         if (error) return callback ? callback(error) : troller.error(error);
 
-        this_.products = products;
+        this_.products = this_.products.concat(products);
         this_.children.products.provideData(this_.products).render();
+
+        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
+        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
+
+        // only trigger fetching the next page once
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.fetchData, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+
 
         if (callback) callback(null, products);
       });
