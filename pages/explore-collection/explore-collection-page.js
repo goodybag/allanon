@@ -65,6 +65,8 @@ define(function(require){
         this_.products = this_.products.concat(products);
         this_.children.products.provideData(this_.products).render();
 
+        this_.options.offset += this_.options.limit; // next page
+
         // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
         this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
 
