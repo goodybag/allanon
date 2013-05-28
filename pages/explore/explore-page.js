@@ -30,7 +30,7 @@ define(function(require){
       , limit:      30
       , offset:     0
       , include:    ['collections']
-      // , filter:     null
+      , hasPhoto:   true
       }, options);
     }
 
@@ -66,7 +66,7 @@ define(function(require){
 
       troller.spinner.spin();
 
-      api.products.list(this.options, function(error, results){
+      api.products.food(this.options, function(error, results){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
