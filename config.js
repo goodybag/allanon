@@ -77,5 +77,5 @@ define(function(require){
   }
 
   // Build step will change this to prod
-  return config.staging;
+  return config.prod;
 });
