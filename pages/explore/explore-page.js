@@ -24,6 +24,17 @@ define(function(require){
         products: new Components.ProductsList.Main()
       };
 
+      // Override products list render to reset pagination height
+      var oldRender = this.children.products.render, this_ = this;
+      this.children.products.render = function(){
+        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
+        oldRender.apply(this_.children.products, arguments);
+
+        // trigger fetching next page
+        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+      };
+
       this.products = [];
 
       // Page state
@@ -51,6 +62,10 @@ define(function(require){
       if (!isDifferent && this.products && this.products.length > 0)
         return troller.spinner.stop(), this;
 
+      // Reset offset/query
+      this.options.offset = 0;
+      delete this.options.filter;
+
       var this_ = this;
 
       this.fetchData(function(error, results){
@@ -58,9 +73,6 @@ define(function(require){
 
         troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
-
-        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
-        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
 
         // only trigger fetching the next page once
         if (results.length < this_.options.limit) return;
@@ -77,11 +89,11 @@ define(function(require){
         options = null;
       }
 
-      options = options || {};
+      options = options || { spin: true };
 
       var this_ = this;
 
-      troller.spinner.spin();
+      if (options.spin) troller.spinner.spin();
 
       api.products.food(this.options, function(error, results){
         troller.spinner.stop();
@@ -110,9 +122,6 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
-
-      // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
-      this.paginationTrigger = parseInt(utils.dom(document).height() - (utils.dom(window).height() / 4)) //parseInt(document.height - (window.innerHeight / 4));
 
       return this;
     }
@@ -156,15 +165,13 @@ define(function(require){
 
       this.options.offset += this.options.limit; // bump the page
 
-      this.fetchData({ append: true }, function(error, results) {
+      this.fetchData({ append: true, spin: false }, function(error, results) {
         if (error) troller.error(error);
 
         this_.children.products.render();
 
         // Do not setup next fetch
         if (results.length < this_.options.limit) return;
-
-        // setup the next page fetch
 
         // only trigger fetching the next page once
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);

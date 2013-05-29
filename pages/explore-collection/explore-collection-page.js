@@ -32,7 +32,17 @@ define(function(require){
     }
 
   , initialize: function(options){
-      this.products = [];
+      // Override products list render to reset pagination height
+      var oldRender = this.children.products.render, this_ = this;
+      this.children.products.render = function(){
+        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
+        oldRender.apply(this_.children.products, arguments);
+
+        // trigger fetching next page
+        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+        console.log(this_.paginationTrigger);
+      };
 
       // Page state
       this.options = {
@@ -47,42 +57,38 @@ define(function(require){
 
       this.collection = options.collection;
 
-      this.resetData();
-
       this.fetchData();
 
       return this;
     }
 
-  , resetData: function() {
-    this.products = [];
-    this.options.offset = 0;
-  }
+  , fetchData: function(options, callback){
+      if (typeof options == 'function'){
+        callback = options;
+        options = null;
+      }
 
-  , fetchData: function(callback){
+      options = options || { spin: true };
+
       var this_ = this;
 
-      troller.spinner.spin();
+      if (options.spin) troller.spinner.spin();
 
       api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
 
-        this_.products = this_.products.concat(products);
+        this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
 
-        this_.options.offset += this_.options.limit; // next page
-
-        // trigger fetching next page when we get within 1/4 of the viewport height of the bottom
-        this_.paginationTrigger = parseInt(document.height - (window.innerHeight / 4));
-
-        // only trigger fetching the next page once
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.fetchData, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
-
-
         if (callback) callback(null, products);
+
+         // only trigger fetching the next page once
+        if (products.length < this_.options.limit) return;
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+        console.log('registered scroll', this_.paginationTrigger, troller.scrollWatcher);
       });
     }
 
@@ -139,11 +145,22 @@ define(function(require){
         this.options[filter] = true;
       }
 
+      this.options.offset = 0;
+
       this.fetchData();
     }
 
   , onEditCollectionClick: function(e){
       troller.modals.open('edit-collection', { collection: this.collection });
+    }
+
+  , onScrollNearEnd: function() {
+    console.log('onScrollNearEnd');
+      var this_ = this;
+
+      this.options.offset += this.options.limit; // bump the page
+
+      this.fetchData({ append: true, spin: false });
     }
   });
 });
