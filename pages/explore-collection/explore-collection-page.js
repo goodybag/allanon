@@ -41,7 +41,6 @@ define(function(require){
 
         // trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
-        console.log(this_.paginationTrigger);
       };
 
       // Page state
@@ -155,7 +154,6 @@ define(function(require){
     }
 
   , onScrollNearEnd: function() {
-    console.log('onScrollNearEnd');
       var this_ = this;
 
       this.options.offset += this.options.limit; // bump the page
