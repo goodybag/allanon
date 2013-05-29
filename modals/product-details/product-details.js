@@ -39,7 +39,7 @@ define(function(require){
 
       this.dataOptions = {
         include: ['collections']
-      }
+      };
 
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
@@ -60,6 +60,7 @@ define(function(require){
   , render: function(){
       var this_ = this;
 
+      this.children.pages.remove();
       this.$el.html( template({ product: this.product }) );
 
       this.applyRegions();

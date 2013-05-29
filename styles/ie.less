@@ -1,0 +1,31 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+
+.btn {
+  background: mix(@btnBackground, @btnBackgroundHighlight, 60%);
+}
+
+.btn:hover {
+  background: darken(mix(@btnBackground, @btnBackgroundHighlight, 60%), 5%);
+}
+
+.btn.btn-primary {
+  background: mix(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight, 60%);
+}
+
+.btn.btn-primary:hover {
+  background: darken(mix(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight, 60%), 5%);
+}
+
+.header-navbar li > a:active,
+.header-navbar li > a:focus,
+.header-navbar li > a:hover,
+.header-navbar .dropdown:hover > a,
+.header-navbar li.active > a {
+  background: none !important;
+}
+
+.header-navbar .dropdown-menu li > a:hover {
+  background: #484848 !important;
+}

@@ -42,6 +42,7 @@ define(function(require){
         })
       );
       this.applyRegions();
+      return this;
     }
 
   , onWltChange: function(change, model){
