@@ -47,7 +47,7 @@ define(function(require){
       this.options = {
         limit:      30
       , offset:     0
-      , include:    ['collections']
+      , include:    ['collections', 'userPhotos']
       };
     }
 
@@ -77,6 +77,11 @@ define(function(require){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
+
+        for (var i = 0, l = products.length, p; i < l; ++i){
+          p = products[i];
+          if (!p.photoUrl && p.photos && p.photos.length > 0) p.photoUrl = p.photos[0].url;
+        }
 
         this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
