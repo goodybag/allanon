@@ -60,6 +60,7 @@ define(function(require){
   , render: function(){
       var this_ = this;
 
+      this.children.pages.remove();
       this.$el.html( template({ product: this.product }) );
 
       this.applyRegions();
@@ -71,10 +72,6 @@ define(function(require){
         page.render();
         page.delegateEvents();
       });
-
-      console.log('############################');
-      console.log(this.$el.html());
-      console.log('############################');
 
       return this;
     }
