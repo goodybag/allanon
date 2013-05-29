@@ -24,6 +24,19 @@ define(function(require){
         products: new Components.ProductsList.Main()
       };
 
+      // Override products list render to reset pagination height
+      var oldRender = this.children.products.render, this_ = this;
+      this.children.products.render = function(){
+        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
+        oldRender.apply(this_.children.products, arguments);
+
+        // trigger fetching next page
+        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+      };
+
+      this.products = [];
+
       // Page state
       this.options = utils.extend({
         sort:       '-popular'
@@ -49,29 +62,45 @@ define(function(require){
       if (!isDifferent && this.products && this.products.length > 0)
         return troller.spinner.stop(), this;
 
+      // Reset offset/query
+      this.options.offset = 0;
+      delete this.options.filter;
+
       var this_ = this;
 
       this.fetchData(function(error, results){
         if (error) troller.error(error), troller.spinner.stop();
 
-        troller.spinner.stop();
+        troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
+
+        // only trigger fetching the next page once
+        if (results.length < this_.options.limit) return;
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
 
       return this;
     }
 
-  , fetchData: function(callback){
+  , fetchData: function(options, callback){
+      if (typeof options == 'function'){
+        callback = options;
+        options = null;
+      }
+
+      options = options || { spin: true };
+
       var this_ = this;
 
-      troller.spinner.spin();
+      if (options.spin) troller.spinner.spin();
 
       api.products.food(this.options, function(error, results){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
 
-        this_.provideData(results);
+        this_.provideData(options.append ? this_.products.concat(results) : results);
 
         if (callback) callback(null, results);
       });
@@ -79,7 +108,7 @@ define(function(require){
 
   , provideData: function(data){
       this.products = data;
-      this.children.products.provideData(data);
+      this.children.products.provideData(data); // multiple references to the same piece of mutable state break modularity.  TODO: fix
 
       return this;
     }
@@ -110,10 +139,18 @@ define(function(require){
         this.options.filter = value;
       }
 
-      this.fetchData(function(error){
+      // Reset offset so results don't get effed
+      this.options.offset = 0;
+
+      this.fetchData(function(error, results){
         if (error) return troller.error(error);
 
-        this_.children.products.render()
+        this_.children.products.render();
+
+        // Reset scroll watcher
+        if (results.length < this_.options.limit) return;
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
     }
 
@@ -122,5 +159,25 @@ define(function(require){
       this.$el.find('.filters-btn-group > .btn').removeClass('active');
       utils.dom(e.target).addClass('active');
     }
+
+  , onScrollNearEnd: function() {
+      var this_ = this;
+
+      this.options.offset += this.options.limit; // bump the page
+
+      this.fetchData({ append: true, spin: false }, function(error, results) {
+        if (error) troller.error(error);
+
+        this_.children.products.render();
+
+        // Do not setup next fetch
+        if (results.length < this_.options.limit) return;
+
+        // only trigger fetching the next page once
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+      })
+    }
   });
+
 });

@@ -1,13 +1,14 @@
 require.config({
   paths: {
-    'utils':      './lib/utils'
-  , 'troller':    './lib/troller'
-  , 'api':        './lib/api'
-  , 'geo':        './lib/geo-location'
-  , 'user':       './lib/user'
-  , 'config':     './config'
-  , 'models':     './models/index'
-  // , 'cmpnts':     './lib/components'
+    'utils':          './lib/utils'
+  , 'troller':        './lib/troller'
+  , 'api':            './lib/api'
+  , 'geo':            './lib/geo-location'
+  , 'user':           './lib/user'
+  , 'scrollWatcher':  './lib/scrollWatcher'
+  , 'config':         './config'
+  , 'models':         './models/index'
+  // , 'cmpnts':         './lib/components'
   }
 
 , map: {
@@ -32,6 +33,7 @@ define(function(require){
   , user        = require('user')
   , Router      = require('lib/router')
   , Components  = require('components/index')
+  , scrollWatcher    = require('scrollWatcher')
 
     // Pages provided to app-level page manager
   , Pages = {
@@ -142,6 +144,7 @@ define(function(require){
                 if (error.details[key]){
                   msg += "\n" + app.getKeyNiceName(key) + ": " + error.details[key] + ", ";
                   detailsAdded = true;
+
                 }
               }
               if (detailsAdded) msg = msg.substring(0, msg.length -2);
