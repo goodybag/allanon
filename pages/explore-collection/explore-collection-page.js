@@ -32,6 +32,17 @@ define(function(require){
     }
 
   , initialize: function(options){
+      // Override products list render to reset pagination height
+      var oldRender = this.children.products.render, this_ = this;
+      this.children.products.render = function(){
+        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
+        oldRender.apply(this_.children.products, arguments);
+
+        // trigger fetching next page
+        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+      };
+
       // Page state
       this.options = {
         limit:      30
@@ -50,20 +61,33 @@ define(function(require){
       return this;
     }
 
-  , fetchData: function(callback){
+  , fetchData: function(options, callback){
+      if (typeof options == 'function'){
+        callback = options;
+        options = null;
+      }
+
+      options = options || { spin: true };
+
       var this_ = this;
 
-      troller.spinner.spin();
+      if (options.spin) troller.spinner.spin();
 
       api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
 
-        this_.products = products;
+        this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
 
         if (callback) callback(null, products);
+
+         // only trigger fetching the next page once
+        if (products.length < this_.options.limit) return;
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+        console.log('registered scroll', this_.paginationTrigger, troller.scrollWatcher);
       });
     }
 
@@ -120,11 +144,21 @@ define(function(require){
         this.options[filter] = true;
       }
 
+      this.options.offset = 0;
+
       this.fetchData();
     }
 
   , onEditCollectionClick: function(e){
       troller.modals.open('edit-collection', { collection: this.collection });
+    }
+
+  , onScrollNearEnd: function() {
+      var this_ = this;
+
+      this.options.offset += this.options.limit; // bump the page
+
+      this.fetchData({ append: true, spin: false });
     }
   });
 });
