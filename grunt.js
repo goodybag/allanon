@@ -4,7 +4,27 @@ var
 , childProcess  = require('child_process')
 , jsdom         = require('jsdom')
 , wrench        = require('wrench')
+, findit        = require('findit')
 ;
+
+var removeComments = function (str) {
+
+  var uid = '_' + +new Date(),
+      primatives = [],
+      primIndex = 0;
+
+  return (
+    str.replace(/(['"])(\\\1|.)+?\1/g, function(match){
+      primatives[primIndex] = match;
+      return (uid + '') + primIndex++;
+    }).replace(/([^\/])(\/(?!\*|\/)(\\\/|.)+?\/[gim]{0,3})/g, function(match, $1, $2){
+      primatives[primIndex] = $2;
+      return $1 + (uid + '') + primIndex++;
+    }).replace(/\/\/.*?\/?\*.+?(?=\n|\r|$)|\/\*[\s\S]*?\/\/[\s\S]*?\*\//g, '').replace(/\/\/.+?(?=\n|\r|$)|\/\*[\s\S]+?\*\//g, '').replace(RegExp('\\/\\*[\\s\\S]+' + uid + '\\d+', 'g'), '').replace(RegExp(uid + '(\\d+)', 'g'), function(match, n){
+      return primatives[n];
+    })
+  );
+}
 
 /*global module:false*/
 module.exports = function(grunt) {
@@ -28,6 +48,15 @@ module.exports = function(grunt) {
     makeBuildDir: {
       build: {
         dir: './build'
+      , subs: ['styles']
+      }
+    },
+
+    'update-require-config': {
+      build: {
+        location: './app.js'
+      , requireConfig: process.cwd() + '/jam/require.config.js'
+      , requirePath: process.cwd() + '/jam/require.js'
       }
     },
 
@@ -42,7 +71,7 @@ module.exports = function(grunt) {
         , 'modals/'
         , 'models/'
         ]
-      , excludes: ['require-less', 'require-css']
+      , excludes: ['css/css-builder', 'less/lessc-server', 'less/lessc']
       , dest: 'build/app.js'
       , noMinify: false
       , noLicense: true
@@ -104,12 +133,141 @@ module.exports = function(grunt) {
         from: 'prod',
         to:   'dev'
       }
+    },
+
+    less: {
+      build: {
+        main: './styles/main.less'
+      , searchDirs: ['./components', './modals', './pages']
+      , out: './build/styles/app.css'
+      , minify: true
+      }
     }
   });
 
   // Default task.
-  grunt.registerTask('default', 'makeBuildDir copyIndex changeConfig copyStuff mincss jam restoreConfig');
+  grunt.registerTask('default', [
+    'makeBuildDir'
+  , 'copyIndex'
+  , 'changeConfig'
+  , 'copyStuff'
+  , 'update-require-config'
+  , 'jam'
+  , 'less'
+  , 'restoreConfig'
+  ].join(' '));
+
   grunt.registerTask('deploy', 'default s3');
+
+  grunt.registerMultiTask('less', 'Compiles less', function(){
+    var
+      done = this.async()
+    , tmp = './' + this.data.main.substring(0, this.data.main.lastIndexOf('/') + 1) + 'tmp-style.less'
+    , command = './node_modules/less/bin/lessc ' + tmp + ' > ' + this.data.out
+    , imported = []
+    , main = removeComments( fs.readFileSync(this.data.main).toString() ) + '\n\n'
+
+    , results = []
+
+      // I'm so sorry I suck so bad at regexes I've resorted to crap string splitting
+    , getImportFile = function(str){
+        var match = str.split('@import ')[1];
+        // Trim
+        match = match.replace(/^\s\s*/, '').replace(/\s\s*$/, '')
+        if (match.indexOf('"') > -1) match = match.split('"')[1];
+        else match = match.split("'")[1];
+        return match;
+      }
+    ;
+
+    if (this.data.minify != false) command += ' -x';
+
+    // Find import statements
+    main.split('\n').map(function(line){
+      if (line.indexOf('@import') == -1) return;
+
+      imported.push( getImportFile(line) );
+    });
+
+    // Recursively search directories
+    for (var i = 0, l = this.data.searchDirs.length; i < l; ++i){
+      results = results.concat(
+        findit.sync(this.data.searchDirs[i]).filter(function(file){
+          return file.substring(file.length - 5) == '.less';
+        })
+      );
+    }
+
+    // Remove all imports -- TODO - only remove imports that do not need to be there
+    // Concat to main file contents
+    results.forEach(function(result){
+      var file = fs.readFileSync(result).toString();
+
+      file = file.split('\n').map(function(line){
+        if (line.indexOf('@import') > -1) return '';
+        return line;
+      }).join('\n');
+
+      main += file + '\n';
+    });
+
+    // Write to temporary location to compile with LESS CLI
+    fs.writeFileSync(tmp, main);
+
+    childProcess.exec(command, function(error, stdout){
+      if (error) return console.log(error), done(false);
+      sys.puts(stdout)
+
+      // Delete tmp file
+      fs.unlinkSync(tmp);
+
+      done(true);
+    });
+  });
+
+  grunt.registerMultiTask('update-require-config', 'Moves require configuration object to the main jam require config so the optimizer can reason about it', function(){
+    var
+      user    = require(this.data.location)
+    , config  = require(this.data.requireConfig)
+    , reqFile = fs.readFileSync(this.data.requirePath).toString()
+    , file    = ""
+    ;
+
+    if (user.map){
+      if (!config.map) config.map = {};
+
+      for (var key in user.map) config.map[key] = user.map[key];
+    }
+
+    // Add user configured packages to jam's require config
+    config.packages = config.packages.concat(user.packages);
+
+    // Rebuild configuration file
+    file += 'var jam = ';
+    file += JSON.stringify(config, true, '  ');
+    file += ';\n\n';
+
+    delete config.version;
+    file += 'if (typeof require !== "undefined" && require.config) {\n';
+    file += '  require.config('
+    file +=    JSON.stringify(config, true, '  ');
+    file += ');\n'
+    file += '} else {\n';
+    file += '  var require = ';
+    file +=    JSON.stringify(config, true, '  ');
+    file += ';\n'
+    file += '}\n\n';
+    file += 'if (typeof exports !== "undefined" && typeof module !== "undefined") {\n'
+    file += '  module.exports = jam;\n'
+    file += '}';
+
+    reqFile = reqFile.substring(0, reqFile.indexOf('var jam = {'));
+    reqFile += file;
+
+    // Re-write the require/require.config file so jam can reason with user packages
+    fs.writeFileSync(this.data.requireConfig, file);
+    fs.writeFileSync(this.data.requirePath, reqFile);
+  });
 
   grunt.registerMultiTask('jam', 'Builds jam stuff', function(){
     var
@@ -210,7 +368,6 @@ module.exports = function(grunt) {
     );
   });
 
-  // The only way I know how to get config args is from doing a multi
   grunt.registerMultiTask('modifyImagePaths', "Modifies the paths of images in .css to work for build", function(){
     var
       done  = this.async()

@@ -26,6 +26,7 @@
     "grunt-contrib-mincss":   "0.3.x",
     "jsdom":                  "0.3.x",
     "wrench":                 "~1.4.4",
+    "findit":                 "0.1.x",
     "grunt-jam":              "0.3.x"
   },
   "repository": "",

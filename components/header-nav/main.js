@@ -17,9 +17,9 @@ define(function(require){
     className: 'header-navbar'
 
   , events: {
-      'click .badge':         'onBadgeClick'
-    , 'click .logo':          'onLogoClick'
-    , 'click .edit-keytag-link': 'onEditKeytag'
+      'click .badge':             'onBadgeClick'
+    , 'click .logo':              'onLogoClick'
+    , 'click .edit-keytag-link':  'onEditKeytag'
     }
 
   , initialize: function(){
