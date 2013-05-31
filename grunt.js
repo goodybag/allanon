@@ -3,25 +3,37 @@ var
 , sys           = require('sys')
 , childProcess  = require('child_process')
 , jsdom         = require('jsdom')
-, wrench        = require('wrench')
 , findit        = require('findit')
+, _path         = require("path")
+
+, wrenchLoc     = './node_modules/wrench/lib/wrench.js'
 ;
+
+// Edit wrench to allow file exclusion
+var strWrench = fs.readFileSync(wrenchLoc).toString();
+strWrench = strWrench.replace(
+  "if(typeof opts !== 'undefined') {"
+, "if(typeof opts !== 'undefined') {\n" +
+    "if (opts.exclude.indexOf(files[i]) > -1) continue;"
+);
+fs.writeFileSync(wrenchLoc, strWrench);
+var wrench = require('wrench');
 
 var removeComments = function (str) {
 
   var uid = '_' + +new Date(),
-      primatives = [],
+      primitives = [],
       primIndex = 0;
 
   return (
     str.replace(/(['"])(\\\1|.)+?\1/g, function(match){
-      primatives[primIndex] = match;
+      primitives[primIndex] = match;
       return (uid + '') + primIndex++;
     }).replace(/([^\/])(\/(?!\*|\/)(\\\/|.)+?\/[gim]{0,3})/g, function(match, $1, $2){
-      primatives[primIndex] = $2;
+      primitives[primIndex] = $2;
       return $1 + (uid + '') + primIndex++;
     }).replace(/\/\/.*?\/?\*.+?(?=\n|\r|$)|\/\*[\s\S]*?\/\/[\s\S]*?\*\//g, '').replace(/\/\/.+?(?=\n|\r|$)|\/\*[\s\S]+?\*\//g, '').replace(RegExp('\\/\\*[\\s\\S]+' + uid + '\\d+', 'g'), '').replace(RegExp(uid + '(\\d+)', 'g'), function(match, n){
-      return primatives[n];
+      return primitives[n];
     })
   );
 }
@@ -62,16 +74,17 @@ module.exports = function(grunt) {
 
     jam: {
       dist: {
-        src: [
+        src: [ 'app.js' ]
+      , lessSearch: [
           'app.js'
         , 'lib/'
         , 'components/'
         , 'lib/api/'
         , 'pages/'
         , 'modals/'
-        , 'models/'
+        , 'config.js'
         ]
-      , excludes: ['css/css-builder', 'less/lessc-server', 'less/lessc']
+      , excludes: ['css/css-builder', 'less/lessc-server', 'less/lessc', 'require-less', 'require-css']
       , dest: 'build/app.js'
       , noMinify: false
       , noLicense: true
@@ -91,16 +104,6 @@ module.exports = function(grunt) {
           src: 'build/index.html'
         , dest: 'index.html'
         , gzip: true
-        }
-      , {
-          src: 'build/app.css'
-        , dest: 'css/'
-        , gzip: false
-        }
-      , {
-          src: 'build/app.js'
-        , dest: 'app.js'
-        , gzip: false
         }
       , {
           src: 'build/img/*'
@@ -226,57 +229,65 @@ module.exports = function(grunt) {
   });
 
   grunt.registerMultiTask('update-require-config', 'Moves require configuration object to the main jam require config so the optimizer can reason about it', function(){
-    var
-      user    = require(this.data.location)
-    , config  = require(this.data.requireConfig)
-    , reqFile = fs.readFileSync(this.data.requirePath).toString()
-    , file    = ""
-    ;
+    var done = this.async(), this_ = this;
 
-    if (user.map){
-      if (!config.map) config.map = {};
+    childProcess.exec('jam rebuild', function(error, stdout){
+      if (error) return console.log(error), done(false);
+      sys.puts(stdout);
 
-      for (var key in user.map) config.map[key] = user.map[key];
-    }
+      var
+        user    = require(this_.data.location)
+      , config  = require(this_.data.requireConfig)
+      , reqFile = fs.readFileSync(this_.data.requirePath).toString()
+      , file    = ""
+      ;
 
-    // Add user configured packages to jam's require config
-    config.packages = config.packages.concat(user.packages);
+      if (user.map){
+        if (!config.map) config.map = {};
 
-    // Rebuild configuration file
-    file += 'var jam = ';
-    file += JSON.stringify(config, true, '  ');
-    file += ';\n\n';
+        for (var key in user.map) config.map[key] = user.map[key];
+      }
 
-    delete config.version;
-    file += 'if (typeof require !== "undefined" && require.config) {\n';
-    file += '  require.config('
-    file +=    JSON.stringify(config, true, '  ');
-    file += ');\n'
-    file += '} else {\n';
-    file += '  var require = ';
-    file +=    JSON.stringify(config, true, '  ');
-    file += ';\n'
-    file += '}\n\n';
-    file += 'if (typeof exports !== "undefined" && typeof module !== "undefined") {\n'
-    file += '  module.exports = jam;\n'
-    file += '}';
+      // Add user configured packages to jam's require config
+      config.packages = config.packages.concat(user.packages);
 
-    reqFile = reqFile.substring(0, reqFile.indexOf('var jam = {'));
-    reqFile += file;
+      // Rebuild configuration file
+      file += 'var jam = ';
+      file += JSON.stringify(config, true, '  ');
+      file += ';\n\n';
 
-    // Re-write the require/require.config file so jam can reason with user packages
-    fs.writeFileSync(this.data.requireConfig, file);
-    fs.writeFileSync(this.data.requirePath, reqFile);
+      delete config.version;
+      file += 'if (typeof require !== "undefined" && require.config) {\n';
+      file += '  require.config('
+      file +=    JSON.stringify(config, true, '  ');
+      file += ');\n'
+      file += '} else {\n';
+      file += '  var require = ';
+      file +=    JSON.stringify(config, true, '  ');
+      file += ';\n'
+      file += '}\n\n';
+      file += 'if (typeof exports !== "undefined" && typeof module !== "undefined") {\n'
+      file += '  module.exports = jam;\n'
+      file += '}';
+
+      reqFile = reqFile.substring(0, reqFile.indexOf('var jam = {'));
+      reqFile += file;
+
+      // Re-write the require/require.config file so jam can reason with user packages
+      fs.writeFileSync(this_.data.requireConfig, file);
+      fs.writeFileSync(this_.data.requirePath, reqFile);
+    });
   });
 
   grunt.registerMultiTask('jam', 'Builds jam stuff', function(){
     var
-      done    = this.async()
-    , command = "jam compile"
-    , dest    = this.data.dest
-    , incs    = this.data.src
-    , exc     = this.data.excludes || []
-    , jam     = require(process.cwd() + '/jam/require.config.js')
+      done        = this.async()
+    , tmp         = 'tmp-build'
+    , command     = "(cd " + tmp + "; jam compile"
+    , dest        = this.data.dest
+    , incs        = this.data.src
+    , exc         = this.data.excludes || []
+    , jam         = require(process.cwd() + '/jam/require.config.js')
     ;
 
     for (var i = incs.length - 1; i >= 0; i--){
@@ -287,12 +298,13 @@ module.exports = function(grunt) {
           if (files[n].indexOf('.js') > -1)
             command += " -i " + incs[i] + files[n].replace(".js", "");
         }
-      }else{
+      } else {
         command += " -i " + incs[i].replace(".js", "");
       }
     }
 
     for (var i = jam.packages.length - 1; i >= 0; i--){
+      if (exc.indexOf(jam.packages[i].name) > -1) continue;
       command += " -i " + jam.packages[i].name
     }
 
@@ -307,14 +319,36 @@ module.exports = function(grunt) {
     if (this.data.verbose) command += " -v";
     if (this.data.almond) command += " -a";
 
+    command += ')';
+
     if (this.data.verbose) console.log(command);
+
+    // Copy entire directory to tmp build
+    wrench.copyDirSyncRecursive(process.cwd(), tmp, { forceDelete: true, exclude: [tmp] });
+
+    // Remove all instances of less! requires
+    var search = [];
+    this.data.lessSearch.forEach(function(file){
+      search = search.concat( findit.sync(tmp + '/' + file) );
+    });
+
+    search.forEach(function(file){
+      if (fs.statSync(file).isDirectory()) return;
+      
+      console.log(file);
+      var contents = fs.readFileSync(file).toString().split('\n');
+      contents = contents.map(function(line){
+        if (line.indexOf('less!') > -1) return '';
+        return line;
+      }).join('\n');
+      fs.writeFileSync(file, contents);
+    });
 
     childProcess.exec(command, function(error, stdout){
       if (error) return console.log(error), done(false);
       sys.puts(stdout)
       done(true);
     });
-
   });
 
   grunt.registerMultiTask('makeBuildDir', 'Creates the build dir', function(){
