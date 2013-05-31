@@ -1,7 +1,7 @@
 define(function(require){
   var
-    utils = require('../../lib/utils')
-  , config = require('../../config')
+    utils = require('utils')
+  , config = require('config')
   ;
 
   return utils.View.extend({
