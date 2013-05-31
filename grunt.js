@@ -110,28 +110,56 @@ module.exports = function(grunt) {
     },
 
     s3: {
-      key:    process.env.GB_WEBSITE_S3_KEY,
-      secret: process.env.GB_WEBSITE_S3_SECRET,
-      bucket: 'staging.goodybag.com',
-      access: 'public-read',
+      prod: {
+        key:    process.env.GB_WEBSITE_S3_KEY,
+        secret: process.env.GB_WEBSITE_S3_SECRET,
+        bucket: 'goodybag.com',
+        access: 'public-read',
 
-      upload: [
-        {
-          src: 'build/index.html'
-        , dest: 'index.html'
-        , gzip: true
-        }
-      , {
-          src: 'build/img/*'
-        , dest: '/img'
-        , gzip: true
-        }
-      , {
-          src: 'build/lib/*'
-        , dest: '/lib'
-        , gzip: true
-        }
-      ]
+        upload: [
+          {
+            src: 'build/index.html'
+          , dest: '/panel/index.html'
+          , gzip: true
+          }
+        , {
+            src: 'build/img/*'
+          , dest: '/panel/img'
+          , gzip: true
+          }
+        , {
+            src: 'build/lib/*'
+          , dest: '/panel/lib'
+          , gzip: true
+          }
+        ]
+      },
+
+      staging: {
+        key:    process.env.GB_WEBSITE_S3_KEY,
+        secret: process.env.GB_WEBSITE_S3_SECRET,
+        bucket: 'staging.goodybag.com',
+        access: 'public-read',
+
+        upload: [
+          {
+            src: 'build/index.html'
+          , dest: '/panel/index.html'
+          , gzip: true
+          }
+        , {
+            src: 'build/img/*'
+          , dest: '/panel/img'
+          , gzip: true
+          }
+        , {
+            src: 'build/lib/*'
+          , dest: '/panel/lib'
+          , gzip: true
+          }
+        ]
+      }
+
     },
 
     copyIndex: {
@@ -202,7 +230,8 @@ module.exports = function(grunt) {
   // , 'inline-scripts-styles'
   ].join(' '));
 
-  grunt.registerTask('deploy', 'default s3');
+  grunt.registerTask('deploy', 'default s3:prod');
+  grunt.registerTask('staging', 'default s3:staging');
 
   // Not working
   grunt.registerMultiTask('inline-scripts-styles', 'Inlines scripts and styles', function(){
