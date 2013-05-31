@@ -1,3 +1,8 @@
+/**
+ * I am SO sorry for this gruntfile
+ * -john
+ */
+
 var
   fs            = require('fs')
 , sys           = require('sys')
@@ -19,6 +24,11 @@ strWrench = strWrench.replace(
 fs.writeFileSync(wrenchLoc, strWrench);
 var wrench = require('wrench');
 
+// Use this function so I can remove comments from less files during its
+// concatenation process. I need to know which modules have already been imported
+// to ensure there's no duplicates. In order for me to know for sure, I have to
+// manually scan for import statements. Removing the comments first ensures that
+// the imports I find are mostly correct :/
 var removeComments = function (str) {
 
   var uid = '_' + +new Date(),
@@ -60,7 +70,13 @@ module.exports = function(grunt) {
     makeBuildDir: {
       build: {
         dir: './build'
-      , subs: ['styles']
+      , subs: ['styles', 'lib']
+      }
+    },
+
+    'inline-scripts-styles': {
+      build: {
+        src: 'build/index.html'
       }
     },
 
@@ -74,7 +90,7 @@ module.exports = function(grunt) {
 
     jam: {
       dist: {
-        src: [ 'app.js' ]
+        src: [ 'app.js', 'lib/filepicker.js' ]
       , lessSearch: [
           'app.js'
         , 'lib/'
@@ -88,7 +104,7 @@ module.exports = function(grunt) {
       , dest: 'build/app.js'
       , noMinify: false
       , noLicense: true
-      , verbose: true
+      , verbose: false
       , almond: false
       }
     },
@@ -108,15 +124,33 @@ module.exports = function(grunt) {
       , {
           src: 'build/img/*'
         , dest: '/img'
-        , gzip: false
+        , gzip: true
+        }
+      , {
+          src: 'build/lib/*'
+        , dest: '/lib'
+        , gzip: true
         }
       ]
+    },
+
+    copyIndex: {
+      build: {
+        jsSource: 'build/app.js'
+      , cssSource: 'build/styles/app.css'
+      , change: [
+          { from: 'easyXDM.debug', to: 'easyXDM.min' }
+        , { from: '</head>', to: '\n    <!--[if IE]><link rel="stylesheet" src="styles/ie.css" /><![endif]-->\n</head>'}
+        ]
+      }
     },
 
     copyStuff: {
       build: {
         stuff: [
           './img'
+        , './lib/easyXDM.min.js'
+        , './lib/console.js'
         ]
       , dest: 'build'
       }
@@ -145,22 +179,74 @@ module.exports = function(grunt) {
       , out: './build/styles/app.css'
       , minify: true
       }
+
+    , ie: {
+        main: './styles/ie.less'
+      , searchDirs: []
+      , out: './build/styles/ie.css'
+      , minify: true
+      }
     }
   });
 
   // Default task.
   grunt.registerTask('default', [
     'makeBuildDir'
-  , 'copyIndex'
   , 'changeConfig'
   , 'copyStuff'
   , 'update-require-config'
   , 'jam'
   , 'less'
+  , 'copyIndex'
   , 'restoreConfig'
+  // , 'inline-scripts-styles'
   ].join(' '));
 
   grunt.registerTask('deploy', 'default s3');
+
+  // Not working
+  grunt.registerMultiTask('inline-scripts-styles', 'Inlines scripts and styles', function(){
+    var
+      done    = this.async()
+    , folder  = this.data.src.indexOf('/') == -1
+                ? './'
+                : this.data.src.substring(0, this.data.src.lastIndexOf('/') + 1)
+
+    , this_   = this
+    ;
+
+    jsdom.env(
+      this.data.src
+    , ["http://code.jquery.com/jquery.js"]
+    , function (errors, window) {
+        var $ = window.$, data = "<!DOCTYPE HTML><html>";
+
+        var scripts = $('script');
+        var styles = $('style');
+
+        if (scripts.length > 0){
+          scripts.each(function(script){
+            console.log($(script).attr('src'));
+            if (!script.src) return;
+            var $newScript = $('<script />');
+            console.log(folder + script.src);
+            $newScript.innerHTML = fs.readFileSync(folder + script.src).toString();
+            $(script).replaceWith($newScript)
+          });
+        }
+
+        $('.jsdom').remove();
+
+        data += $('html').html() + "</html>";
+
+        fs.writeFile(this_.data.src, data, function(error){
+          if (error) return console.log(error), done(false);
+
+          return done(true);
+        });
+      }
+    );
+  });
 
   grunt.registerMultiTask('less', 'Compiles less', function(){
     var
@@ -276,6 +362,8 @@ module.exports = function(grunt) {
       // Re-write the require/require.config file so jam can reason with user packages
       fs.writeFileSync(this_.data.requireConfig, file);
       fs.writeFileSync(this_.data.requirePath, reqFile);
+
+      done()
     });
   });
 
@@ -288,6 +376,7 @@ module.exports = function(grunt) {
     , incs        = this.data.src
     , exc         = this.data.excludes || []
     , jam         = require(process.cwd() + '/jam/require.config.js')
+    , this_       = this
     ;
 
     for (var i = incs.length - 1; i >= 0; i--){
@@ -304,8 +393,8 @@ module.exports = function(grunt) {
     }
 
     for (var i = jam.packages.length - 1; i >= 0; i--){
-      if (exc.indexOf(jam.packages[i].name) > -1) continue;
-      command += " -i " + jam.packages[i].name
+      if (jam.packages[i].name && exc.indexOf(jam.packages[i].name) > -1) continue;
+      command += " -i " + (jam.packages[i].name || jam.packages[i].main.replace('.js', ''))
     }
 
     for (var i = exc.length - 1; i >= 0; i--){
@@ -334,8 +423,7 @@ module.exports = function(grunt) {
 
     search.forEach(function(file){
       if (fs.statSync(file).isDirectory()) return;
-      
-      console.log(file);
+
       var contents = fs.readFileSync(file).toString().split('\n');
       contents = contents.map(function(line){
         if (line.indexOf('less!') > -1) return '';
@@ -346,7 +434,14 @@ module.exports = function(grunt) {
 
     childProcess.exec(command, function(error, stdout){
       if (error) return console.log(error), done(false);
-      sys.puts(stdout)
+      if (this_.data.verbose) sys.puts(stdout);
+
+      // Move the output file to the actual destination
+      fs.renameSync(tmp + '/' + dest, dest);
+
+      // Remove tmp-build dir
+      wrench.rmdirSyncRecursive(tmp);
+
       done(true);
     });
   });
@@ -379,19 +474,31 @@ module.exports = function(grunt) {
   });
 
   // TODO: make this able to use configuration for dynamic values
-  grunt.registerTask('copyIndex', "Copies index.html to build directory", function(){
-    var done = this.async();
+  grunt.registerMultiTask('copyIndex', "Copies index.html to build directory", function(){
+    var done = this.async(), this_ = this;
 
     jsdom.env(
       "index.html"
     , ["http://code.jquery.com/jquery.js"]
     , function (errors, window) {
         var $ = window.$, data = "<!DOCTYPE HTML><html>";
-        $('link').remove();
-        $('head').append($('<link href="css/app.css" rel="stylesheet" media="screen" />'));
+        $('link[rel="stylesheet"]').remove();
+        // This is borken
+        // var styles = window.document.createElement('style');
+        // styles.type = "text/css";
+        // styles.innerHTML = fs.readFileSync(this_.data.cssSource).toString();
+        // window.document.head.appendChild(styles);
+        $('script').eq(0).replaceWith('<script type="text/javascript">' + fs.readFileSync(this_.data.jsSource).toString() + '</script>')
         $('.jsdom').remove();
-        $('script').eq(0).attr('src', "app.js");
         data += $('html').html() + "</html>";
+
+        data = data.replace('</head>', '<style type="text/css">\n' + fs.readFileSync(this_.data.cssSource).toString() + '\n</style>\n</head>');
+
+        if (this_.data.change){
+          this_.data.change.forEach(function(c){
+            data = data.replace(new RegExp(c.from, 'g'), c.to);
+          });
+        }
 
         fs.writeFile("./build/index.html", data, function(error){
           if (error) return console.log(error), done(false);
@@ -443,10 +550,10 @@ module.exports = function(grunt) {
 
     for (var i = stuff.length - 1, stats; i >= 0; i--){
       stats = fs.lstatSync(stuff[i]);
-      if (stats.isDirectory)
+      if (stats.isDirectory())
         wrench.copyDirSyncRecursive(stuff[i], dest + '/' + getFileName(stuff[i]));
       else
-        fs.linkSync(stuff[i], dest + '/' + getFileName(stuff[i]));
+        fs.linkSync(stuff[i], dest + '/' + stuff[i]);
     }
 
     done(true);
