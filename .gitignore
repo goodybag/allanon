@@ -1,5 +1,6 @@
 .DS_Store
 jam/
 build/
+tmp-build/
 node_modules/
 *~

@@ -113,7 +113,7 @@ define(function(require){
       }
 
     , delete: function(callback){
-        api[this.resource].delete(this.attributes.id, callback);
+        api[this.resource].del(this.attributes.id, callback);
       }
     })
   ;
