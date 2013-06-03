@@ -8,26 +8,27 @@
   },
   "jam": {
     "dependencies": {
-      "jquery":               "1.9.x",
-      "backbone":             "0.9.x",
-      "domReady":             "2.0.x",
-      "bootstrap-modal":      "2.3.x",
-      "hbt":                  "0.0.x",
-      "spin-js":              "1.2.5-jam.1",
-      "require-css":          "0.1.x",
-      "require-less":         "0.0.1",
-      "async":                "0.2.x"
+      "jquery": "1.9.x",
+      "backbone": "0.9.x",
+      "domReady": "2.0.x",
+      "bootstrap-modal": "2.3.x",
+      "hbt": "0.0.x",
+      "spin-js": "1.2.5-jam.1",
+      "require-css": "0.1.x",
+      "require-less": "0.0.1",
+      "async": "0.2.x"
     }
   },
   "devDependencies": {
-    "requirejs":              "latest",
-    "grunt":                  "0.3.x",
-    "grunt-s3":               "0.0.9",
-    "grunt-contrib-mincss":   "0.3.x",
-    "jsdom":                  "0.3.x",
-    "wrench":                 "1.4.4",
-    "findit":                 "0.1.x",
-    "grunt-jam":              "0.3.x"
+    "requirejs": "latest",
+    "grunt": "0.3.x",
+    "grunt-s3": "0.0.9",
+    "grunt-contrib-mincss": "0.3.x",
+    "jsdom": "0.3.x",
+    "wrench": "1.4.4",
+    "findit": "0.1.x",
+    "grunt-jam": "0.3.x",
+    "less": "~1.3.3"
   },
   "repository": "",
   "author": "John Fawcett"
