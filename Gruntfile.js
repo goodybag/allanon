@@ -110,11 +110,13 @@ module.exports = function(grunt) {
     },
 
     s3: {
-      prod: {
+      options: {
         key:    process.env.GB_WEBSITE_S3_KEY,
         secret: process.env.GB_WEBSITE_S3_SECRET,
-        bucket: 'goodybag.com',
-        access: 'public-read',
+        access: 'public-read'
+      },
+      prod: {
+        bucket: 'www.goodybag.com',
 
         upload: [
           {
@@ -136,10 +138,7 @@ module.exports = function(grunt) {
       },
 
       staging: {
-        key:    process.env.GB_WEBSITE_S3_KEY,
-        secret: process.env.GB_WEBSITE_S3_SECRET,
-        bucket: 'staging.goodybag.com',
-        access: 'public-read',
+        bucket: 'www.staging.goodybag.com',
 
         upload: [
           {
@@ -228,10 +227,10 @@ module.exports = function(grunt) {
   , 'copyIndex'
   , 'restoreConfig'
   // , 'inline-scripts-styles'
-  ].join(' '));
+  ]);
 
-  grunt.registerTask('deploy', 'default s3:prod');
-  grunt.registerTask('staging', 'default s3:staging');
+  grunt.registerTask('deploy', ['default', 's3:prod']);
+  grunt.registerTask('staging', ['default', 's3:staging']);
 
   // Not working
   grunt.registerMultiTask('inline-scripts-styles', 'Inlines scripts and styles', function(){
@@ -255,7 +254,6 @@ module.exports = function(grunt) {
 
         if (scripts.length > 0){
           scripts.each(function(script){
-            console.log($(script).attr('src'));
             if (!script.src) return;
             var $newScript = $('<script />');
             console.log(folder + script.src);
