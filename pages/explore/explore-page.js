@@ -31,7 +31,7 @@ define(function(require){
 
         oldRender.apply(this_.children.products, arguments);
 
-        // trigger fetching next page
+        // height at which to trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
       };
 
@@ -51,11 +51,11 @@ define(function(require){
       troller.spinner.spin();
 
       var isDifferent = false;
-      for (var key in options){
-        if (this.options[key] == options[key]) continue;
-
-        this.options[key] = options[key];
-        isDifferent = true;
+      for (var key in options) {
+        if (this.options[key] !== options[key]) {
+          this.options[key] = options[key];
+          isDifferent = true;
+        }
       }
 
       // Don't fetch again if nothing has changed
@@ -70,7 +70,7 @@ define(function(require){
       var this_ = this;
 
       this.fetchData(function(error, results){
-        if (error) troller.error(error), troller.spinner.stop();
+        if (error) return troller.error(error), troller.spinner.stop();
 
         troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
@@ -103,7 +103,7 @@ define(function(require){
       api.products.food(this.options, function(error, results){
         troller.spinner.stop();
 
-        if (error) return callback ? callback(error) : troller.error(error);
+        if (error) return typeof callback === 'function' ? callback(error) : troller.error(error);
 
         this_.provideData(options.append ? this_.products.concat(results) : results);
 
