@@ -65,6 +65,7 @@ define(function(require){
       // Reset offset/query
       this.options.offset = 0;
       delete this.options.filter;
+      this.products = [];
 
       var this_ = this;
 
@@ -82,6 +83,10 @@ define(function(require){
 
       return this;
     }
+
+  , onHide: function() {
+    troller.scrollWatcher.removeEvent(this.paginationTrigger);
+  }
 
   , fetchData: function(options, callback){
       if (typeof options == 'function'){
