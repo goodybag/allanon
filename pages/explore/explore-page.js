@@ -104,6 +104,9 @@ define(function(require){
 
         this_.provideData(options.append ? this_.products.concat(results) : results);
 
+        if (results.length < this_.options.limit) // if it's the last page
+          troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
         if (callback) callback(null, results);
       });
     }
