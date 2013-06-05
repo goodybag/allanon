@@ -82,8 +82,8 @@ define(function(require){
     }
 
   , onHide: function() {
-    troller.scrollWatcher.removeEvent(this.paginationTrigger);
-  }
+      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+    }
 
   , fetchData: function(options, callback){
       if (typeof options == 'function'){
