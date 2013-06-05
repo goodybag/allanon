@@ -61,8 +61,13 @@ define(function(require){
       return this;
     }
 
+  , onHide: function() {
+    this.products = [];
+    troller.scrollWatcher.removeEvent(this.paginationTrigger);
+  }
+
   , fetchData: function(options, callback){
-      if (typeof options == 'function'){
+      if (typeof options === 'function'){
         callback = options;
         options = null;
       }
