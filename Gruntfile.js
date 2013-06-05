@@ -167,6 +167,7 @@ module.exports = function(grunt) {
       , cssSource: 'build/styles/app.css'
       , change: [
           { from: 'easyXDM.debug', to: 'easyXDM.min' }
+        , { from: '/img', to: '/panel/img' }
         , { from: '</head>', to: '\n    <!--[if IE]><link rel="stylesheet" src="styles/ie.css" /><![endif]-->\n</head>'}
         ]
       }
@@ -184,17 +185,29 @@ module.exports = function(grunt) {
     },
 
     changeConfig: {
-      build: {
+      prod: {
         path: 'config.js',
         from: 'dev',
         to:   'prod'
+      },
+
+      staging: {
+        path: 'config.js',
+        from: 'dev',
+        to:   'staging'
       }
     },
 
     restoreConfig: {
-      build: {
+      prod: {
         path: 'config.js',
         from: 'prod',
+        to:   'dev'
+      },
+
+      staging: {
+        path: 'config.js',
+        from: 'staging',
         to:   'dev'
       }
     },
@@ -217,19 +230,26 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', [
+  var defaultTask = [
     'makeBuildDir'
-  , 'changeConfig'
+  , 'changeConfig:staging'
   , 'copyStuff'
   , 'update-require-config'
   , 'jam'
   , 'less'
   , 'copyIndex'
-  , 'restoreConfig'
-  // , 'inline-scripts-styles'
-  ]);
+  , 'restoreConfig:staging'
+  ];
 
-  grunt.registerTask('deploy', ['default', 's3:prod']);
+  grunt.registerTask('default', defaultTask);
+
+  // For prod task, change all staging configs to prod
+  grunt.registerTask('deploy', defaultTask.map(function(t){
+    return t.replace(':staging', ':prod');
+  }).concat( ['s3:prod'] ));
+
+  grunt.registerTask('prod', ['deploy']);
+
   grunt.registerTask('staging', ['default', 's3:staging']);
 
   // Not working
