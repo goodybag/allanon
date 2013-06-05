@@ -92,6 +92,9 @@ define(function(require){
         this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
 
+        if (products.length < this_.options.limit) // if it's the last page
+          troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+
         if (callback) callback(null, products);
       });
     }
