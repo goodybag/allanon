@@ -26,13 +26,15 @@ define(function(require){
 
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function(){
+      this.children.products.render = function() {
         troller.scrollWatcher.removeEvent(this_.paginationTrigger);
 
         oldRender.apply(this_.children.products, arguments);
 
-        // trigger fetching next page
+        // height at which to trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
 
       this.products = [];
@@ -51,11 +53,11 @@ define(function(require){
       troller.spinner.spin();
 
       var isDifferent = false;
-      for (var key in options){
-        if (this.options[key] == options[key]) continue;
-
-        this.options[key] = options[key];
-        isDifferent = true;
+      for (var key in options) {
+        if (this.options[key] !== options[key]) {
+          this.options[key] = options[key];
+          isDifferent = true;
+        }
       }
 
       // Don't fetch again if nothing has changed
@@ -65,22 +67,22 @@ define(function(require){
       // Reset offset/query
       this.options.offset = 0;
       delete this.options.filter;
+      this.products = [];
 
       var this_ = this;
 
       this.fetchData(function(error, results){
-        if (error) troller.error(error), troller.spinner.stop();
+        if (error) return troller.error(error), troller.spinner.stop();
 
         troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
-
-        // only trigger fetching the next page once
-        if (results.length < this_.options.limit) return;
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
 
       return this;
+    }
+
+  , onHide: function() {
+      troller.scrollWatcher.removeEvent(this.paginationTrigger);
     }
 
   , fetchData: function(options, callback){
@@ -98,7 +100,7 @@ define(function(require){
       api.products.food(this.options, function(error, results){
         troller.spinner.stop();
 
-        if (error) return callback ? callback(error) : troller.error(error);
+        if (error) return typeof callback === 'function' ? callback(error) : troller.error(error);
 
         this_.provideData(options.append ? this_.products.concat(results) : results);
 
@@ -123,6 +125,9 @@ define(function(require){
 
       this.$search = this.$el.find('.field-search');
 
+//      troller.scrollWatcher.once('scroll-' + this.paginationaTrigger, this.onScrollNearEnd, this);
+//      troller.scrollWatcher.addEvent(this.paginationTrigger);
+
       return this;
     }
 
@@ -146,11 +151,6 @@ define(function(require){
         if (error) return troller.error(error);
 
         this_.children.products.render();
-
-        // Reset scroll watcher
-        if (results.length < this_.options.limit) return;
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
     }
 
@@ -169,13 +169,6 @@ define(function(require){
         if (error) troller.error(error);
 
         this_.children.products.render();
-
-        // Do not setup next fetch
-        if (results.length < this_.options.limit) return;
-
-        // only trigger fetching the next page once
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       })
     }
   });

@@ -41,6 +41,8 @@ define(function(require){
 
         // trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
 
       // Page state
@@ -61,8 +63,12 @@ define(function(require){
       return this;
     }
 
+  , onHide: function() {
+    troller.scrollWatcher.removeEvent(this.paginationTrigger);
+  }
+
   , fetchData: function(options, callback){
-      if (typeof options == 'function'){
+      if (typeof options === 'function'){
         callback = options;
         options = null;
       }
@@ -87,12 +93,6 @@ define(function(require){
         this_.children.products.provideData(this_.products).render();
 
         if (callback) callback(null, products);
-
-         // only trigger fetching the next page once
-        if (products.length < this_.options.limit) return;
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
-        console.log('registered scroll', this_.paginationTrigger, troller.scrollWatcher);
       });
     }
 
