@@ -26,13 +26,15 @@ define(function(require){
 
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function(){
+      this.children.products.render = function() {
         troller.scrollWatcher.removeEvent(this_.paginationTrigger);
 
         oldRender.apply(this_.children.products, arguments);
 
         // height at which to trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
+        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
 
       this.products = [];
@@ -74,11 +76,6 @@ define(function(require){
 
         troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
         this_.render();
-
-        // only trigger fetching the next page once
-        if (results.length < this_.options.limit) return;
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
 
       return this;
@@ -128,6 +125,9 @@ define(function(require){
 
       this.$search = this.$el.find('.field-search');
 
+//      troller.scrollWatcher.once('scroll-' + this.paginationaTrigger, this.onScrollNearEnd, this);
+//      troller.scrollWatcher.addEvent(this.paginationTrigger);
+
       return this;
     }
 
@@ -151,11 +151,6 @@ define(function(require){
         if (error) return troller.error(error);
 
         this_.children.products.render();
-
-        // Reset scroll watcher
-        if (results.length < this_.options.limit) return;
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       });
     }
 
@@ -174,13 +169,6 @@ define(function(require){
         if (error) troller.error(error);
 
         this_.children.products.render();
-
-        // Do not setup next fetch
-        if (results.length < this_.options.limit) return;
-
-        // only trigger fetching the next page once
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
       })
     }
   });
