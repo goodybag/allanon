@@ -54,21 +54,22 @@ define(function(require){
       , left: 'auto'          // Left position relative to parent in px
       }
 
-    , proxyUrl: "http://magic.goodybag.com/proxy.html"
-
     , ieOnlyModules: ['less!./styles/ie']
     }
 
   , dev: {
       apiUrl: 'http://localhost:3000/'
+    , proxyUrl: "http://localhost:3000/proxy.html"
     }
 
   , prod: {
       apiUrl: 'http://magic.goodybag.com/'
+    , proxyUrl: "http://magic.goodybag.com/proxy.html"
     }
 
   , staging: {
       apiUrl: 'http://magic.staging.goodybag.com/'
+    , proxyUrl: "http://magic.staging.goodybag.com/proxy.html"
     }
   };
 
