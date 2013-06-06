@@ -66,11 +66,19 @@ define(function(require){
       }
 
       // Only show backdrop if we have 0 open
-      // this.modals[modal].modal.options.backdrop = this.numOpen == 0;
+      this.modals[modal].modal.options.backdrop = this.numOpen == 0;
 
       // Now open the new modal
       this.modals[modal].open(options);
       this.openModals[modal] = this.modals[modal];
+
+      var self = this;
+      // if it's the first modal open, add an event to close all modals on backdrop click
+      if (this.numOpen === 1) utils.dom('.modal-backdrop').click(function(e){
+        utils.map(self.modals, function(modal) {
+          modal.close();
+        });
+      });
 
       if (callback) callback(null, this.modals[modal]);
 
