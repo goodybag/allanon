@@ -31,6 +31,7 @@ define(function(require){
 
         oldRender.apply(this_.children.products, arguments);
 
+        if (this.products.length === 0) return;
         // height at which to trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
@@ -166,16 +167,16 @@ define(function(require){
   , onScrollNearEnd: function() {
       var this_ = this;
 
+      if (this.options.offset > this.products.length) return;
+
       this.options.offset += this.options.limit; // bump the page
 
       this.spinner.spin(this.$spinnerContainer);
       this.fetchData({ append: true, spin: false }, function(error, results) {
         this_.spinner.stop();
         if (error) troller.error(error);
-
         this_.children.products.render();
       })
     }
   });
-
 });
