@@ -31,6 +31,7 @@ define(function(require){
 
         oldRender.apply(this_.children.products, arguments);
 
+        if (this.products.length === 0) return;
         // height at which to trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
