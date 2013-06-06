@@ -39,11 +39,14 @@ define(function(require){
 
         oldRender.apply(this_.children.products, arguments);
 
+        if (this_.products.length === 0) return;
         // trigger fetching next page
         this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
         troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
         troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
+
+      this.products = [];
 
       this.spinner = new utils.Spinner();
 
@@ -56,7 +59,7 @@ define(function(require){
     }
 
   , onShow: function(options){
-      if (options.collection.id == this.collection.id && this.products) return this;
+      if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
       this.collection = options.collection;
 
@@ -166,6 +169,8 @@ define(function(require){
 
   , onScrollNearEnd: function() {
       var this_ = this;
+
+      if (this.options.offset > this.products.length) return;
 
       this.options.offset += this.options.limit; // bump the page
 
