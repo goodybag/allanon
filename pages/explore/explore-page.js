@@ -131,13 +131,6 @@ define(function(require){
       this.$search = this.$el.find('.field-search');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
-      //temp testing
-      // this.spinner.spin($('.products-list-spinner')[0]);
-      // this.spinner.stop();
-
-//      troller.scrollWatcher.once('scroll-' + this.paginationaTrigger, this.onScrollNearEnd, this);
-//      troller.scrollWatcher.addEvent(this.paginationTrigger);
-
       return this;
     }
 
