@@ -167,14 +167,14 @@ define(function(require){
   , onScrollNearEnd: function() {
       var this_ = this;
 
+      if (this.offset > this.products.length) return;
+
       this.options.offset += this.options.limit; // bump the page
 
       this.fetchData({ append: true, spin: false }, function(error, results) {
         if (error) troller.error(error);
-
         this_.children.products.render();
       })
     }
   });
-
 });
