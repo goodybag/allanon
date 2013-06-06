@@ -66,7 +66,7 @@ define(function(require){
       }
 
       // Only show backdrop if we have 0 open
-      this.modals[modal].modal.options.backdrop = this.numOpen == 0;
+      // this.modals[modal].modal.options.backdrop = this.numOpen == 0;
 
       // Now open the new modal
       this.modals[modal].open(options);
