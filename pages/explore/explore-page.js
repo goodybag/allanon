@@ -39,6 +39,8 @@ define(function(require){
 
       this.products = [];
 
+      this.spinner = new utils.Spinner();
+
       // Page state
       this.options = utils.extend({
         sort:       '-popular'
@@ -127,6 +129,11 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
+      this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
+
+      //temp testing
+      // this.spinner.spin($('.products-list-spinner')[0]);
+      // this.spinner.stop();
 
 //      troller.scrollWatcher.once('scroll-' + this.paginationaTrigger, this.onScrollNearEnd, this);
 //      troller.scrollWatcher.addEvent(this.paginationTrigger);
@@ -168,7 +175,9 @@ define(function(require){
 
       this.options.offset += this.options.limit; // bump the page
 
+      this.spinner.spin(this.$spinnerContainer);
       this.fetchData({ append: true, spin: false }, function(error, results) {
+        this_.spinner.stop();
         if (error) troller.error(error);
 
         this_.children.products.render();
