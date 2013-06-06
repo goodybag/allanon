@@ -48,6 +48,8 @@ define(function(require){
 
       this.products = [];
 
+      this.spinner = new utils.Spinner();
+
       // Page state
       this.options = {
         limit:      30
@@ -113,6 +115,7 @@ define(function(require){
       this.applyRegions();
 
       this.$search = this.$el.find('.field-search');
+      this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       return this;
     }
@@ -171,7 +174,10 @@ define(function(require){
 
       this.options.offset += this.options.limit; // bump the page
 
-      this.fetchData({ append: true, spin: false });
+      this.spinner.spin(this.$spinnerContainer);
+      this.fetchData({ append: true, spin: false }, function() {
+        this_.spinner.stop();
+      });
     }
   });
 });
