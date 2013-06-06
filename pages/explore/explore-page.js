@@ -167,7 +167,7 @@ define(function(require){
   , onScrollNearEnd: function() {
       var this_ = this;
 
-      if (this.offset > this.products.length) return;
+      if (this.options.offset > this.products.length) return;
 
       this.options.offset += this.options.limit; // bump the page
 
