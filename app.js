@@ -125,6 +125,10 @@
 
             app.loadTypekit();
 
+            troller.on('user.deauth', function(){
+              window.location.href = "/";
+            });
+
             // The only browser we support that doesn't support ajax is
             // IE, so we can reasonably use this to check for IE
             if (!utils.support.cors) app.loadIEModules();

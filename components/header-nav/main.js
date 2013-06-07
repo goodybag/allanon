@@ -20,6 +20,7 @@ define(function(require){
       'click .badge':             'onBadgeClick'
     , 'click .logo':              'onLogoClick'
     , 'click .edit-keytag-link':  'onEditKeytag'
+    , 'click .logout':            'onLogoutClick'
     }
 
   , initialize: function(){
@@ -91,7 +92,13 @@ define(function(require){
     }
 
   , onEditKeytag: function(e) {
-    troller.modals.open('enter-keytag');
-  }
+      e.preventDefault();
+      troller.modals.open('enter-keytag');
+    }
+
+  , onLogoutClick: function(e){
+      e.preventDefault();
+      user.logout();
+    }
   });
 });
