@@ -76,7 +76,6 @@ define(function(require){
   for (var key in config.__def){
     if (!(key in config[env.mode])) config[env.mode][key] = config.__def[key];
   }
-console.log(config[env.mode]);
 
   return config[env.mode];
 });
