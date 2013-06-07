@@ -10,6 +10,7 @@ var
 , jsdom         = require('jsdom')
 , findit        = require('findit')
 , _path         = require("path")
+, env           = require('./environment')
 
 , wrenchLoc     = './node_modules/wrench/lib/wrench.js'
 ;
@@ -111,8 +112,8 @@ module.exports = function(grunt) {
 
     s3: {
       options: {
-        key:    process.env.GB_WEBSITE_S3_KEY,
-        secret: process.env.GB_WEBSITE_S3_SECRET,
+        key:    env.s3.key,
+        secret: env.s3.secret,
         access: 'public-read'
       },
       prod: {
@@ -186,13 +187,13 @@ module.exports = function(grunt) {
 
     changeConfig: {
       prod: {
-        path: 'config.js',
+        path: 'environment.js',
         from: 'dev',
         to:   'prod'
       },
 
       staging: {
-        path: 'config.js',
+        path: 'environment.js',
         from: 'dev',
         to:   'staging'
       }
@@ -200,13 +201,13 @@ module.exports = function(grunt) {
 
     restoreConfig: {
       prod: {
-        path: 'config.js',
+        path: 'environment.js',
         from: 'prod',
         to:   'dev'
       },
 
       staging: {
-        path: 'config.js',
+        path: 'environment.js',
         from: 'staging',
         to:   'dev'
       }
@@ -617,7 +618,7 @@ module.exports = function(grunt) {
     fs.readFile(path, 'utf-8', function(error, data){
       if (error) return console.log(error), done(false);
 
-      data = data.replace("return config." + from, "return config." + to);
+      data = data.replace("mode: '" + from + "'", "mode: '" + to + "'");
 
       fs.writeFile(path, data, function(error){
         if (error) return console.log(error), done(false);
@@ -638,7 +639,7 @@ module.exports = function(grunt) {
     fs.readFile(path, 'utf-8', function(error, data){
       if (error) return console.log(error), done(false);
 
-      data = data.replace("return config." + from, "return config." + to);
+      data = data.replace("mode: '" + from + "'", "mode: '" + to + "'");
 
       fs.writeFile(path, data, function(error){
         if (error) return console.log(error), done(false);

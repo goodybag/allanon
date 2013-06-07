@@ -12,6 +12,10 @@ Clone the repo and then:
 jam install
 ```
 
+## Environment Variables
+
+Copy ```environment.tmpl.js``` to ```environment.js``` and fill in the details.
+
 ## Deployment
 
 You need grunt installed globally:
@@ -26,11 +30,13 @@ Install the deployment dependencies:
 npm install
 ```
 
-You need to setup an s3 key/secret in your environment:
+You need to setup an s3 key/secret in your ```environment.js``` file:
 
 ```
-export GB_WEBSITE_S3_KEY=aslkdjflkasjdfjlaksdjf
-export GB_WEBSITE_S3_SECRET=asdjfhalsdfhadfflkjasdlkfj
+s3: {
+  key: 'MY_S3_KEY'
+, secret: 'SUPER_SECRET_SECRET'
+}
 ```
 
 To test your build, simply type:
