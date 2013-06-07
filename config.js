@@ -1,4 +1,5 @@
 define(function(require){
+  var env = require('./environment');
   var config = {
     // A name for default that IE won't bitch at me for
     __def: {
@@ -72,13 +73,10 @@ define(function(require){
     , proxyUrl: "http://magic.staging.goodybag.com/proxy.html"
     }
   };
-
   for (var key in config.__def){
-    if (!(key in config.dev))     config.dev[key]     = config.__def[key];
-    if (!(key in config.prod))    config.prod[key]    = config.__def[key];
-    if (!(key in config.staging)) config.staging[key] = config.__def[key];
+    if (!(key in config[env.mode])) config[env.mode][key] = config.__def[key];
   }
+console.log(config[env.mode]);
 
-  // Build step will change this to prod
-  return config.dev;
+  return config[env.mode];
 });
