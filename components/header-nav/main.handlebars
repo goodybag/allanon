@@ -51,7 +51,7 @@
           <span class="avatar-shadow"></span>
           <img class="avatar" src="{{filepicker user.avatarUrl 38 38}}" />
         </div>
-        <span class="username">{{#if user.screenName}}{{user.screenName}}{{else}}Goodybagger{{/if}}</span>
+        <span class="username">{{#if user.screenName}}{{user.screenName}}{{else}}{{#if user.firstName}}{{user.firstName}} {{truncate user.lastName 1 "."}}{{else}}Goodybagger{{/if}}{{/if}}</span>
         <i class="icon-chevron-down expansion-indicator"></i>
         <ul class="dropdown-menu">
             <li>
