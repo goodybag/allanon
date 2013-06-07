@@ -1,4 +1,5 @@
 define(function(require){
+  var env = require('./environment');
   var config = {
     // A name for default that IE won't bitch at me for
     __def: {
@@ -54,30 +55,27 @@ define(function(require){
       , left: 'auto'          // Left position relative to parent in px
       }
 
-    , proxyUrl: "http://magic.goodybag.com/proxy.html"
-
     , ieOnlyModules: ['less!./styles/ie']
     }
 
   , dev: {
       apiUrl: 'http://localhost:3000/'
+    , proxyUrl: "http://localhost:3000/proxy.html"
     }
 
   , prod: {
       apiUrl: 'http://magic.goodybag.com/'
+    , proxyUrl: "http://magic.goodybag.com/proxy.html"
     }
 
   , staging: {
       apiUrl: 'http://magic.staging.goodybag.com/'
+    , proxyUrl: "http://magic.staging.goodybag.com/proxy.html"
     }
   };
-
   for (var key in config.__def){
-    if (!(key in config.dev))     config.dev[key]     = config.__def[key];
-    if (!(key in config.prod))    config.prod[key]    = config.__def[key];
-    if (!(key in config.staging)) config.staging[key] = config.__def[key];
+    if (!(key in config[env.mode])) config[env.mode][key] = config.__def[key];
   }
 
-  // Build step will change this to prod
-  return config.dev;
+  return config[env.mode];
 });

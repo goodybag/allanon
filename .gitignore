@@ -4,3 +4,4 @@ build/
 tmp-build/
 node_modules/
 *~
+environment.js

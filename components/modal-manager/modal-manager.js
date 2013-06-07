@@ -72,6 +72,12 @@ define(function(require){
       this.modals[modal].open(options);
       this.openModals[modal] = this.modals[modal];
 
+      var self = this;
+      // if it's the first modal open, add an event to close all modals on backdrop click
+      if (this.numOpen === 1) utils.dom('.modal-backdrop').click(function(e){
+        self.close();
+      });
+
       if (callback) callback(null, this.modals[modal]);
 
       return this;
