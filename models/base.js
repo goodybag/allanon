@@ -31,11 +31,6 @@ define(function(require){
     , initialize: function(attributes, options){
         options = options || {};
 
-        if (attributes && attributes.userId){
-          this.attributes.id = attributes.userId;
-          delete this.attributes.userId;
-        }
-
         for (var key in this.attributes){
           if (this.acceptable.indexOf(key) === -1)
             delete this.attributes[key];
@@ -76,6 +71,10 @@ define(function(require){
         return this;
       }
 
+    , getSupplementalIds: function(){
+        return [];
+      }
+
     , getChanged: function(){
         return this.changed_;
       }
@@ -95,25 +94,39 @@ define(function(require){
 
           delete attr.id;
 
-          api[this.resource].update(this.attributes.id, attr, callback);
+          api[this.resource].update.apply(
+            {}
+          , this.getSupplementalIds().concat(this.attributes.id, attr, callback)
+          );
         } else {
 
           delete this.attributes.id;
 
-          api[this.resource].create(this.attributes, function(error, result){
-            if (error) return callback && callback(error);
+          api[this.resource].create.apply(
+            {}
+          , this.getSupplementalIds().concat(
+              this.attributes
+            , function(error, result){
+                if (error) return callback && callback(error);
 
-            this_.set('id', result.id);
+                this_.set('id', result.id);
 
-            if (callback) callback(null, result)
-          });
+                if (callback) callback(null, result)
+              }
+            )
+          );
         }
 
         return this;
       }
 
     , delete: function(callback){
-        api[this.resource].del(this.attributes.id, callback);
+        api[this.resource].del.apply(
+          {}
+        , this.getSupplementalIds().concat(this.attributes.id, callback)
+        );
+
+        return this;
       }
     })
   ;
