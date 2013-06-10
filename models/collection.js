@@ -43,5 +43,9 @@ define(function(require){
       , this.getSupplementalIds().concat(this.attributes.id, pid, callback)
       );
     }
+
+  , removeProduct: function(pid, callback){
+
+    }
   });
 });

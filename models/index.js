@@ -1,5 +1,6 @@
 define(function(require){
   return {
-    Product: require('./product')
+    Product:      require('./product')
+  , Collection:   require('./collection')
   };
 });
