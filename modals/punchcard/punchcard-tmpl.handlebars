@@ -10,7 +10,7 @@
 <div class="punchcard-wrapper">
   <div class="punchcard-stack">
     {{! Name and Details }}
-    <h2 class="business-name">{{punchcard.businessName}}</h2>
+    <h2 class="business-name"><span class="inner-business-name">{{punchcard.businessName}}</span></h2>
     <p class="description">
       <span class="requirement">{{#if punchcard.isElite}}{{punchcard.elitePunchesRequired}}{{else}}{{punchcard.regularPunchesRequired}}{{/if}} {{punchcard.requiredItem}}</span>
       <span class="reward">= {{punchcard.reward}}</span>
