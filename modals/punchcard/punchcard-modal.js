@@ -29,6 +29,14 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template({ punchcard: this.punchcard }) );
+
+      // reduce the length of the name of the business and add a ... until it fits
+      var $innerBizName = this.$el.find('.inner-business-name')[0];
+      var arr = $innerBizName.innerText.split(' ');
+      while ($innerBizName.offsetHeight > 40 && arr.length > 0) {
+        arr = arr.slice(0, arr.length - 1);
+        $innerBizName.innerText = arr.join(' ') + '...';
+      }
       return this;
     }
   });
