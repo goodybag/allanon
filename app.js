@@ -90,6 +90,7 @@
         , 'privacy':                  require('./pages/privacy/index')
         , 'charities':                require('./pages/charities/index')
         , 'gb-for-businesses':        require('./pages/gb-for-businesses/index')
+        , 'about-us':                 require('./pages/about-us/index')
         }
 
         // Modals provided to app-level modal manager
