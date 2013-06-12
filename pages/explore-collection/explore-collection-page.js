@@ -46,6 +46,22 @@ define(function(require){
         troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
 
+      this.children.products.on('feelings:change', function(feeling, direction){
+        var pluralFeel = (
+          feeling == 'like' ? 'Likes' : (
+          feeling == 'want' ? 'Wants' :
+                              'Tries'
+        ));
+
+        this_.$el.find('.filters-btn-group > .btn-' + feeling + ' > .count').html(
+          '(' + (
+            direction
+            ? ++this_.collection['totalMy' + pluralFeel]
+            : --this_.collection['totalMy' + pluralFeel]
+           ) + ')'
+        );
+      });
+
       this.products = [];
 
       this.spinner = new utils.Spinner();
@@ -59,7 +75,11 @@ define(function(require){
     }
 
   , onShow: function(options){
-      if (options.collection.id == this.collection.id && this.products.length > 0) return this;
+      // Don't worry about this. Data might go stale
+      // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
+
+      // Data might be stale, reset offset
+      this.options.offset = 0;
 
       this.collection = options.collection;
 
@@ -69,8 +89,8 @@ define(function(require){
     }
 
   , onHide: function() {
-    troller.scrollWatcher.removeEvent(this.paginationTrigger);
-  }
+      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+    }
 
   , fetchData: function(options, callback){
       if (typeof options === 'function'){

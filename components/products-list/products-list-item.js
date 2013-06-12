@@ -22,7 +22,8 @@ define(function(require){
   , initialize: function(options){
       this.template = options.template || template;
 
-      troller.on('product:' + this.model.id + ':change:wlt', utils.bind(this.onWltChange, this));
+      this._boundWltChange = utils.bind(this.onWltChange, this);
+      troller.on('product:' + this.model.id + ':change:wlt', this._boundWltChange);
 
       return this;
     }
@@ -55,7 +56,6 @@ define(function(require){
     }
 
   , onWltChange: function(change, model){
-    console.log('ProductListItem.onWltChange', change);
       var userAction = (
         change == 'want' ? 'userWants' : (
         change == 'like' ? 'userLikes' : 'userTried'
@@ -67,6 +67,7 @@ define(function(require){
       this.$el.find('.feeling-' + change)[(this.model[userAction] ? 'add' : 'remove') + 'Class']('active');
 
       if (change == 'like') this.$el.find('.like-count').text(this.model.likes);
+      this.trigger('feelings:change', change, model[userAction], model);
     }
 
   , onWantClick: function(e){
@@ -135,6 +136,12 @@ define(function(require){
       var options = { product: this.model, productId: this.model.id };
 
       troller.modals.open('product-details', options);
+    }
+
+  , stopListening: function(){
+      // clean up events
+      troller.off('product:' + this.model.id + ':change:wlt', this._boundWltChange);
+      utils.View.prototype.stopListening.apply(this, arguments);
     }
   });
 });
