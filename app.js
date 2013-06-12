@@ -87,6 +87,7 @@
         , 'settings':                 require('./pages/settings/index')
         , 'my-punchcards':            require('./pages/punch-cards/index')
         , 'legal':                    require('./pages/legal/index')
+        , 'privacy':                  require('./pages/privacy/index')
         }
 
         // Modals provided to app-level modal manager
