@@ -32,7 +32,10 @@ define(function(require) {
       e.preventDefault();
       var email = this.$email.val();
       // TODO: client side validation
-
+      user.forgotPassword(email, function(err) {
+        if (err) return troller.error(err);
+        this.close();
+      });
     }
   });
 });
