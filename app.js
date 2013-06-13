@@ -103,6 +103,7 @@
         , 'edit-collection':          require('./modals/edit-collection/index')
         , 'update-password':          require('./modals/update-password/index')
         , 'punchcard':                require('./modals/punchcard/index')
+        , 'location-details':         require('./modals/location-details/index')
         }
 
       , app = {

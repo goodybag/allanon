@@ -29,21 +29,22 @@
   color: lighten(@text-color, 10%);
 }
 
-.locations-header .control-group {
+.locations-header .control-group,
+.locations-header form {
   margin-bottom: 0;
 }
 
-.locations-header > .column {
+.locations-header .column {
   padding-top: 12px;
   padding-bottom: 12px;
   padding-left: 24px;
 }
 
-.locations-header > .column:first-child {
+.locations-header .column:first-child {
   border-right: 1px solid #bab7b5;
 }
 
-.locations-header > .column:first-child + .column {
+.locations-header .column:first-child + .column {
   border-left: 1px solid #fff;
 }
 
@@ -70,6 +71,10 @@
   .tile();
 }
 
+.business-listing > .business:hover {
+  border: 1px solid @brand-primary;
+}
+
 .business-listing > .business.first {
   margin-left: 0;
 }
@@ -82,6 +87,7 @@
   border: 1px solid #B2B2B2;
   border-radius: 3px;
   margin-bottom: 8px;
+  width: 125px;
 }
 
 .business-listing > .business > .business-name {

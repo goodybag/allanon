@@ -1,0 +1,30 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.location-details-modal .locations-map {
+  height: 100px;
+
+  border-top: 1px solid #777;
+  border-bottom: 1px solid #777;
+
+  -webkit-transition: ease-out height 0.4s;
+  -moz-transition: ease-out height 0.4s;
+  -ms-transition: ease-out height 0.4s;
+  -o-transition: ease-out height 0.4s;
+  transition: ease-out height 0.4s;
+}
+
+.location-details-modal .locations-map.expanded {
+  height: 400px;
+}
+
+.location-details-modal .modal-title {
+  text-align: left;
+  padding-left: 24px;
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.location-details-modal .locations-list {
+  margin-top: 22px;
+}

@@ -5,18 +5,22 @@
     {{! Header }}
     <header class="locations-header columns">
       {{! Business Search }}
-      <div class="column column-2 control-group">
-        <label for="business-search" class="control-label">Business Search:</label>
-        <input type="text" class="" id="business-search" placeholder="Enter a business name">
-        <button class="btn btn-primary">Search</button>
-      </div>
+      <form action="#" class="column column-2 businesses-search">
+        <div class="control-group">
+          <label for="business-search" class="control-label">Business Search:</label>
+          <input type="text" class="" id="business-search" placeholder="Enter a business name">
+          <button class="btn btn-primary">Search</button>
+        </div>
+      </form>
 
       {{! Business Request }}
-      <div class="column column-2 control-group">
-        <label for="business-search" class="control-label">Request a business to join Goodybag:</label>
-        <input type="text" class="" id="business-request" placeholder="Enter a business name">
-        <button class="btn btn-primary">Request</button>
-      </div>
+      <form action="#" class="column column-2 businesses-request">
+        <div class="control-group">
+          <label for="business-search" class="control-label">Request a business to join Goodybag:</label>
+          <input type="text" class="" id="business-request" placeholder="Enter a business name">
+          <button class="btn btn-primary">Request</button>
+        </div>
+      </form>
     </header>
 
     {{! Separator }}
@@ -30,4 +34,3 @@
     <ul class="business-listing" id="business-listing"></ul>
   </div>
 </div>
-

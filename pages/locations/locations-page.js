@@ -9,14 +9,22 @@ define(function(require){
 
   , template    = require('hbt!./locations-tmpl')
   , bizTmpl     = require('hbt!./business-tmpl')
+
+  , requestMessages = [
+      'Oh yeah, that\'s a good one!'
+    , 'Roger. We\'ll get right on that'
+    , 'We love that place too!'
+    , 'We\'re putting our best people on the job'
+    ]
   ;
 
   return Components.Pages.Page.extend({
     className: 'page page-locations'
 
   , events: {
-      'click .businesses-list > .business':     'onBusinessClick'
+      'click .business-listing > .business':    'onBusinessClick'
     , 'submit .businesses-search':              'onBusinessSearch'
+    , 'keyup  #business-search':                'onBusinessSearchKeyup'
     , 'submit .businesses-request':             'onBusinessRequest'
     }
 
@@ -25,8 +33,14 @@ define(function(require){
       this.businessesPerRow = 5;
     }
 
-  , onShow: function(){
-      if (this.businesses.length > 0) return;
+  , onShow: function(options){
+      options = options || {};
+
+      if (this.businesses.length > 0){
+        if (options.businessId) this.openBusiness(options.businessId);
+        this.renderBusinesses();
+        return;
+      }
 
       var this_ = this;
 
@@ -47,6 +61,8 @@ define(function(require){
           for (var i = 0, l = businesses.length; i < l; ++i){
             this_.businessesById[businesses[i].id] = businesses[i];
           }
+
+          if (options.businessId) this_.openBusiness(options.businessId);
         }
       );
     }
@@ -55,20 +71,26 @@ define(function(require){
       this.$el.html( template() );
 
       this.$bizList = this.$el.find('#business-listing');
+      this.$search  = this.$el.find('#business-search');
+      this.$request = this.$el.find('#business-request');
 
       return this;
     }
 
-  , renderBusinesses: function(){
+  , renderBusinesses: function(businesses){
+      businesses = businesses || this.businesses;
+
       var fragment = document.createDocumentFragment();
-      for (var i = 0, l = this.businesses.length, $el; i < l; ++i){
-        $el = utils.dom(bizTmpl( this.businesses[i] ));
+      for (var i = 0, l = businesses.length, $el; i < l; ++i){
+        $el = utils.dom(bizTmpl( businesses[i] ));
 
         // Make sure we place the gutter correctly
         if (i % this.businessesPerRow == 0)
           $el.addClass('first');
         if (i % this.businessesPerRow == (this.businessesPerRow - 1))
           $el.addClass('last');
+
+        $el.find('.business-logo').on('error', utils.bind(this.onBusinessLogoError, this));
 
         fragment.appendChild( $el[0] );
       }
@@ -80,21 +102,58 @@ define(function(require){
       return this;
     }
 
+  , openBusiness: function(id){
+      troller.modals.open('location-details', { business: this.businessesById[id] });
+      return this;
+    }
+
   , onBusinessClick: function(e){
       // Get parent LI
       while (e.target.tagName != 'LI') e.target = e.target.parentElement;
 
       var id = utils.dom(e.target).data('id');
 
-      troller.modals.open('location-details', this.businessesById[id]);
+      utils.history.navigate('/locations/' + id)
+      this.openBusiness(id);
     }
 
   , onBusinessSearch: function(e){
       e.preventDefault();
+
+      var search = this.$search.val().toLowerCase();
+
+      if (search == "") return this.renderBusinesses();
+
+      this.renderBusinesses( utils.filter(this.businesses, function(business){
+        return business.name.toLowerCase().indexOf( search ) > -1;
+      }));
     }
 
   , onBusinessRequest: function(e){
       e.preventDefault();
+
+      var request = utils.trim(this.$request.val());
+
+      if (request == "") return;
+
+
+      utils.api.post(
+        'v1/businesses/requests'
+      , { name: request }
+      )
+
+      var oldText = this.$el.find('.business-request label').text();
+      this.$el.find('.business-request label').text(
+        requestMessages[ parseInt(Math.random() * requestMessages.length - 1 ) ]
+      );
+    }
+
+  , onBusinessSearchKeyup: function(e){
+      if (e.target.value == "") this.renderBusinesses();
+    }
+
+  , onBusinessLogoError: function(e){
+      e.target.src = config.defaults.photoUrl;
     }
   });
 });
