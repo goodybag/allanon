@@ -2,6 +2,7 @@ define(function(require) {
   var template = require('hbt!./forgot-password-tmpl');
   var Components  = require('../../components/index');
   var user = require('user');
+  var utils = require('utils');
   var troller = require('troller');
 
   return Components.Modal.Main.extend({
@@ -34,7 +35,7 @@ define(function(require) {
       // TODO: client side validation
       user.forgotPassword(email, function(err) {
         if (err) return troller.error(err);
-        this.close();
+        utils.history.navigate('/', {trigger: true});
       });
     }
   });
