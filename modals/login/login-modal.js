@@ -37,6 +37,7 @@ define(function(require) {
     },
 
     completedLogin: function(err) {
+      troller.spinner.stop();
       if (err) return troller.error(err);
       utils.history.navigate('/explore', {trigger: true, replace: true });
     },
@@ -48,6 +49,7 @@ define(function(require) {
       var password = this.$el.find('.field-password').val();
       var remember = this.$el.find('.remember-checkbox').is('checked');
       // validation goes here
+      troller.spinner.spin();
       user.auth(email, password, remember, this.completedLogin);
     },
 
