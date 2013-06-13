@@ -2,6 +2,8 @@ define(function(require) {
   var template = require('hbt!./login-tmpl');
   var Components  = require('../../components/index');
   var user = require('user');
+  var api = require('api');
+  var config = require('config');
   var troller = require('troller');
 
   return Components.Modal.Main.extend({
@@ -41,6 +43,11 @@ define(function(require) {
 
     oauth: function(e) {
       // login with facebook
+      api.session.getOauthUrl(config.oauth.redirectUrl, 'facebook', function(error, result) {
+        if (error) return troller.error(error);
+        if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'); // TODO: better error
+        window.location.href = result.url;
+      });
     },
 
     forgotPassword: function(e) {
