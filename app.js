@@ -92,6 +92,7 @@
         , 'gb-for-businesses':        require('./pages/gb-for-businesses/index')
         , 'about-us':                 require('./pages/about-us/index')
         , 'how-it-works':             require('./pages/how-it-works/index')
+        , 'locations':                require('./pages/locations/index')
         }
 
         // Modals provided to app-level modal manager

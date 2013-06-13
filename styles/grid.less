@@ -19,3 +19,32 @@
 .row-fluid [class*="span"].pull-right {
   float: right;
 }
+
+.columns {
+  display: table;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inline-columns {
+  font-size: 0;
+}
+
+.columns > .column {
+  float: left;
+  display: table;
+  box-sizing: border-box;
+}
+
+.inline-columns > .column {
+  float: none;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: @font-size-base;
+}
+
+.columns > .column-2  { width: 50%; }
+.columns > .column-3  { width: 33.33333333333%; }
+.columns > .column-4  { width: 25%; }
+.columns > .column-5  { width: 20%; }
+.columns > .column-10 { width: 10%; }

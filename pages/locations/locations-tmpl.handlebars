@@ -1,0 +1,33 @@
+<h1 class="page-title">Locations</h1>
+
+<div class="row">
+  <div class="span8 offset1">
+    {{! Header }}
+    <header class="locations-header columns">
+      {{! Business Search }}
+      <div class="column column-2 control-group">
+        <label for="business-search" class="control-label">Business Search:</label>
+        <input type="text" class="" id="business-search" placeholder="Enter a business name">
+        <button class="btn btn-primary">Search</button>
+      </div>
+
+      {{! Business Request }}
+      <div class="column column-2 control-group">
+        <label for="business-search" class="control-label">Request a business to join Goodybag:</label>
+        <input type="text" class="" id="business-request" placeholder="Enter a business name">
+        <button class="btn btn-primary">Request</button>
+      </div>
+    </header>
+
+    {{! Separator }}
+    <div class="fancy-separator">
+      <p>
+        <span>click on a business for more info</span>
+      </p>
+    </div>
+
+    {{! Business List }}
+    <ul class="business-listing" id="business-listing"></ul>
+  </div>
+</div>
+
