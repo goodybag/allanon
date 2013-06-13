@@ -33,7 +33,9 @@ define(function(require) {
       e.preventDefault();
       var email = this.$email.val();
       // TODO: client side validation
+      troller.spinner.spin();
       user.forgotPassword(email, function(err) {
+        troller.spinner.stop();
         if (err) return troller.error(err);
         utils.history.navigate('/', {trigger: true});
       });
