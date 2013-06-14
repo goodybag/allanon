@@ -31,5 +31,8 @@
     "less": "~1.3.3"
   },
   "repository": "",
-  "author": "John Fawcett"
+  "author": "John Fawcett",
+  "dependencies": {
+    "request": "~2.21.0"
+  }
 }

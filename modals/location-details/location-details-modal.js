@@ -50,9 +50,10 @@ define(function(require){
     // Make the modal do overflow scroll and set the modal content height
   , checkModalHeightStuff: function(){
     console.log("check modal");
-      var buffer = 116;
       var $content = this.$el.find('.modal-content');
       var winHeight = parseInt(utils.dom(window).height());
+
+      var buffer = 50 + (winHeight * 0.1);
       console.log(parseInt(this.$el.height()) + buffer, winHeight)
       if ((parseInt(this.$el.height()) + buffer) > winHeight){
         $content.css({
