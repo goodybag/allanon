@@ -1,5 +1,5 @@
 define(function(require) {
-  var template    = require('hbt!./login-tmpl');
+  var template    = require('hbt!./register-tmpl');
   var Components  = require('../../components/index');
   var utils       = require('utils');
   var user        = require('user');
@@ -8,7 +8,7 @@ define(function(require) {
   var troller     = require('troller');
 
   return Components.Modal.Main.extend({
-    className: 'modal hide fade modal-span4 login-modal',
+    className: 'modal hide fade modal-span4 register-modal',
 
     events: {
       'click .facebook-login-button': 'oauth',
@@ -35,21 +35,21 @@ define(function(require) {
       if (!user.get('loggedIn')) utils.history.history.back();
     },
 
-    completedLogin: function(err) {
+    completedRegistration: function(err) {
       troller.spinner.stop();
       if (err) return troller.error(err);
       utils.history.navigate('/explore', {trigger: true, replace: true });
     },
 
-    auth: function(e) {
+    register: function(e) {
       // log in
       e.preventDefault();
-      var email = this.$el.find('.field-email').val();
-      var password = this.$el.find('.field-password').val();
-      var remember = this.$el.find('.remember-checkbox').is('checked');
-      // validation goes here
-      troller.spinner.spin();
-      user.auth(email, password, remember, this.completedLogin);
+      // var email = this.$el.find('.field-email').val();
+      // var password = this.$el.find('.field-password').val();
+      // var remember = this.$el.find('.remember-checkbox').is('checked');
+      // // validation goes here
+      // troller.spinner.spin();
+      // user.auth(email, password, remember, this.completedLogin);
     },
 
     oauth: function(e) {

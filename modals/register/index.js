@@ -1,4 +1,4 @@
 define(function(require) {
-  // require('less!./register-style');
+  require('less!./register-style');
   return require('./register-modal');
 });
