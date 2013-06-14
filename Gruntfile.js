@@ -91,11 +91,11 @@ module.exports = function(grunt) {
     },
 
     'play-song': {
-        prod: {
-          url: 'http://gb-prod-alert.j0.hn/deployments'
-        , data: { app: 'web' }
-        }
+      prod: {
+        url: 'http://gb-prod-alert.j0.hn/deployments'
+      , data: { app: 'web' }
       }
+    },
 
     jam: {
       dist: {
