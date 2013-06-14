@@ -97,6 +97,7 @@
         , 'update-password':          require('./modals/update-password/index')
         , 'punchcard':                require('./modals/punchcard/index')
         , 'forgot-password':          require('./modals/forgot-password/index')
+        , 'login':                    require('./modals/login/index')
         }
 
       , app = {
