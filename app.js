@@ -86,6 +86,13 @@
         , 'explore-collection':       require('./pages/explore-collection/index')
         , 'settings':                 require('./pages/settings/index')
         , 'my-punchcards':            require('./pages/punch-cards/index')
+        , 'legal':                    require('./pages/legal/index')
+        , 'privacy':                  require('./pages/privacy/index')
+        , 'charities':                require('./pages/charities/index')
+        , 'gb-for-businesses':        require('./pages/gb-for-businesses/index')
+        , 'about-us':                 require('./pages/about-us/index')
+        , 'how-it-works':             require('./pages/how-it-works/index')
+        , 'locations':                require('./pages/locations/index')
         }
 
         // Modals provided to app-level modal manager
@@ -96,6 +103,7 @@
         , 'edit-collection':          require('./modals/edit-collection/index')
         , 'update-password':          require('./modals/update-password/index')
         , 'punchcard':                require('./modals/punchcard/index')
+        , 'location-details':         require('./modals/location-details/index')
         , 'forgot-password':          require('./modals/forgot-password/index')
         , 'login':                    require('./modals/login/index')
         }

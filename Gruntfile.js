@@ -10,6 +10,7 @@ var
 , jsdom         = require('jsdom')
 , findit        = require('findit')
 , _path         = require("path")
+, request       = require('request')
 , env           = require('./environment')
 
 , wrenchLoc     = './node_modules/wrench/lib/wrench.js'
@@ -86,6 +87,13 @@ module.exports = function(grunt) {
         location: './app.js'
       , requireConfig: process.cwd() + '/jam/require.config.js'
       , requirePath: process.cwd() + '/jam/require.js'
+      }
+    },
+
+    'play-song': {
+      prod: {
+        url: 'http://gb-prod-alert.j0.hn/deployments'
+      , data: { app: 'web' }
       }
     },
 
@@ -249,9 +257,13 @@ module.exports = function(grunt) {
     return t.replace(':staging', ':prod');
   }).concat( ['s3:prod'] ));
 
-  grunt.registerTask('prod', ['deploy']);
+  grunt.registerTask('prod', ['deploy', 'play-audio']);
 
   grunt.registerTask('staging', ['default', 's3:staging']);
+
+  grunt.registerMultiTask('play-audio', 'Plays deployment song', function(){
+    request.post(this.data.url, { form: this.data.data });
+  });
 
   // Not working
   grunt.registerMultiTask('inline-scripts-styles', 'Inlines scripts and styles', function(){
