@@ -78,6 +78,8 @@ define(function(require){
         self.close();
       });
 
+      utils.dom(document.body).css( 'min-height', this.modals[modal].$el.height() );
+
       if (callback) callback(null, this.modals[modal]);
 
       return this;
@@ -93,6 +95,8 @@ define(function(require){
           delete this.openModals[key];
         }
       }
+
+      utils.dom(document.body).css('min-height', null);
 
       return this;
     }

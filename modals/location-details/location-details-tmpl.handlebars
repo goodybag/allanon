@@ -1,0 +1,26 @@
+{{! Modal Close }}
+<div class="modal-close"></div>
+
+<div class="modal-content">
+  <h1 class="modal-title"><img src="{{filepicker business.logoUrl 64 64}}" class="business-logo{{#if business.url}} with-website{{/if}}" alt="{{business.name}}">{{truncate business.name 29}}
+  </h1>
+
+  {{#if business.url}}<a class="business-website" href="{{business.url}}">{{business.url}}</a>{{/if}}
+
+  <iframe width="100%" height="400" class="locations-map expanded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q={{uri business.name}},+Austin,+TX&amp;aq=0&amp;oq={{uri business.name}}&amp;ie=UTF8&amp;hq={{uri business.name}},&amp;hnear=Austin,+Travis,+Texas&amp;t=m&amp;spn=0.224672,0.117598&amp;output=embed"></iframe>
+
+
+
+  <div class="locations-list page-wrapper columns inline-columns">
+
+    {{#each business.locations}}
+    <address class="column column-3">
+      <strong>{{../business.name}}{{#if this.name}} - {{this.name}}{{/if}}</strong><br />
+      {{this.street1}}, {{#if this.street2}}{{this.street2}}, {{/if}}<br />
+      {{this.city}}, {{this.state}} {{this.zip}}</br />
+      {{#if this.phone}}<em class="phone">{{phone this.phone}}</em><br />{{/if}}
+      <a href="http://maps.google.com/?q={{../business.name}} {{this.street1}}, {{#if this.street2}}{{this.street2}}, {{/if}}{{this.city}}, {{this.state}} {{this.zip}}">View On Map</a>
+    </address>
+    {{/each}}
+  </div>
+</div>

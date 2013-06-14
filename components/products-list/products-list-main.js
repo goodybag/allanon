@@ -51,7 +51,6 @@ define(function(require){
         item.on('feelings:change', utils.bind(this.onProductFeelingChange, this));
       }
 
-      this.$el.html("<h1>hello</h1>");
       this.$el.html(fragment);
 
       return this;
