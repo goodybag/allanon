@@ -18,7 +18,6 @@ define(function(require) {
 
     initialize: function(options) {
       Components.Modal.Main.prototype.initialize.apply(this, arguments);
-      this.on('close', this.onClose);
       this.render();
       return this;
     },
@@ -33,7 +32,7 @@ define(function(require) {
     },
 
     onClose: function(e) {
-      if (!user.get('loggedIn')) utils.history.history.back();
+      if (!user.get('loggedIn') && utils.history.getFragment() === 'login') utils.history.history.back();
     },
 
     completedLogin: function(err) {
@@ -64,7 +63,7 @@ define(function(require) {
 
     forgotPassword: function(e) {
       // Dismiss this modal and call up the forgot password modal
-      this.close();
+      utils.history.navigate('/forgot-password', {trigger: true, replace: true});
     }
   });
 });
