@@ -2,6 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , api         = require('api')
+  , user        = require('user')
   , troller     = require('troller')
   , Components  = require('../../components/index')
   , Modal       = Components.Modal.Main
@@ -44,6 +45,21 @@ define(function(require){
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
 
+      // Re-fetch on auth/deauth
+      user.on('auth', function(){
+        var pid = this_.productId;
+        this_.product = null;
+        this_.productId = null;
+        this_.onOpen({ productId: pid });
+      });
+
+      user.on('deauth', function(){
+        var pid = this_.productId;
+        this_.product = null;
+        this_.productId = null;
+        this_.onOpen({ productId: pid });
+      });
+
       return this;
     }
 
@@ -77,7 +93,7 @@ define(function(require){
     }
 
   , onOpen: function(options){
-      if (!this.productId || (!options && options.productId)) return this;
+      if (!this.productId || (options && !options.productId)) return this;
 
       var this_ = this;
 
@@ -96,7 +112,7 @@ define(function(require){
       }
 
       // Same thing as before, and we've likely already rendered
-      if (options.productId == this.productId && this.productId == this.product.id)
+      if (options.productId == this.productId && this.productId == this.product.id && this.productId != null)
         return this;
 
       if (options.productId) this.productId = options.productId;
