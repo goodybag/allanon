@@ -29,7 +29,47 @@
 // -------------------
 
 .plateau {
+  display: table;
+  width: 100%;
   padding: 50px 0;
   border-radius: 8px;
   box-shadow: 0 0 6px rgba(0,0,0, 0.33);
+}
+
+.plateau-page {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.plateau-page + .plateau-page {
+  margin-top: 80px;
+}
+
+// Account for extra padding I guess
+.span4 > .plateau-page,
+.span5 > .plateau-page,
+.span6 > .plateau-page,
+.span7 > .plateau-page,
+.span8 > .plateau-page,
+.span9 > .plateau-page,
+.span10 > .plateau-page { margin-left: -20px; }
+
+.fancy-separator {
+  text-align: center;
+}
+
+.fancy-separator > p {
+  display: inline-block;
+  width: 50%;
+  border-bottom: 1px solid #888;
+  line-height: 2px;
+}
+
+.fancy-separator > p > span {
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 500;
+  color: @gray;
+  padding: 0 8px;
+  background-color: #fff;
 }

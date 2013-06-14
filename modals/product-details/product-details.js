@@ -24,7 +24,7 @@ define(function(require){
   , regions: {
       // use append syntax because backbone is doing some funky
       // stuff with setElement
-      'pages>': '.page-wrapper'
+      'pages>': '.details-page-wrapper'
     }
 
   , initialize: function(options){
