@@ -25,6 +25,10 @@ define(function(require) {
       this.$email.focus();
     },
 
+    onClose: function() {
+      utils.history.history.back();
+    },
+
     render: function() {
       this.$el.html(template());
     },
@@ -32,12 +36,13 @@ define(function(require) {
     submitPasswordReset: function(e) {
       e.preventDefault();
       var email = this.$email.val();
+      var self = this;
       // TODO: client side validation
       troller.spinner.spin();
       user.forgotPassword(email, function(err) {
         troller.spinner.stop();
         if (err) return troller.error(err);
-        utils.history.navigate('/', {trigger: true});
+        self.close();
       });
     }
   });
