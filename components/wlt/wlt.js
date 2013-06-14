@@ -44,6 +44,8 @@ define(function(require){
   , onWantClick: function(e){
       e.preventDefault();
 
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
+
       this.model.userWants = !this.model.userWants;
 
       if (this.model.userWants) this.model.wants++;
@@ -65,6 +67,8 @@ define(function(require){
   , onTriedClick: function(e){
       e.preventDefault();
 
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
+
       this.model.userTried = !this.model.userTried;
 
       if (this.model.userTried) this.model.tries++;
@@ -85,6 +89,8 @@ define(function(require){
 
   , onLikeClick: function(e){
       e.preventDefault();
+
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
 
       this.model.userLikes = !this.model.userLikes;
 

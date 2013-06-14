@@ -148,6 +148,10 @@
             return app.appView.changePage(page, options);
           }
 
+        , currentPage: function(){
+            return app.appView.children.pages.current;
+          }
+
         , router: new Router()
 
         , loadTypekit: function(){
@@ -243,20 +247,41 @@
         , closeModal: function(modal){
             return app.appView.children.modals.close(modal);
           }
+
+        , promptUserLogin: function(options){
+            options = options || {};
+
+            troller.modals.open('login', function(error, modal){
+              if (error) return troller.error(error);
+
+              if (!options.fromUrlChange) return;
+
+              modal.once('close', function(){
+                // They had gone to at least one page before
+                if (app.currentPage()) utils.history.history.back();
+                // Just in case
+                else utils.history.navigate('/explore', { replace: true, trigger: true });
+              });
+            });
+            if (!app.currentPage()) troller.app.changePage('explore', {});
+          }
         }
       ;
 
-      troller.add('app.changePage', app.changePage);
+      troller.add('app.changePage',   app.changePage);
+      troller.add('app.currentPage',  app.currentPage);
 
-      troller.add('app.error',      app.error);
-      troller.add('error',          app.error);
-      troller.add('confirm',        app.confirm);
+      troller.add('app.error',        app.error);
+      troller.add('error',            app.error);
+      troller.add('confirm',          app.confirm);
 
-      troller.add('spinner.spin',   app.spin);
-      troller.add('spinner.stop',   app.stopSpinning)
+      troller.add('spinner.spin',     app.spin);
+      troller.add('spinner.stop',     app.stopSpinning)
 
-      troller.add('modals.open',    app.openModal);
-      troller.add('modals.close',   app.closeModal);
+      troller.add('modals.open',      app.openModal);
+      troller.add('modals.close',     app.closeModal);
+
+      troller.add('promptUserLogin',  app.promptUserLogin);
 
       return app;
     });

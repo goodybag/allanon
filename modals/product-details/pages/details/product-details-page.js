@@ -2,6 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , config      = require('config')
+  , user        = require('user')
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('../../../../components/index')
@@ -53,6 +54,7 @@ define(function(require){
 
   , onAddToCollections: function(e){
       var this_ = this;
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
       this.pageManager.changePage('add-to-collections', { product: this.model });
     }
   });

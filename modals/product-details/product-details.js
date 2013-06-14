@@ -84,6 +84,12 @@ define(function(require){
       // If they provided a product already, no need to fetch
       if (options.product){
         this.product = options.product;
+
+        // If they're not logged in, the product won't have userWLTs
+        this.product.userLikes = this.product.userLikes || false;
+        this.product.userWants = this.product.userWants || false;
+        this.product.userTried = this.product.userTried || false;
+
         this.productId = this.product.id;
 
         return this.render();
@@ -123,6 +129,11 @@ define(function(require){
         if (error) return callback ? callback(error) : troller.error(error);
 
         this_.product = result;
+
+        // If they're not logged in, the product won't have userWLTs
+        this_.product.userLikes = this_.product.userLikes || false;
+        this_.product.userWants = this_.product.userWants || false;
+        this_.product.userTried = this_.product.userTried || false;
 
         if (callback) callback(null, result);
       });

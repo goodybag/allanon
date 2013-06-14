@@ -23,7 +23,6 @@ define(function(require) {
     },
 
     onOpen: function() {
-      if (user.get('loggedIn')) utils.history.history.back();
       this.$el.find('.field-email').focus();
     },
 
@@ -32,13 +31,13 @@ define(function(require) {
     },
 
     onClose: function(e) {
-      if (!user.get('loggedIn') && utils.history.getFragment() === 'login') utils.history.history.back();
+
     },
 
     completedLogin: function(err) {
       troller.spinner.stop();
       if (err) return troller.error(err);
-      utils.history.navigate('/explore', {trigger: true, replace: true });
+      this.close();
     },
 
     auth: function(e) {
@@ -63,7 +62,8 @@ define(function(require) {
 
     forgotPassword: function(e) {
       // Dismiss this modal and call up the forgot password modal
-      utils.history.navigate('/forgot-password', {trigger: true, replace: true});
+      this.close();
+      troller.modals.open('forgot-password');
     }
   });
 });

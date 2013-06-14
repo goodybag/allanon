@@ -14,7 +14,7 @@
           <a href="#/collections">My Collections</a>
         </li>
         <li class="dropdown dropdown-more">
-          <a href="#/more">More</a>
+          <a href="#/more" class="more">More</a>
           <ul class="dropdown-menu">
             <li>
               <a href="#/how-it-works">How it Works</a>
@@ -64,7 +64,7 @@
               <a href="#/settings">Settings</a>
             </li>
             <li>
-              <a href="#" class="logout">Log Out</a>
+              <a href="#" class="{{#if user.id}}logout{{else}}login{{/if}}">{{#if user.id}}Log Out{{else}}Log In{{/if}}</a>
             </li>
         </ul>
       </div>
