@@ -96,6 +96,7 @@
         , 'edit-collection':          require('./modals/edit-collection/index')
         , 'update-password':          require('./modals/update-password/index')
         , 'punchcard':                require('./modals/punchcard/index')
+        , 'login':                    require('./modals/login/index')
         }
 
       , app = {
