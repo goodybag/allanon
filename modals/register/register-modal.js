@@ -24,7 +24,7 @@ define(function(require) {
 
     onOpen: function() {
       if (user.get('loggedIn')) utils.history.history.back();
-      this.$el.find('.field-email').focus();
+      this.$el.find('.field-username').focus();
     },
 
     render: function() {
@@ -44,12 +44,14 @@ define(function(require) {
     register: function(e) {
       // log in
       e.preventDefault();
-      // var email = this.$el.find('.field-email').val();
-      // var password = this.$el.find('.field-password').val();
-      // var remember = this.$el.find('.remember-checkbox').is('checked');
-      // // validation goes here
-      // troller.spinner.spin();
-      // user.auth(email, password, remember, this.completedLogin);
+      var username = this.$el.find('.field-username').val();
+      var email = this.$el.find('.field-email').val();
+      var password = this.$el.find('.field-password').val();
+      var confirmPassword = this.$el.find('.field-password-confirm').val();
+      if (password === '' || password !== confirmPassword) return troller.error('Must enter matching passwords');
+
+      troller.spinner.spin();
+      user.register(email, password, username, this.completedRegistration);
     },
 
     oauth: function(e) {
