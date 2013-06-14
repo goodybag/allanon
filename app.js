@@ -104,6 +104,7 @@
         , 'update-password':          require('./modals/update-password/index')
         , 'punchcard':                require('./modals/punchcard/index')
         , 'location-details':         require('./modals/location-details/index')
+        , 'login':                    require('./modals/login/index')
         }
 
       , app = {
