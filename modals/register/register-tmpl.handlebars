@@ -27,15 +27,20 @@
         <input type="email" class="input-tall register-field field-email" id="field-email" placeholder="Enter Email Address">
       </div>
 
-      <label for="field-password" class="control-label">
-        *Password (required)
-      </label>
-      <label for="field-password-confirm" class="control-label">
-        *Confirm Password
-      </label>
       <div class="controls">
-        <input type="password" class="input-tall register-field field-password" id="field-password" placeholder="Enter Password">
-        <input type="password" class="input-tall register-field field-password-confirm" id="field-password-confirm" placeholder="Confirm Password">
+        <div class="half-form-block password-block">
+          <label for="field-password" class="control-label">
+            *Password (required)
+          </label>
+          <input type="password" class="input-tall half-width-field field-password" id="field-password" placeholder="Enter Password">
+        </div>
+
+        <div class="half-form-block confirm-password-block">
+          <label for="field-password-confirm" class="control-label">
+            *Confirm Password
+          </label>
+          <input type="password" class="input-tall half-width-field field-password-confirm" id="field-password-confirm" placeholder="Confirm Password">
+        </div>
       </div>
     </div>
     <div class="control-group">
