@@ -47,6 +47,7 @@ define(function(require){
 
   , close: function(){
       this.modal.hide();
+      if (typeof this.onClose === 'function') this.onClose();
       return this;
     }
   });
