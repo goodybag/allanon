@@ -13,6 +13,10 @@
   #sprite > .checkbox()
 }
 
+.checkbox-label-small {
+  #sprite > .checkbox-small()
+}
+
 // Give feedback when clicking
 .checkbox-label:active {
   opacity: 0.6;
@@ -22,6 +26,10 @@
 .checkbox-label.active,
 input[type="checkbox"]:checked + .checkbox-label {
   #sprite > .checkbox-checked()
+}
+
+input[type="checkbox"]:checked + .checkbox-label.checkbox-label-small {
+  #sprite > .checkbox-small-checked()
 }
 
 input[type="checkbox"] {
