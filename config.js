@@ -60,16 +60,25 @@ define(function(require){
 
   , dev: {
       apiUrl: 'http://localhost:3000/'
+    , oauth: {
+        redirectUrl: 'http://localhost:8080' // probably ought to be in environment
+      }
     , proxyUrl: "http://localhost:3000/proxy.html"
     }
 
   , prod: {
       apiUrl: 'http://magic.goodybag.com/'
+    , oauth: {
+        redirectUrl: 'http://www.goodybag.com'
+      }
     , proxyUrl: "http://magic.goodybag.com/proxy.html"
     }
 
   , staging: {
       apiUrl: 'http://magic.staging.goodybag.com/'
+    , oauth: {
+        redirectUrl: 'http://www.staging.goodybag.com'
+      }
     , proxyUrl: "http://magic.staging.goodybag.com/proxy.html"
     }
   };
