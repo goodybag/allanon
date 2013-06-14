@@ -47,7 +47,6 @@ define(function(require){
 
   , close: function(){
       this.modal.hide();
-      console.log("Modal.close");
       if (this.onClose) this.onClose();
       return this;
     }

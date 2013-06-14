@@ -136,16 +136,32 @@ define(function(require){
 
       if (request == "") return;
 
-
       utils.api.post(
         'v1/businesses/requests'
       , { name: request }
-      )
-
-      var oldText = this.$el.find('.business-request label').text();
-      this.$el.find('.business-request label').text(
-        requestMessages[ parseInt(Math.random() * requestMessages.length - 1 ) ]
       );
+
+      this.$request.val("");
+
+      var $label = this.$el.find('.businesses-request label');
+      var oldText = $label.text();
+
+      $label.fadeOut(function(){
+        $label.text(
+          requestMessages[ parseInt(Math.random() * requestMessages.length - 1 ) ]
+        );
+
+        $label.fadeIn(function(){
+          setTimeout(function(){
+            $label.fadeOut(function(){
+              $label.text( oldText );
+              $label.fadeIn();
+            });
+          }, 5000);
+        });
+
+      });
+
     }
 
   , onBusinessSearchKeyup: function(e){
