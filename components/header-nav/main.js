@@ -41,6 +41,7 @@ define(function(require){
     }
 
   , render: function(){
+    console.log("nav.render", user.toJSON());
       this.$el.html( template({ user: user.toJSON() }) );
 
       this.$badge = this.$el.find('.badge');
