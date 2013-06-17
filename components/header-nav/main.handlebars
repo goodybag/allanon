@@ -63,9 +63,11 @@
             <li>
               <a href="#/settings">Settings</a>
             </li>
-            <li>
-              <a href="#" class="{{#if user.id}}logout{{else}}login{{/if}}">{{#if user.id}}Log Out{{else}}Log In{{/if}}</a>
-            </li>
+            {{#if user.id}}
+              <a href="#" class="logout">Log Out</a>
+            {{else}}
+              <a href="#" class="login">Log In</a>
+            {{/if}}
         </ul>
       </div>
     </div>
