@@ -21,6 +21,8 @@ define(function(require){
     , 'click .logo':              'onLogoClick'
     , 'click .edit-keytag-link':  'onEditKeytag'
     , 'click .logout':            'onLogoutClick'
+    , 'click .login':             'onLoginClick'
+    , 'click .more':              'onMoreClick'
     }
 
   , initialize: function(){
@@ -93,12 +95,22 @@ define(function(require){
 
   , onEditKeytag: function(e) {
       e.preventDefault();
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
       troller.modals.open('enter-keytag');
     }
 
   , onLogoutClick: function(e){
       e.preventDefault();
       user.logout();
+    }
+
+  , onLoginClick: function(e){
+      e.preventDefault();
+      troller.promptUserLogin();
+    }
+
+  , onMoreClick: function(e){
+      e.preventDefault();
     }
   });
 });

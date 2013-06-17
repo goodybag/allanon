@@ -2,6 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , config      = require('config')
+  , user        = require('user')
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('../../components/index')
@@ -50,6 +51,17 @@ define(function(require){
       , include:    ['collections']
       , hasPhoto:   true
       }, options);
+
+      // Reset products on auth/de-auth
+      user.on('auth', function(){
+        this_.products = [];
+        this_.onShow();
+      });
+
+      user.on('deauth', function(){
+        this_.products = [];
+        this_.onShow();
+      });
     }
 
   , onShow: function(options){
@@ -131,6 +143,14 @@ define(function(require){
 
       this.$search = this.$el.find('.field-search');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
+
+      if (!troller.app.bannerShown()){
+        this.bannerShown = true;
+        troller.app.showBanner();
+        setTimeout(function(){
+          troller.app.hideBanner();
+        }, 6500);
+      }
 
       return this;
     }

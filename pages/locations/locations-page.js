@@ -22,7 +22,7 @@ define(function(require){
     className: 'page page-locations'
 
   , events: {
-      'click .business-listing > .business':    'onBusinessClick'
+      'click  .business-listing > .business':   'onBusinessClick'
     , 'submit .businesses-search':              'onBusinessSearch'
     , 'keyup  #business-search':                'onBusinessSearchKeyup'
     , 'submit .businesses-request':             'onBusinessRequest'
@@ -73,6 +73,8 @@ define(function(require){
       this.$bizList = this.$el.find('#business-listing');
       this.$search  = this.$el.find('#business-search');
       this.$request = this.$el.find('#business-request');
+
+      if (this.businesses.length > 0) this.renderBusinesses();
 
       return this;
     }

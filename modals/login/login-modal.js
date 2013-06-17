@@ -23,7 +23,6 @@ define(function(require) {
     },
 
     onOpen: function() {
-      if (user.get('loggedIn')) utils.history.history.back();
       this.$el.find('.field-email').focus();
     },
 
@@ -32,38 +31,41 @@ define(function(require) {
     },
 
     onClose: function(e) {
-      if (!user.get('loggedIn') && utils.history.getFragment() === 'login') utils.history.history.back();
+
     },
 
     completedLogin: function(err) {
       troller.spinner.stop();
       if (err) return troller.error(err);
-      utils.history.navigate('/explore', {trigger: true, replace: true });
+      this.close();
     },
 
     auth: function(e) {
       // log in
       e.preventDefault();
+      troller.spinner.spin();
       var email = this.$el.find('.field-email').val();
       var password = this.$el.find('.field-password').val();
       var remember = this.$el.find('.remember-checkbox').is('checked');
+      this.$el.find('.field-password').val("");
       // validation goes here
-      troller.spinner.spin();
-      user.auth(email, password, remember, this.completedLogin);
+      user.auth(email, password, remember, utils.bind(this.completedLogin, this));
     },
 
     oauth: function(e) {
       // login with facebook
+      troller.spinner.spin();
       api.session.getOauthUrl(config.oauth.redirectUrl, 'facebook', function(error, result) {
-        if (error) return troller.error(error);
-        if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'); // TODO: better error
+        if (error) return troller.error(error), troller.spinner.stop();
+        if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'), troller.spinner.stop(); // TODO: better error
         window.location.href = result.url;
       });
     },
 
     forgotPassword: function(e) {
       // Dismiss this modal and call up the forgot password modal
-      utils.history.navigate('/forgot-password', {trigger: true, replace: true});
+      this.close();
+      troller.modals.open('forgot-password');
     }
   });
 });
