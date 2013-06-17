@@ -48,7 +48,7 @@ define(function(require) {
       var remember = this.$el.find('.remember-checkbox').is('checked');
       // validation goes here
       troller.spinner.spin();
-      user.auth(email, password, remember, this.completedLogin);
+      user.auth(email, password, remember, utils.bind(this.completedLogin, this));
     },
 
     oauth: function(e) {
