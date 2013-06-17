@@ -54,7 +54,9 @@ define(function(require) {
 
     oauth: function(e) {
       // login with facebook
+      troller.spinner.spin();
       api.session.getOauthUrl(config.oauth.redirectUrl, 'facebook', function(error, result) {
+        troller.spinner.stop();
         if (error) return troller.error(error);
         if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'); // TODO: better error
         window.location.href = result.url;
