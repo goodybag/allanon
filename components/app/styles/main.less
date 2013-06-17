@@ -1,5 +1,72 @@
 @import "/styles/variables.less";
+@import "/styles/mixins.less";
 
 .app-container {
-  padding-top: 120px;
+  padding-top: 100px;
+}
+
+.app-banner {
+  position: absolute;
+  z-index: @zindexAppBanner;
+  width: 100%;
+  height: 197px;
+  // Height of the navbar
+  top: 60px;
+  text-align: center;
+  .bg(@texture-wood-banner);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+
+  // Transitions for hiding transform
+  -webkit-transition: -webkit-transform ease-in-out 0.5s;
+     -moz-transition:    -moz-transform ease-in-out 0.5s;
+      -ms-transition:     -ms-transform ease-in-out 0.5s;
+       -o-transition:      -o-transform ease-in-out 0.5s;
+          transition:         transform ease-in-out 0.5s;
+}
+
+.app-banner.banner-hide {
+  -webkit-transform: translateY(-500px);
+  -moz-transform: translateY(-500px);
+  -ms-transform: translateY(-500px);
+  -o-transform: translateY(-500px);
+  transform: translateY(-500px);
+}
+
+.app-banner > .banner-title {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+  font-size: 48px;
+  line-height: 80px;
+  color: #00CDFA;
+  margin: 90px 0 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+  font-weight: 100;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+.app-banner > .banner-subtext {
+  position: absolute;
+  bottom: -14px;
+  width: 100%;
+  z-index: 2;
+  color: #F5EAD7;
+  font-size: 16px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+  font-weight: 300;
+}
+
+.app-banner > .banner-cityscape {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  margin-left: -393px;
+  width: 797px;
+  height: 372px;
+  z-index: 1;
+
+  .bg(@cityscape);
+  // #sprite > .cityscape();
 }

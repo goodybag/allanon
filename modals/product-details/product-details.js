@@ -2,6 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , api         = require('api')
+  , user        = require('user')
   , troller     = require('troller')
   , Components  = require('../../components/index')
   , Modal       = Components.Modal.Main
@@ -44,6 +45,21 @@ define(function(require){
       this.on('open',   this.onOpen);
       this.on('close',  this.onClose);
 
+      // Re-fetch on auth/deauth
+      user.on('auth', function(){
+        var pid = this_.productId;
+        this_.product = null;
+        this_.productId = null;
+        this_.onOpen({ productId: pid });
+      });
+
+      user.on('deauth', function(){
+        var pid = this_.productId;
+        this_.product = null;
+        this_.productId = null;
+        this_.onOpen({ productId: pid });
+      });
+
       return this;
     }
 
@@ -77,20 +93,26 @@ define(function(require){
     }
 
   , onOpen: function(options){
-      if (!this.productId || (!options && options.productId)) return this;
+      if (options && !options.productId && !options.product) return this;
 
       var this_ = this;
 
       // If they provided a product already, no need to fetch
       if (options.product){
         this.product = options.product;
+
+        // If they're not logged in, the product won't have userWLTs
+        this.product.userLikes = this.product.userLikes || false;
+        this.product.userWants = this.product.userWants || false;
+        this.product.userTried = this.product.userTried || false;
+
         this.productId = this.product.id;
 
         return this.render();
       }
 
       // Same thing as before, and we've likely already rendered
-      if (options.productId == this.productId && this.productId == this.product.id)
+      if (options.productId == this.productId && this.productId == this.product.id && this.productId != null)
         return this;
 
       if (options.productId) this.productId = options.productId;
@@ -123,6 +145,11 @@ define(function(require){
         if (error) return callback ? callback(error) : troller.error(error);
 
         this_.product = result;
+
+        // If they're not logged in, the product won't have userWLTs
+        this_.product.userLikes = this_.product.userLikes || false;
+        this_.product.userWants = this_.product.userWants || false;
+        this_.product.userTried = this_.product.userTried || false;
 
         if (callback) callback(null, result);
       });
