@@ -92,8 +92,7 @@ module.exports = function(grunt) {
 
     'play-song': {
       prod: {
-        url: 'http://gb-prod-alert.j0.hn/deployments'
-      , data: { app: 'web' }
+        url: 'http://gb-prod-alert.j0.hn/deployments/web'
       }
     },
 
@@ -262,7 +261,10 @@ module.exports = function(grunt) {
   grunt.registerTask('staging', ['default', 's3:staging']);
 
   grunt.registerMultiTask('play-audio', 'Plays deployment song', function(){
-    request.post(this.data.url, { form: this.data.data });
+    var done = this.async();
+    request.post(this.data.url, function(error, response){
+      done(!error && response.statusCode == 204);
+    });
   });
 
   // Not working
