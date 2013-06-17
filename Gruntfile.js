@@ -129,17 +129,17 @@ module.exports = function(grunt) {
         upload: [
           {
             src: 'build/index.html'
-          , dest: '/panel/index.html'
+          , dest: '/index.html'
           , gzip: true
           }
         , {
             src: 'build/img/*'
-          , dest: '/panel/img'
+          , dest: '/img'
           , gzip: true
           }
         , {
             src: 'build/lib/*'
-          , dest: '/panel/lib'
+          , dest: '/lib'
           , gzip: true
           }
         ]
@@ -151,17 +151,17 @@ module.exports = function(grunt) {
         upload: [
           {
             src: 'build/index.html'
-          , dest: '/panel/index.html'
+          , dest: 'index.html'
           , gzip: true
           }
         , {
             src: 'build/img/*'
-          , dest: '/panel/img'
+          , dest: 'img'
           , gzip: true
           }
         , {
             src: 'build/lib/*'
-          , dest: '/panel/lib'
+          , dest: 'lib'
           , gzip: true
           }
         ]
@@ -175,7 +175,6 @@ module.exports = function(grunt) {
       , cssSource: 'build/styles/app.css'
       , change: [
           { from: 'easyXDM.debug', to: 'easyXDM.min' }
-        , { from: '/img', to: '/panel/img' }
         , { from: '</head>', to: '\n    <!--[if IE]><link rel="stylesheet" src="styles/ie.css" /><![endif]-->\n</head>'}
         ]
       }
