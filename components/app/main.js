@@ -29,6 +29,24 @@ define(function(require){
       return this;
     }
 
+  , showBanner: function(){
+      if (utils.support.transform)
+        this.$el.find('#app-banner').removeClass('banner-hide');
+      else
+        this.$el.find('#app-banner').animate({ 'top': '60px' });
+
+      return this;
+    }
+
+  , hideBanner: function(){
+      if (utils.support.transform)
+        this.$el.find('#app-banner').addClass('banner-hide');
+      else
+        this.$el.find('#app-banner').animate({ 'top': '-500px' });
+
+      return this;
+    }
+
   , providePages: function(Pages){
       this.children.pages.providePages(Pages);
       return this;

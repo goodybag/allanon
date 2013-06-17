@@ -261,11 +261,29 @@
             });
             if (!app.currentPage()) troller.app.changePage('explore', {});
           }
+
+        , showBanner: function(){
+            app.appView.showBanner();
+            app._bannerShown = true;
+          }
+
+        , hideBanner: function(){
+            app.appView.hideBanner();
+          }
+
+        , bannerShown: function(){
+            return !!app._bannerShown;
+          }
         }
       ;
 
       troller.add('app.changePage',   app.changePage);
       troller.add('app.currentPage',  app.currentPage);
+
+      troller.add('app.showBanner',   app.showBanner);
+      troller.add('app.hideBanner',   app.hideBanner);
+      troller.add('app.bannerShown',  app.bannerShown);
+
 
       troller.add('app.error',        app.error);
       troller.add('error',            app.error);

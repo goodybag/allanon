@@ -144,6 +144,14 @@ define(function(require){
       this.$search = this.$el.find('.field-search');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
+      if (!troller.app.bannerShown()){
+        this.bannerShown = true;
+        troller.app.showBanner();
+        setTimeout(function(){
+          troller.app.hideBanner();
+        }, 6500);
+      }
+
       return this;
     }
 
