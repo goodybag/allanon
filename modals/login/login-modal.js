@@ -43,11 +43,12 @@ define(function(require) {
     auth: function(e) {
       // log in
       e.preventDefault();
+      troller.spinner.spin();
       var email = this.$el.find('.field-email').val();
       var password = this.$el.find('.field-password').val();
       var remember = this.$el.find('.remember-checkbox').is('checked');
+      this.$el.find('.field-password').val("");
       // validation goes here
-      troller.spinner.spin();
       user.auth(email, password, remember, utils.bind(this.completedLogin, this));
     },
 
