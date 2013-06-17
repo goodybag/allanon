@@ -107,6 +107,7 @@
         , 'login':                    require('./modals/login/index')
         , 'register':                 require('./modals/register/index')
         , 'forgot-password':          require('./modals/forgot-password/index')
+        , 'reset-password':           require('./modals/reset-password/index')
         }
 
       , app = {
