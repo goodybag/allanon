@@ -93,7 +93,7 @@ define(function(require){
     }
 
   , onOpen: function(options){
-      if (!this.productId || (options && !options.productId)) return this;
+      if (options && !options.productId && !options.product) return this;
 
       var this_ = this;
 
