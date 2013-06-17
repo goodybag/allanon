@@ -26,7 +26,7 @@ define(function(require) {
     },
 
     onClose: function() {
-      utils.history.history.back();
+
     },
 
     render: function() {
