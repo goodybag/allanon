@@ -44,7 +44,7 @@ define(function(require) {
     },
 
     onClose: function(e) {
-      if (!user.get('loggedIn')) utils.history.history.back();
+      utils.history.navigate('/', {trigger: true});
     },
 
     completedRegistration: function(err) {
