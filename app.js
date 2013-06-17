@@ -108,6 +108,7 @@
         , 'register':                 require('./modals/register/index')
         , 'forgot-password':          require('./modals/forgot-password/index')
         , 'reset-password':           require('./modals/reset-password/index')
+        , 'complete-registration':    require('./modals/complete-registration/index')
         }
 
       , app = {
