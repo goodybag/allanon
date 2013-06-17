@@ -91,8 +91,8 @@ define(function(require){
         delete this.openModals[modal];
       } else {
         for (var key in this.openModals){
-          this.modals[key].close();
           delete this.openModals[key];
+          this.modals[key].close();
         }
       }
 
