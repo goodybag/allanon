@@ -7,6 +7,7 @@ define(function(require){
   , Modal       = Components.Modal.Main
 
   , template    = require('hbt!./product-details-tmpl')
+  , twitterTmpl = require('hbt!./twitter-card-tmpl')
 
   , Pages = {
       'details':            require('./pages/details/index')
@@ -60,6 +61,16 @@ define(function(require){
   , render: function(){
       var this_ = this;
 
+      utils.dom('head meta.twitter-card').remove();
+      utils.dom('head').append(twitterTmpl({
+        name: this.product.name,
+        desc: this.product.description,
+        imageUrl: this.product.photoUrl,
+        imgWidth: 320,
+        imgHeight: 320,
+        price: this.product.price
+      }));
+
       this.children.pages.remove();
       this.$el.html( template({ product: this.product }) );
 
@@ -107,6 +118,7 @@ define(function(require){
     }
 
   , onClose: function(){
+      utils.dom('head meta.twitter-card').remove();
       // The modal was closed by navigating away
       if (utils.history.location.hash.indexOf('/products/') == -1) return;
 
