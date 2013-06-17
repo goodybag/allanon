@@ -44,7 +44,7 @@ define(function(require) {
       var self = this;
       // TODO: client side validation
       troller.spinner.spin();
-      user.resetPassword(token, pass, function(err) {
+      user.resetPassword(self.token, pass, function(err) {
         troller.spinner.stop();
         if (err) return troller.error(err);
         self.close();
