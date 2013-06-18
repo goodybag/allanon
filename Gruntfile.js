@@ -255,11 +255,11 @@ module.exports = function(grunt) {
     return t.replace(':staging', ':prod');
   }).concat( ['s3:prod'] ));
 
-  grunt.registerTask('prod', ['deploy', 'play-audio']);
+  grunt.registerTask('prod', ['deploy', 'play-song']);
 
   grunt.registerTask('staging', ['default', 's3:staging']);
 
-  grunt.registerMultiTask('play-audio', 'Plays deployment song', function(){
+  grunt.registerMultiTask('play-song', 'Plays deployment song', function(){
     var done = this.async();
     request.post(this.data.url, function(error, response){
       done(!error && response.statusCode == 204);
