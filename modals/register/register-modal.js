@@ -37,7 +37,7 @@ define(function(require) {
 
     completedRegistration: function(err) {
       troller.spinner.stop();
-      if (err) return troller.error(err);
+      if (err) return troller.error(err, this.$el);
       utils.history.navigate('/explore', {trigger: true, replace: true });
     },
 
@@ -51,7 +51,7 @@ define(function(require) {
       if (password === '' || password !== confirmPassword) return troller.error('Must enter matching passwords');
 
       troller.spinner.spin();
-      user.register(email, password, username, this.completedRegistration);
+      user.register(email, password, username, utils.bind(this.completedRegistration, this));
     },
 
     oauth: function(e) {
