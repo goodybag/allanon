@@ -31,10 +31,6 @@ define(function(require) {
       this.$el.html(template());
     },
 
-    onClose: function(e) {
-      if (!user.get('loggedIn')) utils.history.history.back();
-    },
-
     completedRegistration: function(err) {
       troller.spinner.stop();
       if (err) return troller.error(err, this.$el);
