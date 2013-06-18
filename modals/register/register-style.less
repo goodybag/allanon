@@ -1,3 +1,9 @@
+@import "/styles/variables.less";
+
+.register-modal {
+  z-index: @zindexRegisterModal;
+}
+
 .register-modal h1 {
   font-size: 46px;
   line-height: 50px;
@@ -8,8 +14,12 @@
   width: 322px;
 }
 
-.facebook-login-button {
-  margin-left: 80px;
+.register-modal .fb-login-wrapper {
+  text-align: center;
+}
+
+.register-modal .facebook-login-button {
+  margin-left: 7px;
   line-height: 72px;
   color: white;
   text-shadow: 0 -2px 1px rgba(0,0,0,0.4);

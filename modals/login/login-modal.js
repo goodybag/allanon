@@ -13,7 +13,8 @@ define(function(require) {
     events: {
       'click .facebook-login-button': 'oauth',
       'submit .login-form':           'auth',
-      'click .forgot-password':       'forgotPassword'
+      'click .forgot-password':       'forgotPassword',
+      'click .register-link':         'onRegisterClick'
     },
 
     initialize: function(options) {
@@ -66,6 +67,12 @@ define(function(require) {
       // Dismiss this modal and call up the forgot password modal
       this.close();
       troller.modals.open('forgot-password');
+    },
+
+    onRegisterClick: function(e) {
+      e.preventDefault();
+      this.close();
+      troller.modals.open('register');
     }
   });
 });
