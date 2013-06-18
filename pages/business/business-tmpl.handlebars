@@ -1,0 +1,49 @@
+<h1 class="page-title">Business Info</h1>
+
+<div class="plateau span10 plateau-page">
+  <div class="row">
+
+    {{! Logo and Punchcard button }}
+    <div class="span3 logo-wrapper">
+      <img src="{{filepicker business.logoUrl 242 242}}" alt="{{business.name}}" class="business-logo">
+      <button class="btn btn-white view-punchcard">View PunchCard</button>
+    </div>
+
+    {{! Business info }}
+    <div class="span7 info-wrapper">
+      <h2 class="business-name">{{business.name}} - {{location.name}}</h2>
+
+      {{! Address }}
+      <div class="biz-info biz-info-address">
+        <h4 class="biz-info-title">Address</h4>
+        <address class="location-address">
+          {{location.street1}}, {{#if location.street2}}{{location.street2}}, {{/if}}<br />
+          {{location.city}}, {{location.state}} {{location.zip}}
+        </address>
+      </div>
+
+      {{! Phone }}
+      <div class="biz-info biz-info-phone">
+        <h4 class="biz-info-title">Phone</h4>
+        {{location.phone}}
+      </div>
+
+      {{! Website }}
+      <div class="biz-info biz-info-website">
+        <h4 class="biz-info-title">Website</h4>
+        <a href="{{business.url}}" target="_blank">{{business.url}}</a>
+      </div>
+
+      {{! Hours }}
+      <div class="biz-info biz-info-hours">
+        <h4 class="biz-info-title">Hours</h4>
+        <dl class="biz-info-hours-list">
+        {{#biz-hours location}}
+          <dt>{{this.day}}</dt>
+          <dd>{{this.begin}} - {{this.end}}</dd>
+        {{/biz-hours}}
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

@@ -38,7 +38,6 @@ define(function(require){
     }
 
   , onClose: function(){
-    console.log("onClose");
       utils.dom(window).off('resize', this.throttledResize);
       utils.history.navigate('locations');
     }
