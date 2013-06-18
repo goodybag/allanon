@@ -129,17 +129,17 @@ module.exports = function(grunt) {
         upload: [
           {
             src: 'build/index.html'
-          , dest: '/index.html'
+          , dest: 'index.html'
           , gzip: true
           }
         , {
             src: 'build/img/*'
-          , dest: '/img'
+          , dest: 'img'
           , gzip: true
           }
         , {
             src: 'build/lib/*'
-          , dest: '/lib'
+          , dest: 'lib'
           , gzip: true
           }
         ]
