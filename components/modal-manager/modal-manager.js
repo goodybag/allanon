@@ -78,7 +78,11 @@ define(function(require){
         self.close();
       });
 
-      utils.dom(document.body).css( 'min-height', this.modals[modal].$el.height() );
+      if (utils.dom(document.body).height() <= this.modals[modal].$el.height()){
+        utils.dom(document.body).css( 'min-height', this.modals[modal].$el.height() );
+      } else {
+        utils.dom(document.body).css( 'min-height', null );
+      }
 
       if (callback) callback(null, this.modals[modal]);
 
