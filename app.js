@@ -201,7 +201,7 @@
                   msg += error.details
                 else {
                   for (var key in error.details){
-                    if ($el) $el.find('.field-' + key).addClass('error'), console.log('.field-' + key);
+                    if ($el) $el.find('.field-' + key).addClass('error');
                     if (error.details[key]){
                       msg += "\n" + app.getKeyNiceName(key) + ": " + error.details[key] + ", ";
                       detailsAdded = true;
