@@ -1,15 +1,16 @@
 define(function(require) {
-  var template = require('hbt!./enter-keytag-tmpl');
-  var Components  = require('../../components/index');
-  var user = require('user');
-  var troller = require('troller');
+  var template   = require('hbt!./enter-keytag-tmpl');
+  var Components = require('../../components/index');
+  var user       = require('user');
+  var utils      = require('utils');
+  var troller    = require('troller');
 
 
   return Components.Modal.Main.extend({
     className: 'modal hide fade modal-span5 enter-keytag-modal'
 
   , events: {
-    'click #view-locations'   : 'showLocations',
+    'click #view-locations-btn'   : 'showLocations',
     'submit #add-keytag-form' : 'updateKeytag'
     }
 
@@ -42,7 +43,7 @@ define(function(require) {
     }
 
   , showLocations: function(e) {
-     window.location.href = 'http://www.goodybag.com/locations.html';
+     utils.history.navigate('/locations', {trigger: true});
     }
   });
 });
