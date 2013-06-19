@@ -47,10 +47,17 @@ define(function(require){
     },
 
     cancel: function(e) {
-
+      api.users.cancelCardUpdate(this.token, function(err) {
+        // ignore errors
+        utils.history.navigate('/', {trigger: true});
+      });
     },
 
     submit: function(e) {
+      api.users.updateCard(this.token, function(err) {
+        if (err) troller.error('Oops! Could not update card id.');
+        utils.history.navigate('/', {trigger: true});
+      });
     }
   });
 });
