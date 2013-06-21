@@ -1,0 +1,78 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+@info-color: lighten(@text-color, 10%);
+@logo-width: 240px;
+@day-width: 100px;
+
+.page-business .page-plateau.plateau {
+  padding-bottom: 0;
+}
+
+.page-business .logo-wrapper {
+  display: table;
+  box-sizing: border-box;
+  padding-right: 52px;
+  text-align: right;
+}
+
+.page-business .business-logo {
+  border-radius: 8px;
+  border: 1px @gray-light solid;
+  width: @logo-width;
+}
+
+.page-business .view-punchcard {
+  width: @logo-width;
+  margin-top: 34px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.page-business .business-name {
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: -8px;
+}
+
+.page-business .biz-info {
+  margin-top: 26px;
+  margin-bottom: 28px;
+  font-size: 20px;
+  color: @info-color;
+}
+
+.page-business .biz-info .biz-info-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: @text-color;
+}
+
+.page-business .biz-info-hours-list {
+  margin: 0;
+}
+
+.page-business .biz-info-website a {
+  color: @info-color;
+}
+
+.page-business .biz-info-hours-list dt {
+  width: @day-width;
+  float: left;
+  font-weight: @font-weight-base;
+}
+
+.page-business .biz-info-hours-list dd {
+  display: table;
+  box-sizing: border-box;
+  width: 100%;
+  float: left;
+  padding-left: @day-width;
+  margin-left: -@day-width;
+  margin-bottom: 2px;
+}
+
+.page-business .product-menu {
+  margin-top: 42px;
+}

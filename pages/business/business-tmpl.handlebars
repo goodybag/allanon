@@ -1,0 +1,98 @@
+<h1 class="page-title">Business Info</h1>
+
+<div class="row">
+  <div class="span10 plateau page-plateau">
+    <div class="row">
+      {{! Logo and Punchcard button }}
+      <div class="span4 logo-wrapper">
+        <img src="{{filepicker business.logoUrl 240 240}}" alt="{{business.name}}" class="business-logo">
+
+        {{#if business.isGB}}
+        <button class="btn btn-white view-punchcard">View PunchCard</button>
+        {{/if}}
+      </div>
+
+      {{! Business info }}
+      <div class="span6 info-wrapper">
+        <h2 class="business-name">{{business.name}} - {{location.name}}</h2>
+
+        {{! Address }}
+        <div class="biz-info biz-info-address">
+          <h4 class="biz-info-title">Address</h4>
+          <address class="location-address">
+            {{location.street1}}, {{#if location.street2}}{{location.street2}}, {{/if}}<br />
+            {{location.city}}, {{location.state}} {{location.zip}}
+          </address>
+        </div>
+
+        {{! Phone }}
+        <div class="biz-info biz-info-phone">
+          <h4 class="biz-info-title">Phone</h4>
+          {{location.phone}}
+        </div>
+
+        {{! Website }}
+        <div class="biz-info biz-info-website">
+          <h4 class="biz-info-title">Website</h4>
+          <a href="{{business.url}}" target="_blank">{{business.url}}</a>
+        </div>
+
+        {{! Hours }}
+        <div class="biz-info biz-info-hours">
+          <h4 class="biz-info-title">Hours</h4>
+          <dl class="biz-info-hours-list">
+          {{#biz-hours location}}
+            <dt>{{this.day}}</dt>
+            <dd>{{this.begin}} - {{this.end}}</dd>
+          {{/biz-hours}}
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    {{! Menu }}
+    <section class="product-menu product-menu-table">
+      {{#each categories}}
+      <section class="product-menu-section">
+        <h1 class="product-menu-section-title">{{this.name}}</h1>
+
+        {{! Section Products }}
+        <div class="products-list">
+          {{#each this.products}}
+          <div class="row">
+            <div class="span10 product-item" id="product-list-item-{{this.id}}" data-id="{{this.id}}">
+              <div class="row">
+                <div class="span1 product-photo-wrapper">
+                  {{#if this.photoUrl}}
+                  <img class="product-photo" src="{{filepicker this.photoUrl 66 66}}" alt="{{this.name}}">
+                  {{else}}
+                  <div class="product-photo"></div>
+                  {{/if}}
+                </div>
+                <div class="span7 product-info-wrapper">
+                  <h4 class="product-name">{{this.name}}</h4>
+                  <p class="product-description">{{this.description}}</p>
+                </div>
+                <div class="span1 product-feelings-wrapper">
+                  <div class="product-feeling product-feeling-likes">
+                    <i class="icon-heart"></i>
+                    <span class="product-menu-like-count">{{this.likes}}</span>
+                  </div>
+                </div>
+                <div class="span1 product-price-wrapper">
+                {{#if this.price}}
+                  ${{money this.price}}
+                {{else}}
+                  N/A
+                {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </section>
+      {{/each}}
+    </section>
+  </div>
+</div>

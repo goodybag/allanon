@@ -95,6 +95,7 @@
         , 'locations':                require('./pages/locations/index')
         , 'support':                  require('./pages/support/index')
         , 'card-update':              require('./pages/card-update/index')
+        , 'business':                 require('./pages/business/index')
         }
 
         // Modals provided to app-level modal manager

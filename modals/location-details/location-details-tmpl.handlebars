@@ -19,6 +19,8 @@
       {{this.street1}}, {{#if this.street2}}{{this.street2}}, {{/if}}<br />
       {{this.city}}, {{this.state}} {{this.zip}}</br />
       {{#if this.phone}}<em class="phone">{{phone this.phone}}</em><br />{{/if}}
+      <a href="/#/businesses/{{../business.id}}/locations/{{this.id}}">View Menu</a>
+      |
       <a href="http://maps.google.com/?q={{../business.name}} {{this.street1}}, {{#if this.street2}}{{this.street2}}, {{/if}}{{this.city}}, {{this.state}} {{this.zip}}">View On Map</a>
     </address>
     {{/each}}

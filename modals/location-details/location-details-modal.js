@@ -38,9 +38,11 @@ define(function(require){
     }
 
   , onClose: function(){
-    console.log("onClose");
       utils.dom(window).off('resize', this.throttledResize);
-      utils.history.navigate('locations');
+      var url = 'locations/' + this.business.id;
+      var hash = utils.history.location.hash;
+      if (hash == ('#' + url) || hash == ('#/' + url))
+        utils.history.navigate('locations');
     }
 
   , render: function(){
@@ -49,7 +51,6 @@ define(function(require){
 
     // Make the modal do overflow scroll and set the modal content height
   , checkModalHeightStuff: function(){
-    console.log("check modal");
       var $content = this.$el.find('.modal-content');
       var winHeight = parseInt(utils.dom(window).height());
 
