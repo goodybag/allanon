@@ -34,7 +34,6 @@ define(function(require){
 
   , changeBusiness: function(id, lid){
       var this_ = this;
-console.log("changeBusiness", id, lid);
       troller.spinner.spin();
 
       utils.parallel({
@@ -89,7 +88,6 @@ console.log("changeBusiness", id, lid);
       if (!this.locationsById[id]) return troller.error("Cannot find Location ID: " + id);
 
       this.currentLocation = this.locationsById[id];
-      console.log("changeLocation", id)
       this.render();
       return this;
     }

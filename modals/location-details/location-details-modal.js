@@ -42,7 +42,7 @@ define(function(require){
       var url = 'locations/' + this.business.id;
       var hash = utils.history.location.hash;
       if (hash == ('#' + url) || hash == ('#/' + url))
-        console.log(utils.history.location.hash), utils.history.navigate('locations');
+        utils.history.navigate('locations');
     }
 
   , render: function(){
