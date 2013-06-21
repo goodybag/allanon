@@ -14,7 +14,8 @@ define(function(require){
     className: 'page page-business'
 
   , events: {
-
+      'click .view-punchcard':          'onViewPunchCardClick'
+    , 'click .product-item':            'onProductItemClick'
     }
 
   , initialize: function(){
@@ -46,11 +47,26 @@ define(function(require){
             done(error, locations);
           })
         }
+
+      , products: function(done){
+          var options = {
+            include: ['categories', 'collections']
+          , limit: 1000
+          };
+
+          api.businesses.products.list(id, options, function(error, products, meta){
+            done(error, products);
+          });
+        }
       }, function(error, results){
         if (error) return troller.error(error);
 
-        this_.business = results.business;
-        this_.locations = results.locations;
+        this_.destroyProductEvents();
+
+        this_.business    = results.business;
+        this_.locations   = results.locations;
+        this_.categories  = utils.getProductsByCategory( results.products );
+        this_.products    = utils.index(results.products, 'id');
 
         utils.index(this_.locations, this_.locationsById = {}, 'id');
 
@@ -59,6 +75,8 @@ define(function(require){
         troller.spinner.stop();
 
         this_.render();
+
+        this_.setupProductEvents();
       });
     }
 
@@ -71,14 +89,63 @@ define(function(require){
     }
 
   , render: function(){
-    console.log(this.locationsById);
       this.$el.html(
         template({
-          business: this.business
-        , location: this.currentLocation
+          business:   this.business
+        , location:   this.currentLocation
+        , categories: this.categories
         })
       );
       return this;
+    }
+
+  , setupProductEvents: function(){
+      this._boundWltChange = utils.bind(this.onWltChange, this);
+
+      for (var id in this.products){
+        troller.on('product:' + id + ':change:wlt', this._boundWltChange);
+      }
+
+      return this;
+    }
+
+  , destroyProductEvents: function(){
+      if (this._boundWltChange){
+        for (var id in this.products){
+          troller.off('product:' + id + ':change:wlt', this._boundWltChange);
+        }
+      }
+
+      return this;
+    }
+
+  , onWltChange: function(change, model){
+    console.log('onWltChange');
+      if (change != 'like') return;
+
+      this.$el.find('#product-list-item-' + model.id + ' .product-menu-like-count').html(model.likes);
+    }
+
+  , onViewPunchCardClick: function(e){
+      e.preventDefault();
+
+      troller.spinner.spin();
+
+      api.loyalty.userBusiness( user.get('id'), this.business.id, function(error, result){
+        troller.spinner.stop();
+        if (error) return troller.error(error);
+
+        troller.modals.open('punchcard', { punchcard: result });
+      });
+    }
+
+  , onProductItemClick: function(e){
+      while (e.target.className.indexOf('product-item') == -1)
+        e.target = e.target.parentElement;
+
+      troller.modals.open('product-details', {
+        product: this.products[ utils.dom(e.target).data('id') ]
+      });
     }
   });
 });
