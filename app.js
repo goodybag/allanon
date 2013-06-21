@@ -93,6 +93,8 @@
         , 'about-us':                 require('./pages/about-us/index')
         , 'how-it-works':             require('./pages/how-it-works/index')
         , 'locations':                require('./pages/locations/index')
+        , 'support':                  require('./pages/support/index')
+        , 'card-update':              require('./pages/card-update/index')
         , 'business':                 require('./pages/business/index')
         }
 
