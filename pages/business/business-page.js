@@ -25,14 +25,16 @@ define(function(require){
     }
 
   , onShow: function(options){
-      if (options.businessId == this.business.id) return;
-
-      this.changeBusiness(options.businessId);
+      if (options.businessId != this.business.id){
+        this.changeBusiness(options.businessId, options.locationId);
+      }
+      else if (options.locationId != this.currentLocation.id)
+        this.changeLocation(options.locationId);
     }
 
-  , changeBusiness: function(id){
+  , changeBusiness: function(id, lid){
       var this_ = this;
-
+console.log("changeBusiness", id, lid);
       troller.spinner.spin();
 
       utils.parallel({
@@ -70,7 +72,10 @@ define(function(require){
 
         utils.index(this_.locations, this_.locationsById = {}, 'id');
 
-        this_.currentLocation = this_.locations.length > 0 ? this_.locations[0] : null;
+        if (lid)
+          this_.currentLocation = this_.locations.length > 0 ? this_.locationsById[lid] : null;
+        else
+          this_.currentLocation = this_.locations.length > 0 ? this_.locations[0] : null;
 
         troller.spinner.stop();
 
@@ -84,6 +89,7 @@ define(function(require){
       if (!this.locationsById[id]) return troller.error("Cannot find Location ID: " + id);
 
       this.currentLocation = this.locationsById[id];
+      console.log("changeLocation", id)
       this.render();
       return this;
     }
@@ -120,7 +126,6 @@ define(function(require){
     }
 
   , onWltChange: function(change, model){
-    console.log('onWltChange');
       if (change != 'like') return;
 
       this.$el.find('#product-list-item-' + model.id + ' .product-menu-like-count').html(model.likes);
@@ -128,6 +133,8 @@ define(function(require){
 
   , onViewPunchCardClick: function(e){
       e.preventDefault();
+
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
 
       troller.spinner.spin();
 
