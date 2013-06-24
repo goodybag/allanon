@@ -170,8 +170,8 @@ module.exports = function(grunt) {
           , gzip: true
           }
         , {
-            src: 'build/lib/*'
-          , dest: 'lib'
+            src: 'build/fonts/*'
+          , dest: 'fonts'
           , gzip: true
           }
         ]
