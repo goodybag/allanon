@@ -142,6 +142,11 @@ module.exports = function(grunt) {
           , dest: 'lib'
           , gzip: true
           }
+        , {
+            src: 'build/fonts/*'
+          , dest: 'fonts'
+          , gzip: true
+          }
         ]
       },
 
@@ -157,6 +162,11 @@ module.exports = function(grunt) {
         , {
             src: 'build/img/*'
           , dest: 'img'
+          , gzip: true
+          }
+        , {
+            src: 'build/lib/*'
+          , dest: 'lib'
           , gzip: true
           }
         , {
