@@ -142,6 +142,11 @@ module.exports = function(grunt) {
           , dest: 'lib'
           , gzip: true
           }
+        , {
+            src: 'build/fonts/*'
+          , dest: 'fonts'
+          , gzip: true
+          }
         ]
       },
 
@@ -162,6 +167,11 @@ module.exports = function(grunt) {
         , {
             src: 'build/lib/*'
           , dest: 'lib'
+          , gzip: true
+          }
+        , {
+            src: 'build/fonts/*'
+          , dest: 'fonts'
           , gzip: true
           }
         ]
@@ -186,6 +196,7 @@ module.exports = function(grunt) {
           './img'
         , './lib/easyXDM.min.js'
         , './lib/console.js'
+        , './fonts'
         ]
       , dest: 'build'
       }
