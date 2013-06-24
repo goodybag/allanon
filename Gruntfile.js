@@ -196,6 +196,7 @@ module.exports = function(grunt) {
           './img'
         , './lib/easyXDM.min.js'
         , './lib/console.js'
+        , './fonts'
         ]
       , dest: 'build'
       }
