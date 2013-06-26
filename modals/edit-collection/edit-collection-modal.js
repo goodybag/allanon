@@ -72,7 +72,6 @@ define(function(require){
 
         utils.history.navigate('/collections', { trigger: true });
       });
-
     }
   });
 });
