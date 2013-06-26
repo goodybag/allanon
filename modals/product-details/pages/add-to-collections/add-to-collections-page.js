@@ -14,7 +14,9 @@ define(function(require){
     className: 'page page-add-to-collections'
 
   , events: {
-      'click .btn-back':            'onCancelClick'
+      'click .btn-back':            'onBackClick'
+    , 'click .btn-cancel':          'onCancelClick'
+    , 'click .btn-save':            'onSaveClick'
     , 'click a.add-new-collection': 'onNewCollectionClick'
     }
 
@@ -33,6 +35,8 @@ define(function(require){
       if (options.product) this.children.addToCollections.provideProduct(this.product);
 
       troller.on('user:collections:change', utils.bind(this.render, this));
+
+      this.children.addToCollections.on('checkbox:change', utils.bind(this.onCheckboxChange, this))
 
       return this;
     }
@@ -80,8 +84,20 @@ define(function(require){
       return this;
     }
 
+  , onBackClick: function(e){
+      e.preventDefault();
+      this.pageManager.changePage('details');
+    }
+
   , onCancelClick: function(e){
       e.preventDefault();
+      this.children.addToCollections.cancel();
+      this.pageManager.changePage('details');
+    }
+
+  , onSaveClick: function(e){
+      e.preventDefault();
+      this.children.addToCollections.save();
       this.pageManager.changePage('details');
     }
 
@@ -91,6 +107,16 @@ define(function(require){
         utils.history.location.hash + e.target.href.split('#')[1]
       );
       troller.modals.open('add-new-collection');
+    }
+
+  , onCheckboxChange: function(collectionId, checked){
+      if (this.children.addToCollections.numPending == 0){
+        this.$el.find('.btn-cancel, .btn-save').addClass('hide');
+        this.$el.find('.btn-back').removeClass('hide');
+      } else {
+        this.$el.find('.btn-cancel, .btn-save').removeClass('hide');
+        this.$el.find('.btn-back').addClass('hide');
+      }
     }
   });
 });
