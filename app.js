@@ -155,6 +155,10 @@
             return app.appView.children.pages.current;
           }
 
+        , setTitle: function(title){
+            document.title = title;
+          }
+
         , router: new Router()
 
         , loadTypekit: function(){
@@ -283,6 +287,8 @@
           }
         }
       ;
+
+      troller.add('app.setTitle',     app.setTitle);
 
       troller.add('app.changePage',   app.changePage);
       troller.add('app.currentPage',  app.currentPage);

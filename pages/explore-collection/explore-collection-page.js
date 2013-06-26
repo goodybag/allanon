@@ -13,6 +13,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-explore'
 
+  , title: 'Explore My Collection'
+
   , events: {
       'submit #explore-search-form':        'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
@@ -82,6 +84,8 @@ define(function(require){
       this.options.offset = 0;
 
       this.collection = options.collection;
+
+      this.title = this.collection.name;
 
       this.fetchData();
 
