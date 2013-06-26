@@ -12,6 +12,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-how-it-works'
 
+  , title: 'How It Works'
+
   , events: {
 
     }

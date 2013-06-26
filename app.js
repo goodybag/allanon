@@ -146,12 +146,17 @@
             if (!utils.support.cors) app.loadIEModules();
           }
 
-        , changePage: function(page, options){
-            return app.appView.changePage(page, options);
+        , changePage: function(page, options, callback){
+            app.appView.changePage(page, options, callback);
+            app.setTitle( app.appView.children.pages.pages[page].title || 'Goodybag' );
           }
 
         , currentPage: function(){
             return app.appView.children.pages.current;
+          }
+
+        , setTitle: function(title){
+            document.title = title;
           }
 
         , router: new Router()
@@ -282,6 +287,8 @@
           }
         }
       ;
+
+      troller.add('app.setTitle',     app.setTitle);
 
       troller.add('app.changePage',   app.changePage);
       troller.add('app.currentPage',  app.currentPage);

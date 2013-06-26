@@ -11,6 +11,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-collections'
 
+  , title: 'My Collections'
+
   , events: {
       'click .add-new-collection':          'onNewCollectionClick'
     , 'click .collection':                  'onCollectionClick'

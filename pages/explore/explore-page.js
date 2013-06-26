@@ -13,6 +13,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-explore'
 
+  , title: 'Explore Goodybag'
+
   , events: {
       'submit #explore-search-form':        'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
@@ -61,6 +63,16 @@ define(function(require){
       user.on('deauth', function(){
         this_.products = [];
         this_.onShow();
+      });
+
+      // Set Correct Title
+      this.children.products.on('product-details-modal:open', function(product){
+        troller.app.setTitle(product.name);
+      });
+
+      this.children.products.on('product-details-modal:close', function(){
+        console.log("alksjdf");
+        troller.app.setTitle(this_.title);
       });
     }
 

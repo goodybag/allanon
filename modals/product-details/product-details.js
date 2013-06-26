@@ -108,6 +108,8 @@ define(function(require){
 
         this.productId = this.product.id;
 
+        troller.app.setTitle(this.product.name);
+
         return this.render();
       }
 
@@ -123,6 +125,8 @@ define(function(require){
         troller.spinner.stop();
 
         if (error) return troller.error(error);
+
+        troller.app.setTitle(product.name);
 
         this_.render();
       });
