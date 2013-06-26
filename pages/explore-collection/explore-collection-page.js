@@ -179,12 +179,18 @@ define(function(require){
         troller.spinner.spin();
       }, 1000);
 
-      this.fetchData({ spin: e.type != 'keyup' }, function(error){
+      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
         clearTimeout( loadTooLong );
 
         if (error) return troller.error(error);
 
         this_.children.products.render()
+
+        // Add/Remove hide class based on number of products
+        this_.$el.find('.no-results')[
+          (results.length == 0 ? 'remove' : 'add')
+        + 'Class'
+        ]('hide');
       });
     }
 
