@@ -166,10 +166,16 @@ define(function(require){
         this.options.filter = value;
       }
 
-      this.fetchData(function(error){
+      this.fetchData(function(error, results){
         if (error) return troller.error(error);
 
         this_.children.products.render()
+
+        // Add/Remove hide class based on number of products
+        this_.$el.find('.no-results')[
+          (results.length == 0 ? 'remove' : 'add')
+        + 'Class'
+        ]('hide');
       });
     }
 
