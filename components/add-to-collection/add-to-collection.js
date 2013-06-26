@@ -89,30 +89,13 @@ define(function(require){
 
   , onCheckboxChange: function(e){
       var val = e.target.value;
+      var newList = e.target.checked ? this.pending.add : this.pending.remove;
+      var oldList  = e.target.checked ? this.pending.remove : this.pending.add;
 
-      if (e.target.checked){
-        // Add to pending adds, remove from pending removes
-        if (!this.pending.add[val]){
-          if (this.pending.remove[val]){
-            delete this.pending.remove[val];
-            this.numPending--;
-          } else {
-            this.pending.add[val] = true;
-            this.numPending++;
-          }
-        }
-      } else {
-        // Add to pending removes, remove from pending adds
-        if (!this.pending.remove[val]){
-          if (this.pending.add[val]){
-            delete this.pending.add[val];
-            this.numPending--;
-          } else {
-            this.pending.remove[val] = true;
-            this.numPending++;
-          }
-        }
-      }
+      if (!oldList[val]) newList[val] = true;
+      delete oldList[val];
+      this.numPending = utils.size(this.pending.add) + utils.size(this.pending.remove);
+
       this.trigger('checkbox:change', val, e.target.checked);
     }
   });
