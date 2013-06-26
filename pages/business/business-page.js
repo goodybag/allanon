@@ -81,6 +81,8 @@ define(function(require){
         this_.render();
 
         this_.setupProductEvents();
+
+        troller.app.setTitle(this_.business.name);
       });
     }
 

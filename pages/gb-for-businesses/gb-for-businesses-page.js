@@ -12,6 +12,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-gb-for-businesses'
 
+  , title: 'Goodybag for Businesses'
+
   , events: {
       'submit #business-contact-form':      'onContactFormSubmit'
     }

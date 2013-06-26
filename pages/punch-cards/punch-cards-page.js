@@ -13,6 +13,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-punch-cards'
 
+  , title: 'My Punch Cards'
+
   , manualRender: true
 
   , events: {

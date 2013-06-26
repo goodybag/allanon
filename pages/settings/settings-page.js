@@ -12,6 +12,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-settings'
 
+  , title: 'Settings'
+
   , events: {
       'submit #form-settings':      'onFormSubmit'
     , 'click .btn-change-photo':    'onChangePhotoClick'

@@ -140,8 +140,15 @@ define(function(require){
       );
 
       var options = { product: this.model, productId: this.model.id };
+      var this_ = this;
 
-      troller.modals.open('product-details', options);
+      troller.modals.open('product-details', options, function(error, modal){
+        modal.once('close', function(){
+          this_.trigger('product-details-modal:close')
+        });
+      });
+
+      this.trigger('product-details-modal:open', this.model);
     }
 
   , stopListening: function(){

@@ -21,6 +21,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-locations'
 
+  , title: 'Goodybag Locations'
+
   , events: {
       'click  .business-listing > .business':   'onBusinessClick'
     , 'submit .businesses-search':              'onBusinessSearch'
@@ -105,7 +107,16 @@ define(function(require){
     }
 
   , openBusiness: function(id){
-      troller.modals.open('location-details', { business: this.businessesById[id] });
+      var this_ = this;
+
+      troller.modals.open('location-details', { business: this.businessesById[id] }, function(error, modal){
+        modal.once('close', function(){
+          troller.app.setTitle(this_.title);
+        });
+
+        troller.app.setTitle(this_.businessesById[id].name);
+      });
+
       return this;
     }
 

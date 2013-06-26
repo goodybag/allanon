@@ -11,6 +11,8 @@ define(function(require){
   return Components.Pages.Page.extend({
     className: 'page page-card-update',
 
+    title: 'Update Your Card ID',
+
     events: {
       'click cancel-card-update':  'cancel',
       'click confirm-card-update': 'submit'

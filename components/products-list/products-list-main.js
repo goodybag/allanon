@@ -49,6 +49,8 @@ define(function(require){
         fragment.appendChild( item.el );
 
         item.on('feelings:change', utils.bind(this.onProductFeelingChange, this));
+        item.on('product-details-modal:open', utils.bind(this.onProductModalOpen, this));
+        item.on('product-details-modal:close', utils.bind(this.onProductModalClose, this));
       }
 
       this.$el.html(fragment);
@@ -58,6 +60,14 @@ define(function(require){
 
   , onProductFeelingChange: function(feeling, direction, model){
       this.trigger('feelings:change', feeling, direction, model);
+    }
+
+  , onProductModalOpen: function(model){
+      this.trigger('product-details-modal:open', model);
+    }
+
+  , onProductModalClose: function(){
+      this.trigger('product-details-modal:close');
     }
   });
 });
