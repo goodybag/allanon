@@ -4,6 +4,18 @@ define(function(require){
   , troller   = require('troller')
   , user      = require('user')
   , template  = require('hbt!./add-to-collection-tmpl')
+
+  , getAddFn = function(cid, pid){
+      return function(done){
+        user.addToCollection( cid, pid, done );
+      };
+    }
+
+  , getRemoveFn = function(cid, pid){
+      return function(done){
+        user.removeFromCollection( cid, pid, done );
+      };
+    }
   ;
 
   return utils.View.extend({
@@ -14,6 +26,13 @@ define(function(require){
     }
 
   , initialize: function(options){
+      this.pending = {
+        add:    {}
+      , remove: {}
+      };
+
+      this.numPending = 0;
+
       return this;
     }
 
@@ -28,7 +47,6 @@ define(function(require){
     }
 
   , render: function(){
-    console.log(this.product, this.collections);
       this.$el.html(
         template({
           collections:  this.collections
@@ -38,18 +56,50 @@ define(function(require){
       return this;
     }
 
+  , cancel: function(){
+      this.pending = {
+        add:    {}
+      , remove: {}
+      };
+
+      this.numPending = 0;
+
+      return this;
+    }
+
+  , save: function(callback){
+      var fns = [], this_ = this;
+
+      for (var id in this.pending.add){
+        fns.push( getAddFn( id, this.product.id ) );
+        this.product.collections.push(id);
+      }
+
+      for (var id in this.pending.remove){
+        fns.push( getRemoveFn( id, this.product.id ) );
+        this.product.collections = utils.without(this.product.collections, id);
+      }
+
+      utils.parallel( fns, function(error, results){
+        if (error) return callback ? callback(error) : troller.error(error);
+
+        // Reset pending
+        this_.cancel();
+      });
+
+      return this;
+    }
+
   , onCheckboxChange: function(e){
       var val = e.target.value;
-      if (e.target.checked){
-        if (this.product.collections.indexOf(val) == -1)
-          this.product.collections.push(val);
+      var newList = e.target.checked ? this.pending.add : this.pending.remove;
+      var oldList  = e.target.checked ? this.pending.remove : this.pending.add;
 
-        user.addToCollection( e.target.value, this.product.id );
-      } else {
-        this.product.collections = utils.without(this.product.collections, val);
-        user.removeFromCollection( e.target.value, this.product.id );
-      }
-console.log(val, this.product.collections, this.collections);
+      if (!oldList[val]) newList[val] = true;
+      delete oldList[val];
+      this.numPending = utils.size(this.pending.add) + utils.size(this.pending.remove);
+
+      this.trigger('checkbox:change', val, e.target.checked);
     }
   });
 });
