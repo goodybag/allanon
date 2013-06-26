@@ -105,7 +105,6 @@ define(function(require){
         // Add to pending removes, remove from pending adds
         if (!this.pending.remove[val]){
           if (this.pending.add[val]){
-            console.log("SHouldnt be here", this.pending.add[val])
             delete this.pending.add[val];
             this.numPending--;
           } else {
@@ -114,7 +113,6 @@ define(function(require){
           }
         }
       }
-console.log('Collection Change:', val, e.target.checked, this.pending, this.numPending)
       this.trigger('checkbox:change', val, e.target.checked);
     }
   });

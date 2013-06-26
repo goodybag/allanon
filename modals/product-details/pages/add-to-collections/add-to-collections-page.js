@@ -54,8 +54,6 @@ define(function(require){
 
         this_.provideCollections(collections);
 
-        console.log("onShow", this_.collections, this_.product)
-
         troller.spinner.stop();
 
         this_.render();
