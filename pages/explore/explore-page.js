@@ -71,7 +71,6 @@ define(function(require){
       });
 
       this.children.products.on('product-details-modal:close', function(){
-        console.log("alksjdf");
         troller.app.setTitle(this_.title);
       });
     }

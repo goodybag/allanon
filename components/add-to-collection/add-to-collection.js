@@ -5,12 +5,15 @@ define(function(require){
   , user      = require('user')
   , template  = require('hbt!./add-to-collection-tmpl')
 
-  , getSaveFn = function(action, cid, pid){
+  , getAddFn = function(cid, pid){
       return function(done){
-        if (action == 'add')
-          user.addToCollection( cid, pid, done );
-        else
-          user.removeFromCollection( cid, pid, done );
+        user.addToCollection( cid, pid, done );
+      };
+    }
+
+  , getRemoveFn = function(cid, pid){
+      return function(done){
+        user.removeFromCollection( cid, pid, done );
       };
     }
   ;
@@ -68,12 +71,12 @@ define(function(require){
       var fns = [], this_ = this;
 
       for (var id in this.pending.add){
-        fns.push( getSaveFn( 'add', id, this.product.id ) );
+        fns.push( getAddFn( id, this.product.id ) );
         this.product.collections.push(id);
       }
 
       for (var id in this.pending.remove){
-        fns.push( getSaveFn( 'remove', id, this.product.id ) );
+        fns.push( getRemoveFn( id, this.product.id ) );
         this.product.collections = utils.without(this.product.collections, id);
       }
 
