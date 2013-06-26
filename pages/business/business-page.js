@@ -82,6 +82,7 @@ define(function(require){
 
         this_.setupProductEvents();
 
+        this_.title = this_.business.name;
         troller.app.setTitle(this_.business.name);
       });
     }
@@ -147,11 +148,17 @@ define(function(require){
     }
 
   , onProductItemClick: function(e){
+      var this_ = this;
+
       while (e.target.className.indexOf('product-item') == -1)
         e.target = e.target.parentElement;
 
       troller.modals.open('product-details', {
         product: this.products[ utils.dom(e.target).data('id') ]
+      }, function(error, modal){
+        modal.once('close', function(){
+          troller.app.setTitle(this_.title);
+        });
       });
     }
   });

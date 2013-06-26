@@ -18,7 +18,7 @@ define(function(require){
   , events: {
       'submit #explore-search-form':        'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
-    // , 'keyup .field-search':                'onSearchSubmit'
+    , 'keyup .field-search':                'onSearchSubmit'
 
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
 
@@ -117,7 +117,10 @@ define(function(require){
 
       if (options.spin) troller.spinner.spin();
 
-      api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
+      if (this.previousRequest)
+        this.previousRequest.abort();
+
+      this.previousRequest = api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
         troller.spinner.stop();
 
         if (error) return callback ? callback(error) : troller.error(error);
@@ -158,6 +161,8 @@ define(function(require){
 
       var value = this.$search.val(), this_ = this;
 
+      if (value == this.options.filter) return;
+
       if (!value){
         if (this.options.filter)
           delete this.options.filter;
@@ -166,7 +171,17 @@ define(function(require){
         this.options.filter = value;
       }
 
-      this.fetchData(function(error, results){
+      // Reset offset so results don't get effed
+      this.options.offset = 0;
+
+      // If keyup takes too long, put up spinner
+      var loadTooLong = setTimeout(function(){
+        troller.spinner.spin();
+      }, 1000);
+
+      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
+        clearTimeout( loadTooLong );
+
         if (error) return troller.error(error);
 
         this_.children.products.render()
