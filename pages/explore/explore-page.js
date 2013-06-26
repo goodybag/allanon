@@ -17,6 +17,7 @@ define(function(require){
 
   , events: {
       'submit #explore-search-form':        'onSearchSubmit'
+    , 'keyup  .field-search':               'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
 
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
@@ -100,7 +101,7 @@ define(function(require){
       this.fetchData(function(error, results){
         if (error) return troller.error(error), troller.spinner.stop();
 
-        troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
+        troller.spinner.stop();
         this_.render();
       });
 
@@ -123,8 +124,12 @@ define(function(require){
 
       if (options.spin) troller.spinner.spin();
 
-      api.products.food(this.options, function(error, results){
+      if (this.previousRequest)
+        this.previousRequest.abort();
+
+      this.previousRequest = api.products.food(this.options, function(error, results){
         troller.spinner.stop();
+        this_.previousRequest = null;
 
         if (error) return typeof callback === 'function' ? callback(error) : troller.error(error);
 
@@ -171,6 +176,8 @@ define(function(require){
 
       var value = this.$search.val(), this_ = this;
 
+      if (value == this.options.filter) return;
+
       if (!value){
         if (this.options.filter)
           delete this.options.filter;
@@ -182,10 +189,23 @@ define(function(require){
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
-      this.fetchData(function(error, results){
+      // If keyup takes too long, put up spinner
+      var loadTooLong = setTimeout(function(){
+        troller.spinner.spin();
+      }, 1000);
+
+      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
+        clearTimeout( loadTooLong );
+
         if (error) return troller.error(error);
 
         this_.children.products.render();
+
+        // Add/Remove hide class based on number of products
+        this_.$el.find('.no-results')[
+          (results.length == 0 ? 'remove' : 'add')
+        + 'Class'
+        ]('hide');
       });
     }
 
