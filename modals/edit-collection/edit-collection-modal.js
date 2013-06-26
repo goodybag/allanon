@@ -15,6 +15,7 @@ define(function(require){
 
   , events: {
       'submit #edit-collection-form':         'onEditCollectionSubmit'
+    , 'click .btn-delete':                    'onDeleteClick'
     , 'click .btn-cancel':                    'onCancelClick'
     }
 
@@ -27,7 +28,6 @@ define(function(require){
 
   , onOpen: function(options){
       this.collection = options.collection;
-      console.log(this.collection);
       this.render();
     }
 
@@ -55,6 +55,23 @@ define(function(require){
   , onCancelClick: function(e){
       e.preventDefault();
       this.close();
+    }
+
+  , onDeleteClick: function(e){
+      e.preventDefault();
+
+      if (!troller.confirm("Are you sure you want to delete this collection? You will not be able to undo this action.")) return;
+
+      troller.spinner.spin();
+      this.close();
+
+      user.removeCollection(this.collection.id, function(error){
+        troller.spinner.stop();
+
+        if (error) return troller.error(error);
+
+        utils.history.navigate('/collections', { trigger: true });
+      });
     }
   });
 });
