@@ -147,7 +147,8 @@
           }
 
         , changePage: function(page, options){
-            return app.appView.changePage(page, options);
+            app.appView.changePage(page, options);
+            app.setTitle( app.appView.children.pages.pages[page].title || 'Goodybag' );
           }
 
         , currentPage: function(){
