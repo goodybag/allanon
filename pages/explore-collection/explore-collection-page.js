@@ -74,6 +74,15 @@ define(function(require){
       , offset:     0
       , include:    ['collections', 'userPhotos']
       };
+
+      // Set Correct Title
+      this.children.products.on('product-details-modal:open', function(product){
+        troller.app.setTitle(product.name);
+      });
+
+      this.children.products.on('product-details-modal:close', function(){
+        troller.app.setTitle(this_.title);
+      });
     }
 
   , onShow: function(options){

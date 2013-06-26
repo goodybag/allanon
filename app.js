@@ -146,8 +146,8 @@
             if (!utils.support.cors) app.loadIEModules();
           }
 
-        , changePage: function(page, options){
-            app.appView.changePage(page, options);
+        , changePage: function(page, options, callback){
+            app.appView.changePage(page, options, callback);
             app.setTitle( app.appView.children.pages.pages[page].title || 'Goodybag' );
           }
 
