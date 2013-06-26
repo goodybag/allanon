@@ -101,7 +101,7 @@ define(function(require){
       this.fetchData(function(error, results){
         if (error) return troller.error(error), troller.spinner.stop();
 
-        troller.spinner.stop();  // redundant?  both with the above line and the stop in fetch data?
+        troller.spinner.stop();
         this_.render();
       });
 
@@ -200,6 +200,12 @@ define(function(require){
         if (error) return troller.error(error);
 
         this_.children.products.render();
+
+        // Add/Remove hide class based on number of products
+        this_.$el.find('.no-results')[
+          (results.length == 0 ? 'remove' : 'add')
+        + 'Class'
+        ]('hide');
       });
     }
 
