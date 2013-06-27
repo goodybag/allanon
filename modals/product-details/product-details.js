@@ -42,9 +42,6 @@ define(function(require){
         include: ['collections']
       };
 
-      this.on('open',   this.onOpen);
-      this.on('close',  this.onClose);
-
       // Re-fetch on auth/deauth
       user.on('auth', function(){
         var pid = this_.productId;
@@ -93,6 +90,8 @@ define(function(require){
     }
 
   , onOpen: function(options){
+      troller.analytics.track('Product Details Opened', options);
+
       if (options && !options.productId && !options.product) return this;
 
       var this_ = this;
