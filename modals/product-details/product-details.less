@@ -11,8 +11,16 @@
 }
 
 .product-details-modal .pages > .page {
-  height: @product-photo-height - 50px;
-  overflow: scroll;
+  max-height: @product-photo-height - 50px;
+  overflow: auto;
+}
+
+.product-details-modal .page.page-product-details {
+  max-height: @product-photo-height - 130px;
+}
+
+.product-details-modal .page.page-add-to-collections {
+  max-height: @product-photo-height - 50px;
 }
 
 .product-details-modal .page-actions {
