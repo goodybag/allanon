@@ -21,7 +21,7 @@ define(function(require){
       , order:          'Order'
       }
 
-    , mixpanelToken: '512a9a759abdc993ac339525e93b9443'
+    , segmentToken: 'gg9hhph26y'
 
     , filepickerKey: 'AF52P8LtHSd6VMD07XdOQz'
 
