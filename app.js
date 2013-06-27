@@ -1,3 +1,6 @@
+// Ensure mixpanel is not undefined
+// window.mixpanel = { __SV: 1.2 };
+
 // This is a little wonky, but it makes build a lot easier
 // If confused, contact John
 (function(){
@@ -34,6 +37,11 @@
         "main":     "scrollWatcher.js"
       }
     , {
+        "name":     "analytics",
+        "location": "lib",
+        "main":     "mixpanel.js"
+      }
+    , {
         "main":     "config.js"
       }
     , {
@@ -50,15 +58,16 @@
       }
     }
 
-  , paths: {
-      analytics: '//cdn.mxpnl.com/libs/mixpanel-2.2'
-    }
+  // , paths: {
+  //     mixpanel: '//cdn.mxpnl.com/libs/mixpanel-2.2'
+  //   }
 
-  , shim: {
-      analytics: {
-        exports: 'mixpanel'
-      }
-    }
+  // , shim: {
+  //     mixpanel: {
+  //       exports:  'mixpanel'
+  //     , deps:     ['underscore']
+  //     }
+  //   }
   };
 
   if (typeof require !== "undefined" && require.config){
@@ -74,6 +83,9 @@
      * MODULE STARTS HERE *
     \**********************/
     define(function(require){
+      require('analytics');
+      var analytics = mixpanel;
+
       // Styles
       require('less!styles/main');
 
@@ -88,7 +100,6 @@
       , Router          = require('lib/router')
       , Components      = require('components/index')
       , scrollWatcher   = require('scrollWatcher')
-      , analytics       = require('analytics')
 
         // Pages provided to app-level page manager
       , Pages = {
@@ -141,7 +152,7 @@
 
               utils.startHistory();
 
-              analytics.track('Application Initialized');
+              analytics.track('App Init');
 
               // Load in File picker
               require(['./lib/filepicker'], function(filepicker){});
@@ -164,7 +175,11 @@
 
         , changePage: function(page, options, callback){
             app.appView.changePage(page, options, callback);
-            app.setTitle( app.appView.children.pages.pages[page].title || 'Goodybag' );
+
+            var title = app.appView.children.pages.pages[page].title || 'Goodybag'
+            app.setTitle( title );
+
+            analytics.track('Page.Loaded ' + title);
           }
 
         , currentPage: function(){
@@ -203,6 +218,8 @@
 
             // No XHR errors - they probably just canceled the request
             if (error.hasOwnProperty('status') && error.status == 0) return;
+
+            analytics.track('error', error);
 
             if (typeof $el == 'function'){
               action = $el;
@@ -325,6 +342,8 @@
       troller.add('modals.close',     app.closeModal);
 
       troller.add('promptUserLogin',  app.promptUserLogin);
+
+      troller.add('analytics',        analytics);
 
       return app;
     });
