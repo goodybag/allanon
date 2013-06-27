@@ -42,6 +42,8 @@ define(function(require){
         troller.scrollWatcher.addEvent(this_.paginationTrigger);
       };
 
+      this._page = 1;
+
       this.products = [];
 
       this.spinner = new utils.Spinner();
@@ -188,6 +190,7 @@ define(function(require){
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
+      this._page = 1;
 
       // If keyup takes too long, put up spinner
       var loadTooLong = setTimeout(function(){
@@ -213,12 +216,15 @@ define(function(require){
       if (utils.dom(e.target).hasClass('active')) e.preventDefault();
       this.$el.find('.filters-btn-group > .btn').removeClass('active');
       utils.dom(e.target).addClass('active');
+      troller.analytics.track('Click Explore Filter', { filter: e.target.href });
     }
 
   , onScrollNearEnd: function() {
       var this_ = this;
 
       if (this.options.offset > this.products.length) return;
+
+      troller.analytics.track('InfiniScroll Paginated', { page: this._page++ });
 
       this.options.offset += this.options.limit; // bump the page
 

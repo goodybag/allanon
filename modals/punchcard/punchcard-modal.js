@@ -25,6 +25,7 @@ define(function(require){
   , onOpen: function(options){
       this.punchcard = options.punchcard;
       this.render();
+      troller.analytics.track('Punchcard Viewed');
     }
 
   , render: function(){

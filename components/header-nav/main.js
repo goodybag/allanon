@@ -70,6 +70,8 @@ define(function(require){
         this.$badgeWrapper.css('overflow', 'visible');
         this.$document.bind('click', this.onDocumentClick);
       }
+
+      troller.analytics.track('Click Header Badge');
     }
 
   , onDocumentClick: function(e){
