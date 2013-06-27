@@ -84,6 +84,9 @@ define(function(require){
       // Hide the current
       if (this.current) this.pages[this.current].hide();
 
+      // Store the old
+      var old = this.current;
+
       // Now show the new page
       this.pages[page].show(options);
       this.current = page;
@@ -94,6 +97,8 @@ define(function(require){
       }
 
       if (callback) callback(null, this.pages[page]);
+
+      this.trigger('page:change', page, this.pages[page], old, this.pages[old]);
 
       return this;
     }
