@@ -49,6 +49,16 @@
         'less': 'jam/require-less/less'
       }
     }
+
+  , paths: {
+      analytics: '//cdn.mxpnl.com/libs/mixpanel-2.2'
+    }
+
+  , shim: {
+      analytics: {
+        exports: 'mixpanel'
+      }
+    }
   };
 
   if (typeof require !== "undefined" && require.config){
@@ -78,6 +88,7 @@
       , Router          = require('lib/router')
       , Components      = require('components/index')
       , scrollWatcher   = require('scrollWatcher')
+      , analytics       = require('analytics')
 
         // Pages provided to app-level page manager
       , Pages = {
@@ -116,6 +127,8 @@
 
       , app = {
           init: function(){
+            analytics.init(config.mixpanelToken);
+
             // Initial call to session
             utils.parallel({
               session: function(done){ user.isLoggedIn(done); }
@@ -128,9 +141,12 @@
 
               utils.startHistory();
 
+              analytics.track('Application Initialized');
+
               // Load in File picker
               require(['./lib/filepicker'], function(filepicker){});
             });
+
 
             app.appView = new Components.App.Main();
 

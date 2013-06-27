@@ -21,6 +21,8 @@ define(function(require){
       , order:          'Order'
       }
 
+    , mixpanelToken: '512a9a759abdc993ac339525e93b9443'
+
     , filepickerKey: 'AF52P8LtHSd6VMD07XdOQz'
 
     , typekitUrl: '//use.typekit.net/vhr1yyf.js'
@@ -72,6 +74,7 @@ define(function(require){
         redirectUrl: 'http://www.goodybag.com'
       }
     , proxyUrl: "http://magic.goodybag.com/proxy.html"
+    , mixpanelToken: 'e0889e9c12a138b05007c182a3012733'
     }
 
   , staging: {
