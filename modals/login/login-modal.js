@@ -60,6 +60,9 @@ define(function(require) {
       api.session.getOauthUrl(config.oauth.redirectUrl, 'facebook', function(error, result) {
         if (error) return troller.error(error), troller.spinner.stop();
         if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'), troller.spinner.stop(); // TODO: better error
+
+        utils.cookie('gb_hash', utils.history.location.hash);
+
         window.location.href = result.url;
       });
     },
