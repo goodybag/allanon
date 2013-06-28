@@ -56,6 +56,7 @@ define(function(require) {
     oauth: function(e) {
       // login with facebook
       troller.spinner.spin();
+      troller.analytics.track('Click Facebook Login');
       api.session.getOauthUrl(config.oauth.redirectUrl, 'facebook', function(error, result) {
         if (error) return troller.error(error), troller.spinner.stop();
         if (result == null || typeof result.url !== 'string') return troller.error('no redirect url'), troller.spinner.stop(); // TODO: better error
@@ -67,12 +68,14 @@ define(function(require) {
       // Dismiss this modal and call up the forgot password modal
       this.close();
       troller.modals.open('forgot-password');
+      troller.analytics.track('Click Forgot Password');
     },
 
     onRegisterClick: function(e) {
       e.preventDefault();
       this.close();
       troller.modals.open('register');
+      troller.analytics.track('Click Login Modal Register');
     }
   });
 });

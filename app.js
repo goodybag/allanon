@@ -64,6 +64,8 @@
      * MODULE STARTS HERE *
     \**********************/
     define(function(require){
+      require('lib/segment');
+
       // Styles
       require('less!styles/main');
 
@@ -128,9 +130,12 @@
 
               utils.startHistory();
 
+              troller.analytics.track('App Init');
+
               // Load in File picker
               require(['./lib/filepicker'], function(filepicker){});
             });
+
 
             app.appView = new Components.App.Main();
 
@@ -144,11 +149,17 @@
             // The only browser we support that doesn't support ajax is
             // IE, so we can reasonably use this to check for IE
             if (!utils.support.cors) app.loadIEModules();
+
+            user.on('auth', function(){ troller.analytics.track('Auth'); });
           }
 
         , changePage: function(page, options, callback){
             app.appView.changePage(page, options, callback);
-            app.setTitle( app.appView.children.pages.pages[page].title || 'Goodybag' );
+
+            var title = app.appView.children.pages.pages[page].title || 'Goodybag'
+            app.setTitle( title );
+
+            troller.analytics.track('Page.Loaded ' + title);
           }
 
         , currentPage: function(){
@@ -187,6 +198,8 @@
 
             // No XHR errors - they probably just canceled the request
             if (error.hasOwnProperty('status') && error.status == 0) return;
+
+            troller.analytics.track('error', error);
 
             if (typeof $el == 'function'){
               action = $el;
@@ -309,6 +322,8 @@
       troller.add('modals.close',     app.closeModal);
 
       troller.add('promptUserLogin',  app.promptUserLogin);
+
+      troller.add('analytics',        window.analytics);
 
       return app;
     });
