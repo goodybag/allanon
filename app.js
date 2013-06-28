@@ -36,11 +36,12 @@
     , {
         "main":     "config.js"
       }
-    , {
-        "name":     "models",
-        "location": "models",
-        "main":     "index.js"
-      }
+    // Leave this out for now since we don't use it
+    // , {
+    //     "name":     "models",
+    //     "location": "models",
+    //     "main":     "index.js"
+    //   }
     ]
 
   , map: {
@@ -181,7 +182,7 @@
               try { Typekit.load(); } catch(e) {}
             };
 
-            document.head.appendChild(script);
+            document.getElementsByTagName('head')[0].appendChild(script);
           }
 
         , loadIEModules: function(){
