@@ -244,10 +244,12 @@ define(function(require){
 
   , stickHead: function() {
       this.$head.addClass('stuck');
+      this.$el.addClass('fixed-header');
     }
 
   , unStickHead: function() {
       this.$head.removeClass('stuck');
+      this.$el.removeClass('fixed-header');
     }
   });
 });
