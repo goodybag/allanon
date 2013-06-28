@@ -323,7 +323,25 @@
 
       troller.add('promptUserLogin',  app.promptUserLogin);
 
-      troller.add('analytics',        window.analytics);
+      troller.add('analytics',        analytics);
+
+      // Make sure analytics reference is correct
+      var checkAnalytics = function(){
+        if (utils.isArray( analytics ))
+          return setTimeout( checkAnalytics, 10 );
+
+        // Apply queued events
+        for (var i = 0, l = troller.analytics.length; i < l; ++i){
+          analytics[ troller.analytics[i][0] ].apply(
+            analytics, troller.analytics[i].slice(1)
+          );
+        }
+
+        // Reset troller reference
+        troller.analytics = analytics;
+      };
+
+      checkAnalytics();
 
       return app;
     });
