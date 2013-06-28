@@ -74,7 +74,7 @@ define(function(require){
         redirectUrl: 'http://www.goodybag.com'
       }
     , proxyUrl: "http://magic.goodybag.com/proxy.html"
-    , mixpanelToken: 'e0889e9c12a138b05007c182a3012733'
+    , segmentToken: 'o4oljlbmu5'
     }
 
   , staging: {
