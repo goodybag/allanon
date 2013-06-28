@@ -16,6 +16,7 @@
       "spin-js": "1.2.5-jam.1",
       "require-css": "0.1.x",
       "require-less": "0.0.1",
+      "jquery-cookie": "1.2.x",
       "async": "0.2.x"
     }
   },
