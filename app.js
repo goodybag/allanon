@@ -1,6 +1,3 @@
-// Ensure mixpanel is not undefined
-// window.mixpanel = { __SV: 1.2 };
-
 // This is a little wonky, but it makes build a lot easier
 // If confused, contact John
 (function(){
@@ -52,17 +49,6 @@
         'less': 'jam/require-less/less'
       }
     }
-
-  // , paths: {
-  //     mixpanel: '//cdn.mxpnl.com/libs/mixpanel-2.2'
-  //   }
-
-  // , shim: {
-  //     mixpanel: {
-  //       exports:  'mixpanel'
-  //     , deps:     ['underscore']
-  //     }
-  //   }
   };
 
   if (typeof require !== "undefined" && require.config){
@@ -314,8 +300,6 @@
           }
         }
       ;
-
-      // analytics.load(config.segmentToken);
 
       troller.add('app.setTitle',     app.setTitle);
 
