@@ -325,7 +325,7 @@
 
       troller.add('analytics',        analytics);
 
-      // Make analytics read
+      // Make sure analytics reference is correct
       var checkAnalytics = function(){
         if (utils.isArray( analytics ))
           return setTimeout( checkAnalytics, 10 );
