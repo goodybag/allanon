@@ -130,7 +130,7 @@
 
               utils.startHistory();
 
-              analytics.track('App Init');
+              troller.analytics.track('App Init');
 
               // Load in File picker
               require(['./lib/filepicker'], function(filepicker){});
@@ -150,7 +150,7 @@
             // IE, so we can reasonably use this to check for IE
             if (!utils.support.cors) app.loadIEModules();
 
-            user.on('auth', function(){ analytics.track('Auth'); });
+            user.on('auth', function(){ troller.analytics.track('Auth'); });
           }
 
         , changePage: function(page, options, callback){
@@ -159,7 +159,7 @@
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
             app.setTitle( title );
 
-            analytics.track('Page.Loaded ' + title);
+            troller.analytics.track('Page.Loaded ' + title);
           }
 
         , currentPage: function(){
@@ -199,7 +199,7 @@
             // No XHR errors - they probably just canceled the request
             if (error.hasOwnProperty('status') && error.status == 0) return;
 
-            analytics.track('error', error);
+            troller.analytics.track('error', error);
 
             if (typeof $el == 'function'){
               action = $el;
