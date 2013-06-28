@@ -21,6 +21,8 @@ define(function(require){
       , order:          'Order'
       }
 
+    , segmentToken: 'gg9hhph26y'
+
     , filepickerKey: 'AF52P8LtHSd6VMD07XdOQz'
 
     , typekitUrl: '//use.typekit.net/vhr1yyf.js'
@@ -72,6 +74,7 @@ define(function(require){
         redirectUrl: 'http://www.goodybag.com'
       }
     , proxyUrl: "http://magic.goodybag.com/proxy.html"
+    , segmentToken: 'o4oljlbmu5'
     }
 
   , staging: {
