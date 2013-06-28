@@ -130,7 +130,7 @@
 
               utils.startHistory();
 
-              troller.analytics.track('App Init');
+              analytics.track('App Init');
 
               // Load in File picker
               require(['./lib/filepicker'], function(filepicker){});
@@ -150,7 +150,7 @@
             // IE, so we can reasonably use this to check for IE
             if (!utils.support.cors) app.loadIEModules();
 
-            user.on('auth', function(){ troller.analytics.track('Auth'); });
+            user.on('auth', function(){ analytics.track('Auth'); });
           }
 
         , changePage: function(page, options, callback){
@@ -159,7 +159,7 @@
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
             app.setTitle( title );
 
-            troller.analytics.track('Page.Loaded ' + title);
+            analytics.track('Page.Loaded ' + title);
           }
 
         , currentPage: function(){
@@ -199,7 +199,7 @@
             // No XHR errors - they probably just canceled the request
             if (error.hasOwnProperty('status') && error.status == 0) return;
 
-            troller.analytics.track('error', error);
+            analytics.track('error', error);
 
             if (typeof $el == 'function'){
               action = $el;
@@ -323,7 +323,25 @@
 
       troller.add('promptUserLogin',  app.promptUserLogin);
 
-      troller.add('analytics',        window.analytics);
+      troller.add('analytics',        analytics);
+
+      // Make analytics read
+      var checkAnalytics = function(){
+        if (utils.isArray( analytics ))
+          return setTimeout( checkAnalytics, 10 );
+
+        // Apply queued events
+        for (var i = 0, l = troller.analytics.length; i < l; ++i){
+          analytics[ troller.analytics[i][0] ].apply(
+            analytics, troller.analytics[i].slice(1)
+          );
+        }
+
+        // Reset troller reference
+        troller.analytics = analytics;
+      };
+
+      checkAnalytics();
 
       return app;
     });
