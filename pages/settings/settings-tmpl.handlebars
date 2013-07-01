@@ -1,77 +1,81 @@
-<h1 class="page-title">Settings</h1>
+<div class="row">
+  <h1 class="page-title span10">Settings</h1>
+</div>
 
-<div class="plateau span8 offset1">
-  <div class="row">
-    <div class="span3 avatar-wrapper">
-      <img src="{{filepicker user.avatarUrl 250 250}}" class="avatar" alt="Your Profile Picture">
-      <button class="btn btn-primary btn-change-photo">Change Photo</button>
-    </div>
+<div class="row">
+  <div class="plateau span8 offset1">
+    <div class="row">
+      <div class="span3 avatar-wrapper">
+        <img src="{{filepicker user.avatarUrl 250 250}}" class="avatar" alt="Your Profile Picture">
+        <button class="btn btn-primary btn-change-photo">Change Photo</button>
+      </div>
 
-    <div class="span5 form-wrapper">
-      <form class="form-horizontal" id="form-settings">
-        {{! Username }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-screenName">Username</label>
-          <div class="controls">
-            <input type="text" class="field-screenName" id="form-settings-screenName" placeholder="Enter your username" value="{{user.screenName}}">
+      <div class="span5 form-wrapper">
+        <form class="form-horizontal" id="form-settings">
+          {{! Username }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-screenName">Username</label>
+            <div class="controls">
+              <input type="text" class="field-screenName" id="form-settings-screenName" placeholder="Enter your username" value="{{user.screenName}}">
+            </div>
           </div>
-        </div>
 
-        {{! First Name }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-firstName">First Name</label>
-          <div class="controls">
-            <input type="text" class="field-firstName" id="form-settings-firstName" placeholder="Enter your first name" value="{{user.firstName}}">
+          {{! First Name }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-firstName">First Name</label>
+            <div class="controls">
+              <input type="text" class="field-firstName" id="form-settings-firstName" placeholder="Enter your first name" value="{{user.firstName}}">
+            </div>
           </div>
-        </div>
 
-        {{! Last Name }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-lastName">Last Name</label>
-          <div class="controls">
-            <input type="text" class="field-lastName" id="form-settings-lastName" placeholder="Enter your last name" value="{{user.lastName}}">
+          {{! Last Name }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-lastName">Last Name</label>
+            <div class="controls">
+              <input type="text" class="field-lastName" id="form-settings-lastName" placeholder="Enter your last name" value="{{user.lastName}}">
+            </div>
           </div>
-        </div>
 
-        {{! Email }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-email">Email</label>
-          <div class="controls">
-            <input type="email" class="field-email" id="form-settings-email" placeholder="Enter your email address" value="{{user.email}}">
+          {{! Email }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-email">Email</label>
+            <div class="controls">
+              <input type="email" class="field-email" id="form-settings-email" placeholder="Enter your email address" value="{{user.email}}">
+            </div>
           </div>
-        </div>
 
-        {{! Card ID }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-cardId">Keytag ID</label>
-          <div class="controls">
-            <input type="text" class="field-cardId" id="form-settings-cardId" placeholder="e.g. 404734-AFX" value="{{user.cardId}}">
+          {{! Card ID }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-cardId">Keytag ID</label>
+            <div class="controls">
+              <input type="text" class="field-cardId" id="form-settings-cardId" placeholder="e.g. 404734-AFX" value="{{user.cardId}}">
+            </div>
           </div>
-        </div>
 
-        {{! Password }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-password">New Password</label>
-          <div class="controls">
-            <input type="password" class="field-password" id="form-settings-password" placeholder="Enter your password">
+          {{! Password }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-password">New Password</label>
+            <div class="controls">
+              <input type="password" class="field-password" id="form-settings-password" placeholder="Enter your password">
+            </div>
           </div>
-        </div>
 
-        {{! Password Confirm }}
-        <div class="control-group">
-          <label class="control-label" for="form-settings-password-confirm">Confirm</label>
-          <div class="controls">
-            <input type="password" class="field-password" id="form-settings-password-confirm" placeholder="One more time">
+          {{! Password Confirm }}
+          <div class="control-group">
+            <label class="control-label" for="form-settings-password-confirm">Confirm</label>
+            <div class="controls">
+              <input type="password" class="field-password" id="form-settings-password-confirm" placeholder="One more time">
+            </div>
           </div>
-        </div>
 
-        {{! Form Actions }}
-        <div class="control-group">
-          <div class="controls">
-            <button type="submit" class="btn btn-primary">Save</button>
+          {{! Form Actions }}
+          <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
