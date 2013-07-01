@@ -99,6 +99,7 @@
         , 'support':                  require('./pages/support/index')
         , 'card-update':              require('./pages/card-update/index')
         , 'business':                 require('./pages/business/index')
+        , '404':                      require('./pages/404/index')
         }
 
         // Modals provided to app-level modal manager
