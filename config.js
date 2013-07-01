@@ -1,8 +1,6 @@
 define(function(require){
   var env = require('./environment');
 
-  var apiVersion = 'v1/';
-
   var config = {
     // A name for default that IE won't bitch at me for
     __def: {
@@ -61,10 +59,12 @@ define(function(require){
       }
 
     , ieOnlyModules: ['less!./styles/ie']
+
+    , apiVersion: 1
     }
 
   , dev: {
-      apiUrl: 'http://localhost:3000/' + apiVersion
+      apiUrl: 'http://localhost:3000/'
     , oauth: {
         redirectUrl: 'http://localhost:8080' // probably ought to be in environment
       }
@@ -72,7 +72,7 @@ define(function(require){
     }
 
   , prod: {
-      apiUrl: 'http://magic.goodybag.com/' + apiVersion
+      apiUrl: 'http://magic.goodybag.com/'
     , oauth: {
         redirectUrl: 'http://www.goodybag.com'
       }
@@ -81,7 +81,7 @@ define(function(require){
     }
 
   , staging: {
-      apiUrl: 'http://magic.staging.goodybag.com/' + apiVersion
+      apiUrl: 'http://magic.staging.goodybag.com/'
     , oauth: {
         redirectUrl: 'http://www.staging.goodybag.com'
       }
