@@ -37,7 +37,7 @@ define(function(require){
       user.on('change:avatarUrl',   utils.bind(this.render, this));
       user.on('change:screenName',  utils.bind(this.render, this));
 
-      troller.on('change-page', this.onChangePage);
+      troller.on('change-page', this.onChangePage, this);
 
       return this;
     }
@@ -118,13 +118,13 @@ define(function(require){
     }
 
   , onChangePage: function(e) {
-      utils.dom('.nav li').removeClass('active');
+      this.$el.find('.nav li').removeClass('active');
 
       var activeSelector = {'explore':            '.nav li#explore-link',
                             'collections':        '.nav li#collections-link',
                             'explore-collection': '.nav li#collections-link'}[e.page];
 
-      if (activeSelector != null) utils.dom(activeSelector).addClass('active');
+      if (activeSelector != null) this.$el.find(activeSelector).addClass('active');
     }
   });
 });
