@@ -160,7 +160,11 @@
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
             app.setTitle( title );
 
-            troller.analytics.track('Page.Loaded ' + title);
+            var _options = { hash: utils.history.location.hash };
+            if (typeof options = 'object')
+              utils.extend( _options, options );
+
+            troller.analytics.track( 'Page.Loaded ' + title, _options );
           }
 
         , currentPage: function(){
