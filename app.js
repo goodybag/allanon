@@ -161,8 +161,9 @@
 
             utils.dom('.nav li').removeClass('active');
 
-            var activeSelector = {'explore':     '.nav li#explore-link',
-                                  'collections': '.nav li#collections-link'}[page];
+            var activeSelector = {'explore':            '.nav li#explore-link',
+                                  'collections':        '.nav li#collections-link',
+                                  'explore-collection': '.nav li#collections-link'}[page];
             if (activeSelector != null) utils.dom(activeSelector).addClass('active');
 
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
