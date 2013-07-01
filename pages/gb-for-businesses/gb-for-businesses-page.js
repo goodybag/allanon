@@ -35,7 +35,7 @@ define(function(require){
       troller.spinner.spin();
 
       utils.api.post(
-        'v1/businesses/contact-requests'
+        'businesses/contact-requests'
 
       , {
           name:         this.$el.find('.field-name').val()

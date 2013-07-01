@@ -150,7 +150,7 @@ define(function(require){
       if (request == "") return;
 
       utils.api.post(
-        'v1/businesses/requests'
+        'businesses/requests'
       , { name: request }
       );
 
