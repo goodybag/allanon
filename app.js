@@ -157,6 +157,8 @@
         , changePage: function(page, options, callback){
             app.appView.changePage(page, options, callback);
 
+            troller.trigger('change-page', {page: page});
+
             if (page != 'explore') app.hideBanner();
 
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
