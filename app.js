@@ -157,14 +157,9 @@
         , changePage: function(page, options, callback){
             app.appView.changePage(page, options, callback);
 
+            troller.trigger('change-page', {page: page});
+
             if (page != 'explore') app.hideBanner();
-
-            utils.dom('.nav li').removeClass('active');
-
-            var activeSelector = {'explore':            '.nav li#explore-link',
-                                  'collections':        '.nav li#collections-link',
-                                  'explore-collection': '.nav li#collections-link'}[page];
-            if (activeSelector != null) utils.dom(activeSelector).addClass('active');
 
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
             app.setTitle( title );

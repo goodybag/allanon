@@ -37,6 +37,8 @@ define(function(require){
       user.on('change:avatarUrl',   utils.bind(this.render, this));
       user.on('change:screenName',  utils.bind(this.render, this));
 
+      troller.on('change-page', this.onChangePage);
+
       return this;
     }
 
@@ -113,6 +115,16 @@ define(function(require){
 
   , onMoreClick: function(e){
       e.preventDefault();
+    }
+
+  , onChangePage: function(e) {
+      utils.dom('.nav li').removeClass('active');
+
+      var activeSelector = {'explore':            '.nav li#explore-link',
+                            'collections':        '.nav li#collections-link',
+                            'explore-collection': '.nav li#collections-link'}[e.page];
+
+      if (activeSelector != null) utils.dom(activeSelector).addClass('active');
     }
   });
 });
