@@ -83,6 +83,9 @@ define(function(require){
       this.children.products.on('product-details-modal:close', function(){
         troller.app.setTitle(this_.title);
       });
+
+      troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
+      troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
     }
 
   , onShow: function(options){
@@ -136,6 +139,11 @@ define(function(require){
 
         this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
+
+        this_.$head = this_.$el.find('.page-header-box');
+
+        this_.$head = this_.$el.find('.page-header-box');
+        troller.scrollWatcher.addEvent(120);
 
         if (products.length < this_.options.limit) // if it's the last page
           troller.scrollWatcher.removeEvent(this_.paginationTrigger);
@@ -236,6 +244,16 @@ define(function(require){
       this.fetchData({ append: true, spin: false }, function() {
         this_.spinner.stop();
       });
+    }
+
+  , stickHead: function() {
+      this.$head.addClass('stuck');
+      this.$el.addClass('fixed-header');
+    }
+
+  , unStickHead: function() {
+      this.$head.removeClass('stuck');
+      this.$el.removeClass('fixed-header');
     }
   });
 });
