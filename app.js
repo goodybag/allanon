@@ -273,7 +273,7 @@
             if (typeof options == 'object')
               utils.extend( _options, options );
 
-            troller.analytics.track( 'Modal.Opened ' + title, _options );
+            troller.analytics.track( 'Modal.Opened ' + modal, _options );
           }
         , closeModal: function(modal){
             return app.appView.children.modals.close(modal);
