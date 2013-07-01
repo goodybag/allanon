@@ -161,7 +161,7 @@
             app.setTitle( title );
 
             var _options = { hash: utils.history.location.hash };
-            if (typeof options = 'object')
+            if (typeof options == 'object')
               utils.extend( _options, options );
 
             troller.analytics.track( 'Page.Loaded ' + title, _options );
@@ -267,7 +267,13 @@
           }
 
         , openModal: function(modal, options, callback){
-            return app.appView.children.modals.open(modal, options, callback);
+            app.appView.children.modals.open(modal, options, callback);
+
+            var _options = { hash: utils.history.location.hash };
+            if (typeof options == 'object')
+              utils.extend( _options, options );
+
+            troller.analytics.track( 'Page.Loaded ' + title, _options );
           }
         , closeModal: function(modal){
             return app.appView.children.modals.close(modal);
