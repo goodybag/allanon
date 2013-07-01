@@ -89,8 +89,12 @@ define(function(require){
       // Don't worry about this. Data might go stale
       // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
-      // Data might be stale, reset offset
+      // Data might be stale, reset query params
       this.options.offset = 0;
+      delete this.options.filter;
+      delete this.options.userWants;
+      delete this.options.userLikes;
+      delete this.options.userTried;
 
       this.collection = options.collection;
 
