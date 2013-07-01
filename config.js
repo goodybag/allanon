@@ -1,5 +1,6 @@
 define(function(require){
   var env = require('./environment');
+
   var config = {
     // A name for default that IE won't bitch at me for
     __def: {
@@ -58,6 +59,8 @@ define(function(require){
       }
 
     , ieOnlyModules: ['less!./styles/ie']
+
+    , apiVersion: 1
     }
 
   , dev: {
