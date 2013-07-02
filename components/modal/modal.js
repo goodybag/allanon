@@ -45,9 +45,10 @@ define(function(require){
       return this;
     }
 
-  , close: function(){
+  , close: function(options){
+      options = options || {};
       this.modal.hide();
-      if (typeof this.onClose === 'function') this.onClose();
+      if (typeof this.onClose === 'function' && !options.silent) this.onClose();
       return this;
     }
   });

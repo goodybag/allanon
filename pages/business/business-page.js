@@ -60,7 +60,16 @@ define(function(require){
           });
         }
       }, function(error, results){
-        if (error) return troller.error(error);
+        troller.spinner.stop();
+
+        if (error) {
+          if (error.status === 404) {
+            troller.modals.close(null, {silent: true});
+            troller.app.changePage('404');
+            return;
+          }
+          return troller.error(error);
+        }
 
         this_.destroyProductEvents();
 
@@ -71,12 +80,16 @@ define(function(require){
 
         utils.index(this_.locations, this_.locationsById = {}, 'id');
 
-        if (lid)
-          this_.currentLocation = this_.locations.length > 0 ? this_.locationsById[lid] : null;
-        else
+        if (lid) {
+          var loc = this_.locationsById[lid];
+          if (loc == null) {
+            troller.modals.close(null, {silent: true});
+            troller.app.changePage('404');
+            return;
+          }
+          this_.currentLocation = this_.locations.length > 0 ? loc : null;
+        } else
           this_.currentLocation = this_.locations.length > 0 ? this_.locations[0] : null;
-
-        troller.spinner.stop();
 
         this_.render();
 
@@ -88,7 +101,11 @@ define(function(require){
     }
 
   , changeLocation: function(id){
-      if (!this.locationsById[id]) return troller.error("Cannot find Location ID: " + id);
+      if (!this.locationsById[id]) {
+        troller.modals.close(null, {silent: true});
+        troller.app.changePage('404');
+        return;
+      }
 
       this.currentLocation = this.locationsById[id];
       this.render();
