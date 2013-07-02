@@ -34,7 +34,7 @@ define(function(require){
   , initialize: function(options){
       var this_ = this;
 
-      Modal.prototype.initialize.apply(this, options);
+      Modal.prototype.initialize.apply(this, arguments);
 
       this.productId = options.productId;
       this.product = options.product || {};
