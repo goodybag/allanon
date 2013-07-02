@@ -125,7 +125,7 @@ define(function(require){
 
         if (error) {
           if (error.status === 404) {
-            troller.modals.close();
+            troller.modals.close(null, {silent: true});
             return troller.app.changePage('404');
           }
           return troller.error(error);
