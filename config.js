@@ -64,7 +64,7 @@ define(function(require){
     }
 
   , dev: {
-      apiUrl: 'http://localhost:3000/'
+      apiUrl: 'http://localhost:3000'
     , oauth: {
         redirectUrl: 'http://localhost:8080' // probably ought to be in environment
       }
@@ -72,7 +72,7 @@ define(function(require){
     }
 
   , prod: {
-      apiUrl: 'http://magic.goodybag.com/'
+      apiUrl: 'http://magic.goodybag.com'
     , oauth: {
         redirectUrl: 'http://www.goodybag.com'
       }
@@ -81,7 +81,7 @@ define(function(require){
     }
 
   , staging: {
-      apiUrl: 'http://magic.staging.goodybag.com/'
+      apiUrl: 'http://magic.staging.goodybag.com'
     , oauth: {
         redirectUrl: 'http://www.staging.goodybag.com'
       }
