@@ -6,7 +6,8 @@
     {{! Photo Viewer }}
     <div class="product-photo-viewer" style="text-align: center">
       {{! For now, just put a photo in }}
-      <img src="{{filepicker product.photoUrl 430 430}}" alt="" class="product-photo">
+      <div class="product-photo product-photo-spinner"></div>
+      <img src="{{filepicker product.photoUrl 430 430}}" alt="" class="product-photo product-photo-hidden">
     </div>
   </div>
 

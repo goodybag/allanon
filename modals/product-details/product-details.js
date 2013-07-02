@@ -4,6 +4,7 @@ define(function(require){
   , api         = require('api')
   , user        = require('user')
   , troller     = require('troller')
+  , config      = require('config')
   , Components  = require('../../components/index')
   , Modal       = Components.Modal.Main
 
@@ -27,6 +28,8 @@ define(function(require){
       // stuff with setElement
       'pages>': '.details-page-wrapper'
     }
+
+  , spinner: new utils.Spinner(config.spinner)
 
   , initialize: function(options){
       var this_ = this;
@@ -75,6 +78,19 @@ define(function(require){
 
       this.children.pages.remove();
       this.$el.html( template({ product: this.product }) );
+
+      var $productPhoto     = this.$el.find('.product-photo-hidden')
+        , $productSpinner   = this.$el.find('.product-photo-spinner');
+
+      // Plug spinner into viewer
+      this.spinner.spin();
+      $productSpinner.html(this.spinner.el);
+
+      // Replace when the image loads
+      $productPhoto.load(function() {
+        this_.spinner.stop();
+        $productPhoto.fadeIn();
+      });
 
       this.applyRegions();
 
