@@ -4,6 +4,7 @@ define(function(require){
   , api         = require('api')
   , user        = require('user')
   , troller     = require('troller')
+  , config      = require('config')
   , Components  = require('../../components/index')
   , Modal       = Components.Modal.Main
 
@@ -27,6 +28,8 @@ define(function(require){
       // stuff with setElement
       'pages>': '.details-page-wrapper'
     }
+
+  , spinner: new utils.Spinner(config.spinner)
 
   , initialize: function(options){
       var this_ = this;
@@ -76,34 +79,17 @@ define(function(require){
       this.children.pages.remove();
       this.$el.html( template({ product: this.product }) );
 
-      // Replace loading icon once loaded
-      var opts = {
-        lines: 13, // The number of lines to draw
-        length: 20, // The length of each line
-        width: 10, // The line thickness
-        radius: 30, // The radius of the inner circle
-        corners: 1, // Corner roundness (0..1)
-        rotate: 0, // The rotation offset
-        direction: 1, // 1: clockwise, -1: counterclockwise
-        color: '#000', // #rgb or #rrggbb
-        speed: 1, // Rounds per second
-        trail: 60, // Afterglow percentage
-        shadow: false, // Whether to render a shadow
-        hwaccel: true, // Whether to use hardware acceleration
-        className: 'spinner', // The CSS class to assign to the spinner
-        zIndex: 2e9, // The z-index (defaults to 2000000000)
-        top: 'auto', // Top position relative to parent in px
-        left: 'auto' // Left position relative to parent in px
-      };
-      var target = this.$el.find('.product-photo-loader');
-      var spinner = new utils.Spinner(opts).spin(target);
+      var $productPhoto     = this.$el.find('.product-photo-hidden')
+        , $productSpinner   = this.$el.find('.product-photo-spinner');
 
-      var $productPhoto   = this.$el.find('.product-photo-hidden')
-        , $productLoader  = this.$el.find('.product-photo-loader');
+      // Plug spinner into viewer
+      this.spinner.spin();
+      $productSpinner.html(this.spinner.el);
 
+      // Replace when the image loads
       $productPhoto.load(function() {
-        //$productLoader.hide();
-        //$productPhoto.show();
+        this_.spinner.stop();
+        $productPhoto.fadeIn();
       });
 
       this.applyRegions();
