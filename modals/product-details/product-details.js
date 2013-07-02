@@ -123,7 +123,13 @@ define(function(require){
       return this.fetchProduct(function(error, product){
         troller.spinner.stop();
 
-        if (error) return troller.error(error);
+        if (error) {
+          if (error.status === 404) {
+            troller.modals.close(null, {silent: true});
+            return troller.app.changePage('404');
+          }
+          return troller.error(error);
+        }
 
         troller.app.setTitle(product.name);
 

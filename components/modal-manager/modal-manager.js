@@ -89,14 +89,14 @@ define(function(require){
       return this;
     }
 
-  , close: function(modal){
+  , close: function(modal, options){
       if (modal){
-        this.modals[modal].close();
+        this.modals[modal].close(options);
         delete this.openModals[modal];
       } else {
         for (var key in this.openModals){
           delete this.openModals[key];
-          this.modals[key].close();
+          this.modals[key].close(options);
         }
       }
 

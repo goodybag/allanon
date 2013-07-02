@@ -109,7 +109,14 @@ define(function(require){
   , openBusiness: function(id){
       var this_ = this;
 
-      troller.modals.open('location-details', { business: this.businessesById[id] }, function(error, modal){
+      var business = this.businessesById[id];
+      if (business == null) {
+        troller.modals.close(null, {silent: true});
+        troller.app.changePage('404');
+        return;
+      }
+
+      troller.modals.open('location-details', { business: business }, function(error, modal){
         modal.once('close', function(){
           troller.app.setTitle(this_.title);
         });

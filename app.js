@@ -280,8 +280,8 @@
 
             troller.analytics.track( 'Modal.Opened ' + modal, _options );
           }
-        , closeModal: function(modal){
-            return app.appView.children.modals.close(modal);
+        , closeModal: function(modal, options){
+            return app.appView.children.modals.close(modal, options);
           }
 
         , promptUserLogin: function(options){
