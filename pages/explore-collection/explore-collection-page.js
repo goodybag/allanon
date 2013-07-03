@@ -19,7 +19,7 @@ define(function(require){
       'submit #explore-search-form':        'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
     , 'keyup .field-search':                'onSearchSubmit'
-
+    , 'click .field-search-clear':          'onSearchClearClick'
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
 
     , 'click .btn-edit-collection':         'onEditCollectionClick'
@@ -164,6 +164,7 @@ define(function(require){
       this.applyRegions();
 
       this.$search = this.$el.find('.field-search');
+      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       return this;
@@ -176,14 +177,12 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (!value){
-        if (this.options.filter)
-          delete this.options.filter;
-        else return;
-      } else {
+      if (value) { 
         this.options.filter = value;
-      }
-
+        this.$searchClearBtn.show();
+      } 
+      else if (!this.onSearchClear()) return;
+     
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
@@ -205,6 +204,17 @@ define(function(require){
         + 'Class'
         ]('hide');
       });
+    }
+
+  , onSearchClear: function(e) {
+      var result = this.options.filter != null;
+      delete this.options.filter;
+      return result;
+    }
+
+  , onSearchClearClick: function(e) {
+      this.$search.val('');
+      this.onSearchSubmit(e);
     }
 
   , onFiltersClick: function(e){

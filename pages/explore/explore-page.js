@@ -19,7 +19,7 @@ define(function(require){
       'submit #explore-search-form':        'onSearchSubmit'
     , 'keyup  .field-search':               'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
-
+    , 'click .field-search-clear':          'onSearchClearClick'
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
@@ -171,6 +171,7 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
+      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       if (!troller.app.bannerShown()){
@@ -191,9 +192,11 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (value) this.options.filter = value;
-      else if (!this.onSearchClear()) return;
-
+      if (value) { 
+        this.options.filter = value;
+        this.$searchClearBtn.show();
+      } else if (!this.onSearchClear()) return;
+      
       // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
@@ -235,6 +238,12 @@ define(function(require){
       this.$oldSortBtn.addClass('active');
       this.options.sort = this.oldSort;
       return result;
+    }
+
+  , onSearchClearClick: function(e) {
+      this.$search.val('');
+      this.$searchClearBtn.hide();
+      this.onSearchSubmit(e);
     }
 
   , onFiltersClick: function(e){
