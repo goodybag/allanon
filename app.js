@@ -36,6 +36,11 @@
     , {
         "main":     "config.js"
       }
+    , {
+        "name":     "components",
+        "location": "components",
+        "main":     "index.js"
+      }
     // Leave this out for now since we don't use it
     // , {
     //     "name":     "models",
@@ -79,7 +84,7 @@
       , config          = require('config')
       , user            = require('user')
       , Router          = require('lib/router')
-      , Components      = require('components/index')
+      , Components      = require('components')
       , scrollWatcher   = require('scrollWatcher')
 
         // Pages provided to app-level page manager

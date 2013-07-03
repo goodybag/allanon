@@ -4,7 +4,7 @@ define(function(require){
   , config      = require('config')
   , user        = require('user')
   , troller     = require('troller')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
 
   , template    = require('hbt!./gb-for-businesses-tmpl')
   ;
