@@ -5,7 +5,7 @@ define(function(require){
   , api         = require('api')
   , user        = require('user')
   , troller     = require('troller')
-  , Components  = require('../../../../components/index')
+  , Components  = require('components')
 
   , template    = require('hbt!./add-to-collections-tmpl')
   ;

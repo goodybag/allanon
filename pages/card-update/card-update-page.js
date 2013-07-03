@@ -4,7 +4,7 @@ define(function(require){
   var user        = require('user');
   var api         = require('api');
   var troller     = require('troller');
-  var Components  = require('../../components/index');
+  var Components  = require('components');
 
   var template    = require('hbt!./card-update-tmpl');
 

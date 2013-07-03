@@ -5,7 +5,7 @@ define(function(require){
   , user        = require('user')
   , api         = require('api')
   , troller     = require('troller')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
 
   , template    = require('hbt!./punch-cards-tmpl')
   ;

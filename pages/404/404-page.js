@@ -2,7 +2,7 @@ define(function(require){
   var
     utils       = require('utils')
   , troller     = require('troller')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
 
   , template    = require('hbt!./404-tmpl')
   ;
