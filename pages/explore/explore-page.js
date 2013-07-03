@@ -188,19 +188,15 @@ define(function(require){
   , onSearchSubmit: function(e){
       e.preventDefault();
 
-      var 
-        value = this.$search.val()
-      , this_ = this;
+      var value = this.$search.val(), this_ = this;
 
       if (value == this.options.filter) return;
 
       if (value) { 
         this.options.filter = value;
         this.$searchClearBtn.show();
-      } else if (!this.onSearchClear()) {
-        return;
-      }
-
+      } else if (!this.onSearchClear()) return;
+      
       // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
