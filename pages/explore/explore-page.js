@@ -203,6 +203,12 @@ define(function(require){
         troller.spinner.spin();
       }, 1000);
 
+      // goodybag/allonon#133 Don't sort when searching, except by distance
+      if (this.options.sort !== '-distance') {
+        this.$el.find('.filters-btn-group > .btn').removeClass('active');
+        delete this.options.sort;
+      }
+
       this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
         clearTimeout( loadTooLong );
 
