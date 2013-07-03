@@ -115,6 +115,7 @@ define(function(require){
 
         this_.$head = this_.$el.find('.page-header-box');
         troller.scrollWatcher.addEvent(120);
+        if (window.scrollY >= 120) this_.stickHead();
       });
 
       return this;

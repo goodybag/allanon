@@ -144,6 +144,7 @@ define(function(require){
 
         this_.$head = this_.$el.find('.page-header-box');
         troller.scrollWatcher.addEvent(120);
+        if (window.scrollY >= 120) this_.stickHead();
 
         if (products.length < this_.options.limit) // if it's the last page
           troller.scrollWatcher.removeEvent(this_.paginationTrigger);
