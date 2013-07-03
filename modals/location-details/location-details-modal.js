@@ -26,6 +26,7 @@ define(function(require){
       var this_ = this;
 
       this.business = options.business;
+      this.business.mapSearch = this.business.locations.length === 1 ? this.business.name + ', ' + this.business.locations[0].street1 : this.business.name;
       this.render();
 
       this.checkModalHeightStuff();
