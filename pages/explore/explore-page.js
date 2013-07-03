@@ -101,6 +101,10 @@ define(function(require){
       delete this.options.filter;
       this.products = [];
 
+      // this makes onSearchClear a nop if you call it before running a search
+      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+      this.oldSort = this.options.sort;
+
       var this_ = this;
 
       this.fetchData(function(error, results){
