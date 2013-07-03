@@ -189,7 +189,7 @@ define(function(require){
       if (value) this.options.filter = value;
       else if (!this.onSearchClear()) return;
 
-    // Reset offset so results don't get effed
+      // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
 
