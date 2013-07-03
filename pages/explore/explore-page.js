@@ -198,10 +198,12 @@ define(function(require){
         troller.spinner.spin();
       }, 1000);
 
-
-      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
-      this.oldSort = this.options.sort;
       // goodybag/allonon#133 Don't sort when searching, except by distance
+      if (this.options.sort != null) {
+        this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+        this.oldSort = this.options.sort;
+      }
+
       if (value && this.options.sort !== '-distance') {
         this.$el.find('.filters-btn-group > .btn').removeClass('active');
         delete this.options.sort;
