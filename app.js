@@ -84,7 +84,7 @@
       , config          = require('config')
       , user            = require('user')
       , Router          = require('lib/router')
-      , Components      = require('components/index')
+      , Components      = require('components')
       , scrollWatcher   = require('scrollWatcher')
 
         // Pages provided to app-level page manager
