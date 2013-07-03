@@ -4,7 +4,7 @@ define(function(require){
   , troller     = require('troller')
   , user        = require('user')
   , config      = require('config')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
   , template    = require('hbt!./add-new-collection-tmpl')
   ;
 

@@ -1,6 +1,6 @@
 define(function(require) {
   var template = require('hbt!./forgot-password-tmpl');
-  var Components  = require('../../components/index');
+  var Components  = require('components');
   var user = require('user');
   var utils = require('utils');
   var troller = require('troller');

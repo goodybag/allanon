@@ -5,7 +5,7 @@ define(function(require){
   , user        = require('user')
   , troller     = require('troller')
   , config      = require('config')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
   , Modal       = Components.Modal.Main
 
   , template    = require('hbt!./product-details-tmpl')

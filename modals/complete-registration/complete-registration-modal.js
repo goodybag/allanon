@@ -1,6 +1,6 @@
 define(function(require) {
   var template    = require('hbt!../register/register-tmpl');
-  var Components  = require('../../components/index');
+  var Components  = require('components');
   var utils       = require('utils');
   var user        = require('user');
   var api         = require('api');

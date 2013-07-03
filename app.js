@@ -36,6 +36,11 @@
     , {
         "main":     "config.js"
       }
+    , {
+        "name":     "components",
+        "location": "lib",
+        "main":     "components.js"
+      }
     // Leave this out for now since we don't use it
     // , {
     //     "name":     "models",

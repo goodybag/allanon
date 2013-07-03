@@ -3,7 +3,7 @@ define(function(require){
     utils       = require('utils')
   , config      = require('config')
   , troller     = require('troller')
-  , Components  = require('../../components/index')
+  , Components  = require('components')
 
   , template    = require('hbt!./collections-tmpl')
   ;
