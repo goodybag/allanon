@@ -187,7 +187,7 @@ define(function(require){
       if (value == this.options.filter) return;
 
       if (value) this.options.filter = value;
-      else return this.onSearchClear();
+      else if (!this.onSearchClear()) return;
 
     // Reset offset so results don't get effed
       this.options.offset = 0;
@@ -200,8 +200,9 @@ define(function(require){
 
 
       this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+      this.oldSort = this.options.sort;
       // goodybag/allonon#133 Don't sort when searching, except by distance
-      if (this.options.sort !== '-distance') {
+      if (value && this.options.sort !== '-distance') {
         this.$el.find('.filters-btn-group > .btn').removeClass('active');
         delete this.options.sort;
       }
@@ -222,8 +223,11 @@ define(function(require){
     }
 
   , onSearchClear: function(e) {
+      var result = this.options.filter != null;
       delete this.options.filter;
-      this.$oldSortBtn.click();
+      this.$oldSortBtn.addClass('active');
+      this.options.sort = this.oldSort;
+      return result;
     }
 
   , onFiltersClick: function(e){
