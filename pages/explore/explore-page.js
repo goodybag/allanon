@@ -20,6 +20,8 @@ define(function(require){
     , 'keyup  .field-search':               'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
 
+    , 'click .field-search-remove':         'onSearchRemove'
+
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
@@ -166,6 +168,7 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
+      this.$searchRemoveBtn = this.$el.find('.field-search-remove');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       if (!troller.app.bannerShown()){
@@ -182,15 +185,19 @@ define(function(require){
   , onSearchSubmit: function(e){
       e.preventDefault();
 
-      var value = this.$search.val(), this_ = this;
+      var 
+        value = this.$search.val()
+      , this_ = this;
 
       if (value == this.options.filter) return;
 
       if (!value){
+        this.$searchRemoveBtn.hide();
         if (this.options.filter)
           delete this.options.filter;
         else return;
       } else {
+        this.$searchRemoveBtn.show();
         this.options.filter = value;
       }
 
@@ -216,6 +223,11 @@ define(function(require){
         + 'Class'
         ]('hide');
       });
+    }
+
+  , onSearchRemove: function(e){
+      this.$search.val('');
+      this.onSearchSubmit(e);
     }
 
   , onFiltersClick: function(e){
