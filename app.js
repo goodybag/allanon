@@ -38,8 +38,8 @@
       }
     , {
         "name":     "components",
-        "location": "lib",
-        "main":     "components.js"
+        "location": "components",
+        "main":     "index.js"
       }
     // Leave this out for now since we don't use it
     // , {
