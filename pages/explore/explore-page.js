@@ -101,6 +101,10 @@ define(function(require){
       delete this.options.filter;
       this.products = [];
 
+      // this makes onSearchClear a nop if you call it before running a search
+      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+      this.oldSort = this.options.sort;
+
       var this_ = this;
 
       this.fetchData(function(error, results){
@@ -186,13 +190,8 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (!value){
-        if (this.options.filter)
-          delete this.options.filter;
-        else return;
-      } else {
-        this.options.filter = value;
-      }
+      if (value) this.options.filter = value;
+      else if (!this.onSearchClear()) return;
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
@@ -202,6 +201,17 @@ define(function(require){
       var loadTooLong = setTimeout(function(){
         troller.spinner.spin();
       }, 1000);
+
+      // goodybag/allonon#133 Don't sort when searching, except by distance
+      if (this.options.sort != null) {
+        this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+        this.oldSort = this.options.sort;
+      }
+
+      if (value && this.options.sort !== '-distance') {
+        this.$el.find('.filters-btn-group > .btn').removeClass('active');
+        delete this.options.sort;
+      }
 
       this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
         clearTimeout( loadTooLong );
@@ -216,6 +226,14 @@ define(function(require){
         + 'Class'
         ]('hide');
       });
+    }
+
+  , onSearchClear: function(e) {
+      var result = this.options.filter != null;
+      delete this.options.filter;
+      this.$oldSortBtn.addClass('active');
+      this.options.sort = this.oldSort;
+      return result;
     }
 
   , onFiltersClick: function(e){
