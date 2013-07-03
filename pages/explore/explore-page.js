@@ -19,7 +19,7 @@ define(function(require){
       'submit #explore-search-form':        'onSearchSubmit'
     , 'keyup  .field-search':               'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-remove':         'onSearchRemove'
+    , 'click .field-search-clear':          'onSearchClearClick'
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
@@ -101,6 +101,10 @@ define(function(require){
       delete this.options.filter;
       this.products = [];
 
+      // this makes onSearchClear a nop if you call it before running a search
+      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+      this.oldSort = this.options.sort;
+
       var this_ = this;
 
       this.fetchData(function(error, results){
@@ -166,7 +170,7 @@ define(function(require){
       ).render();
 
       this.$search = this.$el.find('.field-search');
-      this.$searchRemoveBtn = this.$el.find('.field-search-remove');
+      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       if (!troller.app.bannerShown()){
@@ -189,15 +193,13 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (!value){
-        this.$searchRemoveBtn.hide();
-        if (this.options.filter)
-          delete this.options.filter;
-        else return;
-      } else {
-        this.$searchRemoveBtn.show();
+      if (value) { 
         this.options.filter = value;
+        this.$searchClearBtn.show();
       }
+      else if (!this.onSearchClear()) {
+        return;
+      } 
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
@@ -207,6 +209,17 @@ define(function(require){
       var loadTooLong = setTimeout(function(){
         troller.spinner.spin();
       }, 1000);
+
+      // goodybag/allonon#133 Don't sort when searching, except by distance
+      if (this.options.sort != null) {
+        this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
+        this.oldSort = this.options.sort;
+      }
+
+      if (value && this.options.sort !== '-distance') {
+        this.$el.find('.filters-btn-group > .btn').removeClass('active');
+        delete this.options.sort;
+      }
 
       this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
         clearTimeout( loadTooLong );
@@ -223,8 +236,17 @@ define(function(require){
       });
     }
 
-  , onSearchRemove: function(e){
+  , onSearchClear: function(e) {
+      var result = this.options.filter != null;
+      delete this.options.filter;
+      this.$oldSortBtn.addClass('active');
+      this.options.sort = this.oldSort;
+      return result;
+    }
+
+  , onSearchClearClick: function(e) {
       this.$search.val('');
+      this.$searchClearBtn.hide();
       this.onSearchSubmit(e);
     }
 
