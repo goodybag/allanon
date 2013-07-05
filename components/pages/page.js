@@ -18,13 +18,23 @@ define(function(require){
     }
 
   , show: function(options){
-      this.$el.fadeIn();
+      if (options != null && options.transitionIn != null) {
+        if (!utils.isArray(options.transitionIn)) options.transitionIn = [options.transitionIn];
+        this.$el.transition.apply(this.$el, options.transitionIn);
+      } else
+        this.$el.fadeIn();
+
       if (this.onShow) this.onShow(options);
       return this;
     }
 
   , hide: function(options){
-      this.$el.fadeOut();
+      if (options != null && options.transitionOut != null) {
+        if (!utils.isArray(options.transitionOut)) options.transitionOut = [options.transitionOut];
+        this.$el.transition.apply(this.$el, options.transitionOut);
+      } else
+        this.$el.fadeOut();
+
       if (this.onHide) this.onHide(options);
       return this;
     }
