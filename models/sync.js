@@ -4,7 +4,7 @@ define(function(require) {
 
   utils.Backbone.sync = function(method, model, options) {
     var options = options || {};
-    //copied from backbone source
+    // half copied from backbone source
 
     // Ensure that we have a URL.
 
