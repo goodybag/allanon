@@ -18,13 +18,13 @@ define(function(require){
     }
 
   , show: function(options){
-      this.$el.css('display', 'block');
+      this.$el.fadeIn();
       if (this.onShow) this.onShow(options);
       return this;
     }
 
   , hide: function(options){
-      this.$el.css('display', 'none');
+      this.$el.fadeOut();
       if (this.onHide) this.onHide(options);
       return this;
     }
