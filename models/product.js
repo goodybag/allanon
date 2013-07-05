@@ -3,13 +3,25 @@ define(function(require){
 
   var acceptable = [
     'id',
+    'businessId',
     'name',
     'description',
     'price',
+    'photoUrl',
+    'likes',
+    'wants',
+    'tries',
+    'isVerified',
+    'isArchived',
+    'isEnabled',
+    'businessName',
+    'businessIsGB',
+    'userLikes',
+    'userWants',
+    'userTried',
+    'popular',
     'tags',
     'categories',
-    'photoUrl',
-    'businessId'
   ]
 
   return utils.Model.extend({
