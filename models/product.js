@@ -1,30 +1,30 @@
 define(function(require){
-  var
-    utils = require('utils')
-  , Base = require('./base')
-  ;
+  var utils = require('utils');
 
-  return Base.extend({
-    acceptable: [
-      'id'
-    , 'name'
-    , 'description'
-    , 'price'
-    , 'tags'
-    , 'categories'
-    , 'photoUrl'
-    , 'businessId'
-    ]
+  var acceptable = [
+    'id',
+    'name',
+    'description',
+    'price',
+    'tags',
+    'categories',
+    'photoUrl',
+    'businessId'
+  ]
 
-  , defaults: {
-      id:                           'New'
-    , name:                         'New Product'
-    , price:                        0
-    , tags:                         []
-    , categories:                   []
-    , description:                  null
+  return utils.Model.extend({
+    validate: function(attrs, options) {
+      for (key in attrs)
+        if (acceptable.indexOf(key) === -1) return key + ' is not an acceptable attribute';
+
+      if (name == null)
+        return 'name is required';
+    },
+
+    defaults: {
+      price:      0,
+      tags:       [],
+      categories: []
     }
-
-  , resource: 'products'
   });
 });
