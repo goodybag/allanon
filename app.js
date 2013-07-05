@@ -85,6 +85,7 @@
       , Router          = require('lib/router')
       , Components      = require('components')
       , scrollWatcher   = require('scrollWatcher')
+      , Models          = require('models')
 
         // Pages provided to app-level page manager
       , Pages = {
@@ -344,8 +345,6 @@
       troller.add('promptUserLogin',  app.promptUserLogin);
 
       troller.add('analytics',        analytics);
-
-      troller.add('models',           require('models'));
 
       // Make sure analytics reference is correct
       var checkAnalytics = function(){
