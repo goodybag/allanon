@@ -41,12 +41,11 @@
         "location": "components",
         "main":     "index.js"
       }
-    // Leave this out for now since we don't use it
-    // , {
-    //     "name":     "models",
-    //     "location": "models",
-    //     "main":     "index.js"
-    //   }
+    , {
+        "name":     "models",
+        "location": "models",
+        "main":     "index.js"
+      }
     ]
 
   , map: {
@@ -345,6 +344,8 @@
       troller.add('promptUserLogin',  app.promptUserLogin);
 
       troller.add('analytics',        analytics);
+
+      troller.add('models',           require('models'));
 
       // Make sure analytics reference is correct
       var checkAnalytics = function(){

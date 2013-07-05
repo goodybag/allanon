@@ -17,7 +17,7 @@ define(function(require){
       for (key in attrs)
         if (acceptable.indexOf(key) === -1) return key + ' is not an acceptable attribute';
 
-      if (name == null)
+      if (attrs.name == null)
         return 'name is required';
     },
 
@@ -25,6 +25,8 @@ define(function(require){
       price:      0,
       tags:       [],
       categories: []
-    }
+    },
+
+    urlRoot: '/products'
   });
 });
