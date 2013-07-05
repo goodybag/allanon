@@ -9,6 +9,8 @@ define(function(require) {
     // Ensure that we have a URL.
 
     var url = !options.url ? (utils.result(model, 'url') || urlError()) : options.url;
+
+    // the api methods assume paths do not start with / even though they are relative to root.
     if (url.substring(0, 1) === '/') url = url.slice(1, url.length);
 
     var data;
