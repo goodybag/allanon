@@ -29,7 +29,7 @@ define(function(require) {
     }[method];
 
     func(url, data, function(error, data, meta) {
-      if (error) return options.error(error);
+      if (error) return;
       return options.success(model, data, options);
     });
   }
