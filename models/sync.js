@@ -13,6 +13,10 @@ define(function(require) {
 
     var url = !options.url ? (utils.result(model, 'url') || urlError()) : options.url;
 
+    // add query params to url, if any
+    var queryParams = utils.extend(model.queryParams, options.queryParams);
+    if (queryParams) url += '?' + utils.map(utils.pairs(queryParams), function(pair) { return utils.map(pair, function(param) { return encodeURIComponent(param); }).join('='); }).join('&');
+
     // the api methods assume paths do not start with / even though they are relative to root.
     if (url.substring(0, 1) === '/') url = url.slice(1, url.length);
 
