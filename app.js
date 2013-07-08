@@ -175,6 +175,7 @@
               utils.extend( _options, options );
 
             troller.analytics.track( 'Page.Loaded ' + title, _options );
+            troller.analytics.pageview();
           }
 
         , currentPage: function(){
