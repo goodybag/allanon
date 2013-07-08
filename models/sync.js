@@ -15,7 +15,20 @@ define(function(require) {
 
     // add query params to url, if any
     var queryParams = utils.extend(model.queryParams, options.queryParams);
-    if (queryParams) url += '?' + utils.map(utils.pairs(queryParams), function(pair) { return utils.map(pair, function(param) { return encodeURIComponent(param); }).join('='); }).join('&');
+    if (queryParams) {
+      // denormalize array notation, each into it's own pair.  e.g. {a: [1, 2, 3], b: 4} becomes [["a[]", 1], ["a[]", 2], ["a[]", 3], ["b", 4]]
+      var pairs = utils.reduce(utils.map(utils.pairs(queryParams), function(pair) {
+        return !utils.isArray(pair[1]) ? [pair] : utils.map(pair[1], function(elem) {
+          return [pair[0] + '[]', elem];
+        });
+      }), function(a, b) { return a.concat(b); });
+
+      url += '?' + utils.map(pairs, function(pair) {
+        return utils.map(pair, function(param) {
+          return encodeURIComponent(param);
+        }).join('=');
+      }).join('&');
+    }
 
     // the api methods assume paths do not start with / even though they are relative to root.
     if (url.substring(0, 1) === '/') url = url.slice(1, url.length);
