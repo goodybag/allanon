@@ -1,7 +1,8 @@
 define(function(require){
   var
-    utils   = require('utils')
-  , troller = require('troller')
+    utils       = require('utils')
+  , troller     = require('troller')
+  , transitions = require('./transitions')
   ;
 
   return utils.View.extend({
@@ -33,10 +34,6 @@ define(function(require){
       return this;
     }
 
-  // , render: function(){
-  //     return this.renderCurrent();
-  //   }
-
   , renderCurrent: function(){
       if (this.current){
         this.pages[this.current].render();
@@ -46,10 +43,19 @@ define(function(require){
     }
 
   , changePage: function(page, options, callback){
+      var this_ = this, transition;
+
       if (typeof options == 'function'){
         callback = options;
-        options = null;
+        options = {};
       }
+
+      options = options || {};
+
+      transition = transitions[options.transition] ? options.transition : 'fade';
+
+      // Clear out options so pages onshow/hide do not get irrelev
+      delete options.transition;
 
       if (!this.Pages[page]){
         // TODO: don't do this
@@ -70,7 +76,7 @@ define(function(require){
           this.Pages[page].prototype.parentView = this.parentView;
 
         this.pages[page] = new this.Pages[page](options);
-        this.pages[page].hide(options);
+        this.pages[page].$el.css('display', 'none');
 
         // Allow child pages to request change pages
         this.pages[page].setPageManager(this);
@@ -81,14 +87,8 @@ define(function(require){
         this.$el.append(this.pages[page].$el);
       }
 
-      // Hide the current
-      if (this.current) this.pages[this.current].hide();
-
       // Store the old
       var old = this.current;
-
-      // Now show the new page
-      this.pages[page].show(options);
       this.current = page;
 
       if (!callback && !this.pages[page].manualRender){
@@ -96,9 +96,14 @@ define(function(require){
         this.pages[page].delegateEvents();
       }
 
-      if (callback) callback(null, this.pages[page]);
+      transitions[transition]( this.pages[old], this.pages[page], function(){
+        if ( this_.pages[old] && this_.pages[old].onHide ) this_.pages[old].onHide( options );
+        if ( this_.pages[page].onShow ) this_.pages[page].onShow( options );
 
-      this.trigger('page:change', page, this.pages[page], old, this.pages[old]);
+        if (callback) callback(null, this_.pages[page]);
+
+        this_.trigger('page:change', page, this_.pages[page], old, this_.pages[old]);
+      });
 
       return this;
     }
