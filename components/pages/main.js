@@ -57,6 +57,10 @@ define(function(require){
       // Clear out options so pages onshow/hide do not get irrelev
       delete options.transition;
 
+      // Do not transition into yourself
+      if (page == this.current)
+        transition = 'none';
+
       if (!this.Pages[page]){
         // TODO: don't do this
         var error = {
