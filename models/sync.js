@@ -1,6 +1,6 @@
 define(function(require) {
-  var utils = require('utils');
-  var api   = require('api');
+  var utils   = require('utils');
+  var api     = require('api');
 
   utils.Backbone.sync = function(method, model, options) {
     var options = options || {};
