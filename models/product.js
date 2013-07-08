@@ -45,6 +45,25 @@ define(function(require){
       userTried:  false
     },
 
-    urlRoot: '/products'
+    urlRoot: '/products',
+
+    initialize: function() {
+      this.on({'change:userWants': this.onChangeUserWants,
+               'change:userLikes': this.onChangeUserLikes,
+               'change:userTried': this.onChangeUserTried
+              });
+    },
+
+    onChangeUserWants: function(e) {
+      this.set('wants', this.get('wants') + this.changed.userWants ? 1 : -1);
+    },
+
+    onChangeUserLikes: function(e) {
+      this.set('likes', this.get('likes') + this.changed.userLikes ? 1 : -1);
+    },
+
+    onChangeUserTried: function(e) {
+      this.set('tries', this.get('tries') + this.changed.userTried ? 1 : -1);
+    },
   });
 });
