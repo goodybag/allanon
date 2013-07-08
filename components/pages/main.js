@@ -100,6 +100,8 @@ define(function(require){
 
       this.trigger('page:change', page, this.pages[page], old, this.pages[old]);
 
+      window.scrollTo(0);
+
       return this;
     }
   });
