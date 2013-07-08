@@ -86,6 +86,8 @@ define(function(require){
       , isTried:  this.model.userTried
       });
 
+      troller.analytics.track('Click Want', this.model);
+
       troller.trigger('product:' + this.model.id + ':change:wlt', 'want', this.model);
       troller.trigger('product:' + this.model.id + ':change', this.model);
     }
@@ -108,6 +110,8 @@ define(function(require){
       , isTried:  this.model.userTried
       });
 
+      troller.analytics.track('Click Tried', this.model);
+
       troller.trigger('product:' + this.model.id + ':change:wlt', 'try', this.model);
       troller.trigger('product:' + this.model.id + ':change', this.model);
     }
@@ -129,6 +133,8 @@ define(function(require){
       , isLiked:  this.model.userLikes
       , isTried:  this.model.userTried
       });
+
+      troller.analytics.track('Click Like', this.model);
 
       troller.trigger('product:' + this.model.id + ':change:wlt', 'like', this.model);
       troller.trigger('product:' + this.model.id + ':change', this.model);
