@@ -1,6 +1,9 @@
 define(function(require) {
   var utils   = require('utils');
   var api     = require('api');
+  var Product = require('./product');
+
+  var productsCache = new utils.Collection({model: Product});
 
   utils.Backbone.sync = function(method, model, options) {
     var options = options || {};
@@ -30,7 +33,14 @@ define(function(require) {
 
     func(url, data, function(error, data, meta) {
       if (error) return;
-      return options.success(model, data, options);
+
+      // make products singletons
+      if (model instanceof utils.Collection && model.model === Product) {
+        productsCache.set(data);
+        var data = utils.map(data, function(m) { return productsCache.get(m); });
+      }
+
+      return options.success(data);
     });
   }
 });
