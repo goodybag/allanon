@@ -177,12 +177,12 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (value) { 
+      if (value) {
         this.options.filter = value;
         this.$searchClearBtn.show();
-      } 
+      }
       else if (!this.onSearchClear()) return;
-     
+
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
@@ -223,6 +223,8 @@ define(function(require){
 
   , onFiltersClick: function(e){
       troller.spinner.spin();
+
+      while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
 
       var $target = utils.dom(e.target);
 
