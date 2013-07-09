@@ -140,7 +140,9 @@ define(function(require){
   , onBusinessSearch: function(e){
       e.preventDefault();
 
-      var search = this.$search.val().toLowerCase();
+      var search = (
+        this.$search = this.$search || this.$el.find('#business-search')
+      ).val().toLowerCase();
 
       if (search == "") return this.renderBusinesses();
 
