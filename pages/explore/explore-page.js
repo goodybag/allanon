@@ -233,14 +233,17 @@ define(function(require){
     }
 
   , onSearchClear: function(e) {
+      // Cleared by keyboard
       var result = this.options.filter != null;
       delete this.options.filter;
       this.$oldSortBtn.addClass('active');
+      this.$searchClearBtn.hide();   
       this.options.sort = this.oldSort;
       return result;
     }
 
   , onSearchClearClick: function(e) {
+      // Cleared by mouse
       this.$search.val('');
       this.$searchClearBtn.hide();
       this.onSearchSubmit(e);
