@@ -145,6 +145,7 @@ define(function(require){
       if (search == "") return this.renderBusinesses();
 
       this.renderBusinesses( utils.filter(this.businesses, function(business){
+        if (!business || !business.name) return false;
         return business.name.toLowerCase().indexOf( search ) > -1;
       }));
     }
