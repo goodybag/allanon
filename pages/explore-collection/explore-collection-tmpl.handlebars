@@ -34,9 +34,11 @@
 
     {{! Edit Collection}}
     <div class="span2 edit-collection-wrapper header-actions-right">
+      {{#if collection.isEditable}}
       <button class="btn btn-edit-collection">
         Edit Collection
       </button>
+      {{/if}}
     </div>
   </div>
 </header>
