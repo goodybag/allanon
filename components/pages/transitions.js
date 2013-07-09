@@ -56,6 +56,7 @@ define(function(require){
       viewA.$el.fadeOut(done);
 
     })(function(){
+      window.scrollTo(0);
       viewB.$el.fadeIn(callback);
     });
   };
