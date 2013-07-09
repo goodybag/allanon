@@ -47,7 +47,7 @@ define(function(require){
 
       if (typeof options == 'function'){
         callback = options;
-        options = {};
+        options = null;
       }
 
       options = options || {};
