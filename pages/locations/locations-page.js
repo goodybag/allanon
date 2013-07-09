@@ -140,13 +140,12 @@ define(function(require){
   , onBusinessSearch: function(e){
       e.preventDefault();
 
-      var search = (
-        this.$search = this.$search || this.$el.find('#business-search')
-      ).val().toLowerCase();
+      var search = this.$search.val().toLowerCase();
 
       if (search == "") return this.renderBusinesses();
 
       this.renderBusinesses( utils.filter(this.businesses, function(business){
+        if (!business || !business.name) return false;
         return business.name.toLowerCase().indexOf( search ) > -1;
       }));
     }
