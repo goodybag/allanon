@@ -36,10 +36,8 @@ define(function(require){
         oldRender.apply(this_.children.products, arguments);
 
         if (this.products.length === 0) return;
-        // height at which to trigger fetching next page
-        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+
+        this_.setupPagination();
       };
 
       this._page = 1;
@@ -93,8 +91,11 @@ define(function(require){
       }
 
       // Don't fetch again if nothing has changed
-      if (!isDifferent && this.products && this.products.length > 0)
-        return troller.spinner.stop(), this;
+      if (!isDifferent && this.products && this.products.length > 0){
+        this.setupPagination();
+        troller.spinner.stop();
+        return this;
+      }
 
       // Reset offset/query
       this.options.offset = 0;
@@ -185,6 +186,15 @@ define(function(require){
       return this;
     }
 
+  , setupPagination: function(){
+      // height at which to trigger fetching next page
+      this.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+      troller.scrollWatcher.once('scroll-' + this.paginationTrigger, this.onScrollNearEnd, this);
+      troller.scrollWatcher.addEvent(this.paginationTrigger);
+
+      return this;
+    }
+
   , onSearchSubmit: function(e){
       e.preventDefault();
 
@@ -192,11 +202,11 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (value) { 
+      if (value) {
         this.options.filter = value;
         this.$searchClearBtn.show();
       } else if (!this.onSearchClear()) return;
-      
+
       // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
