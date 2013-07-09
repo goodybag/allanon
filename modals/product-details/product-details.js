@@ -95,7 +95,7 @@ define(function(require){
       this.applyRegions();
 
       // Show default page
-      this.children.pages.changePage('details', function(error, page){
+      this.children.pages.changePage('details', { transition: 'none' }, function(error, page){
         if (error) return troller.error(error);
         page.provideModel(this_.product);
         page.render();
