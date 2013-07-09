@@ -207,13 +207,17 @@ define(function(require){
     }
 
   , onSearchClear: function(e) {
+      // Cleared by keyboard
       var result = this.options.filter != null;
       delete this.options.filter;
+      this.$searchClearBtn.hide();
       return result;
     }
 
   , onSearchClearClick: function(e) {
+      // Cleared by mouse
       this.$search.val('');
+      this.$searchClearBtn.hide();
       this.onSearchSubmit(e);
     }
 
