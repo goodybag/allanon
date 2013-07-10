@@ -163,6 +163,7 @@
         , changePage: function(page, options, callback){
             if (typeof options === 'function') {
               callback  = options;
+              options   = null;
             }
 
             options = options || {};
