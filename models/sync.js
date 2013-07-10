@@ -14,7 +14,7 @@ define(function(require) {
     var url = !options.url ? (utils.result(model, 'url') || urlError()) : options.url;
 
     // add query params to url, if any
-    var queryParams = utils.extend(model.queryParams, options.queryParams);
+    var queryParams = utils.extend(model.queryParams || {}, options.queryParams);
     if (queryParams) {
       // denormalize array notation, each into it's own pair.  e.g. {a: [1, 2, 3], b: 4} becomes [["a[]", 1], ["a[]", 2], ["a[]", 3], ["b", 4]]
       var pairs = utils.reduce(utils.map(utils.pairs(queryParams), function(pair) {
