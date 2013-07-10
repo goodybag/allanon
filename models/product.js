@@ -37,6 +37,7 @@ define(function(require){
       price:       0,
       tags:        [],
       categories:  [],
+      collections: [],
       likes:       0,
       wants:       0,
       tries:       0,
