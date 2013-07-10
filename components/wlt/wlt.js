@@ -85,9 +85,5 @@ define(function(require) {
   , onLikeClick: function(e){
       this.onFeelingsClick(e, 'userLikes', 'Click Like');
     }
-
-  , stopListening: function(e) {
-      utils.View.prototype.stopListening.apply(this, arguments);
-    }
   });
 });
