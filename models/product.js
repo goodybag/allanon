@@ -64,6 +64,6 @@ define(function(require){
 
     onChangeUserTried: function(e) {
       this.set('tries', this.get('tries') + this.changed.userTried ? 1 : -1);
-    },
+    }
   });
 });
