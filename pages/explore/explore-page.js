@@ -124,6 +124,7 @@ define(function(require){
 
   , onHide: function() {
       troller.scrollWatcher.removeEvent(this.paginationTrigger);
+      console.log("ONHIDE")
     }
 
   , fetchData: function(options, callback){
@@ -247,7 +248,7 @@ define(function(require){
       var result = this.options.filter != null;
       delete this.options.filter;
       this.$oldSortBtn.addClass('active');
-      this.$searchClearBtn.hide();   
+      this.$searchClearBtn.hide();
       this.options.sort = this.oldSort;
       return result;
     }

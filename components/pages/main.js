@@ -103,6 +103,7 @@ define(function(require){
       }
 
       transitions[transition]( this.pages[old], this.pages[page], transitionOptions, function() {
+        console.log("Old", old, this_.pages[old]);
         if ( this_.pages[old] && this_.pages[old].onHide ) this_.pages[old].onHide( options );
         if ( this_.pages[page].onShow ) this_.pages[page].onShow( options );
 
