@@ -40,27 +40,34 @@ define(function(require){
           if (callback) callback();
         });
       }
+
+    , resetScroll: function(reset, y) {
+        var windowY = y || 0;
+        if (reset) window.scrollTo(windowY);
+      }
     }
   ;
 
-  transitions.none = function(viewA, viewB, callback){
+  transitions.none = function(viewA, viewB, resetScroll, callback){
     if (viewA) viewA.$el.css('display', 'none');
+    helpers.resetScroll(resetScroll);
     viewB.$el.css('display', 'block');
     if (callback) callback();
   };
 
-  transitions.fade = function(viewA, viewB, callback){
+  transitions.fade = function(viewA, viewB, resetScroll, callback){
     (function(done){
       if (!viewA) return done();
 
       viewA.$el.fadeOut(done);
 
     })(function(){
+      helpers.resetScroll(resetScroll);
       viewB.$el.fadeIn(callback);
     });
   };
 
-  transitions.slideToLeft = function(viewA, viewB, callback){
+  transitions.slideToLeft = function(viewA, viewB, resetScroll, callback){
     var slideA = function(done){
       helpers.slideA( viewA, 'Left', callback );
     };
@@ -74,7 +81,7 @@ define(function(require){
     utils.parallel([ slideA, slideB ], callback);
   };
 
-  transitions.slideToRight = function(viewA, viewB, callback){
+  transitions.slideToRight = function(viewA, viewB, resetScroll, callback){
     var slideA = function(done){
       helpers.slideA( viewA, 'Right', callback );
     };
