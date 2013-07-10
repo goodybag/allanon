@@ -21,10 +21,14 @@ define(function(require){
 
   , initialize: function(options){
       this.template = options.template || template;
-/*
-      this._boundWltChange = utils.bind(this.onWltChange, this);
-      troller.on('product:' + this.model.id + ':change:wlt', this._boundWltChange);
-*/
+
+      this.listenTo(this.model, {
+        'change:userWants': this.onFeelingsChange
+      , 'change:userLikes': this.onFeelingsChange
+      , 'change:userTried': this.onFeelingsChange
+      , 'change:likeCount': this.onLikeCountChange
+      });
+
       return this;
     }
 
