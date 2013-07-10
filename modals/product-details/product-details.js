@@ -37,7 +37,7 @@ define(function(require){
 
       Modal.prototype.initialize.apply(this, arguments);
 
-      this.product = options.product || new models.Product({}, {queryParams: {include: ['collections']}});
+      this.product = options.product || new models.Product();
 
       this.children.pages.providePages(Pages);
 
@@ -120,7 +120,8 @@ define(function(require){
 
       troller.spinner.spin();
 
-      this.product.fetch({complete: function(error) {
+
+      this.product.fetch({queryParams: {include: ['collections']}, complete: function(error) {
         troller.spinner.stop();
 
         if (error) {
