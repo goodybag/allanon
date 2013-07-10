@@ -21,7 +21,7 @@ define(function(require) {
         return !utils.isArray(pair[1]) ? [pair] : utils.map(pair[1], function(elem) {
           return [pair[0] + '[]', elem];
         });
-      }), function(a, b) { return a.concat(b); });
+      }), function(a, b) { return a.concat(b); }, []);
 
       url += '?' + utils.map(pairs, function(pair) {
         return utils.map(pair, function(param) {
@@ -57,7 +57,7 @@ define(function(require) {
 
       // make products singletons
       if (model instanceof utils.Collection && model.model === Product) {
-        productsCache.set(data);
+        productsCache.add(data, {merge: true});
         var data = utils.map(data, function(m) { return productsCache.get(m); });
       }
 
