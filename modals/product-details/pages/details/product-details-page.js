@@ -32,14 +32,13 @@ define(function(require){
   , provideModel: function(model){
       this.model = model;
       this.children.wlt.provideModel(this.model);
-      this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
       return this;
     }
 
   , render: function(){
       this.$el.html(
         template({
-          product: this.model
+          product: this.model.toJSON()
         })
       );
       this.applyRegions();

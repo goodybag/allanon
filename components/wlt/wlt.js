@@ -1,9 +1,10 @@
-define(function(require){
+define(function(require) {
   var
     utils     = require('utils')
   , troller   = require('troller')
   , user      = require('user')
   , template  = require('hbt!./wlt-tmpl')
+  , models    = require('models')
   ;
 
   return utils.View.extend({
@@ -24,96 +25,69 @@ define(function(require){
     }
 
   , provideModel: function(model){
+      if (this.model) this.stopListening(this.model);
       this.model = model;
 
-      if (this.model.userLikes == null || this.model.userLikes == undefined)
-        throw new Error('WLT model requires userLikes property');
-      if (this.model.userWants == null || this.model.userWants == undefined)
-        throw new Error('WLT model requires userWants property');
-      if (this.model.userTried == null || this.model.userTried == undefined)
-        throw new Error('WLT model requires userTried property');
+      if (!(this.model instanceof models.Product)) throw new Error('WLT model must be Product');
+
+      this.listenTo(this.model, {
+        'change:userWants':  this.onUserFeelingsChange
+      , 'change:userLikes':  this.onUserFeelingsChange
+      , 'change:userTried':  this.onUserFeelingsChange
+      });
 
       return this;
     }
 
   , render: function(){
-      this.$el.html(template(this.model));
+      this.$el.html(template(this.model.toJSON()));
+      var self = this;
+      setTimeout(function() {
+        self.$wantBtn = self.$el.find('.btn-want');
+        self.$likeBtn = self.$el.find('.btn-like');
+        self.$triedBtn = self.$el.find('.btn-try');
+      }, 10);
       return this;
     }
 
-  , onWantClick: function(e){
-      e.preventDefault();
+  , onUserFeelingsChange: function(e) {
+      var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
+      for (var prop in this.model.changed)
+        if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
 
-      troller.analytics.track('Click Want', this.model);
+      //TODO: consider replacing this with this.model.save().  but maybe not here.
+      user.updateProductFeelings(this.model.get('id'), {
+        isWanted: this.model.get('userWants')
+      , isLiked:  this.model.get('userLikes')
+      , isTried:  this.model.get('userTried')
+      });
+    }
+
+  , onFeelingsClick: function(e, prop, message) {
+      e.preventDefault();
 
       if (!user.get('loggedIn')) return troller.promptUserLogin();
 
-      this.model.userWants = !this.model.userWants;
+      // changing the property triggers an event which switches the button state
+      this.model.set(prop, !this.model.get(prop));
 
-      if (this.model.userWants) this.model.wants++;
-      else this.model.wants--;
+      troller.analytics.track(message, this.model.toJSON());
+    }
 
-      this.$el.find('.btn-want')[(this.model.userWants ? 'add' : 'remove') + 'Class']('active');
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'want', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
-      this.trigger('wlt:change', 'want', this.model);
+  , onWantClick: function(e){
+      this.onFeelingsClick(e, 'userWants', 'Click Want');
     }
 
   , onTriedClick: function(e){
-      e.preventDefault();
-
-      troller.analytics.track('Click Tried', this.model);
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.userTried = !this.model.userTried;
-
-      if (this.model.userTried) this.model.tries++;
-      else this.model.tries--;
-
-      this.$el.find('.btn-try')[(this.model.userTried ? 'add' : 'remove') + 'Class']('active');
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'try', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
-      this.trigger('wlt:change', 'tried', this.model);
+      this.onFeelingsClick(e, 'userTried', 'Click Tried');
     }
 
   , onLikeClick: function(e){
-      e.preventDefault();
+      this.onFeelingsClick(e, 'userLikes', 'Click Like');
+    }
 
-      troller.analytics.track('Click Like', this.model);
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.userLikes = !this.model.userLikes;
-
-      if (this.model.userLikes) this.model.likes++;
-      else this.model.likes--;
-
-      this.$el.find('.btn-like')[(this.model.userLikes ? 'add' : 'remove') + 'Class']('active');
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'like', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
-      this.trigger('wlt:change', 'like', this.model);
+  , stopListening: function(e) {
+      utils.View.prototype.stopListening.apply(this, arguments);
     }
   });
 });

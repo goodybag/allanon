@@ -37,24 +37,17 @@ define(function(require){
 
       Modal.prototype.initialize.apply(this, arguments);
 
-      this.productId = options.productId;
-      this.product = options.product || new models.Product({id: this.productId}, {queryParams: {include: ['collections']}});
+      this.product = options.product || new models.Product({}, {queryParams: {include: ['collections']}});
 
       this.children.pages.providePages(Pages);
 
       // Re-fetch on auth/deauth
       user.on('auth', function(){
-        var pid = this_.productId;
-        this_.product = null;
-        this_.productId = null;
-        this_.onOpen({ productId: pid });
+        this_.product.fetch();
       });
 
       user.on('deauth', function(){
-        var pid = this_.productId;
-        this_.product = null;
-        this_.productId = null;
-        this_.onOpen({ productId: pid });
+        this_.product.fetch();
       });
 
       return this;
@@ -105,30 +98,29 @@ define(function(require){
   , onOpen: function(options){
       troller.analytics.track('Product Details Opened', options);
 
-      if (options && !options.productId && !options.product) return this;
+      options = options || {};
+
+      // if there's no model
+      if (options.productId == null && options.product == null) return this;
 
       var this_ = this;
 
       // If they provided a product already, no need to fetch
       if (options.product){
         this.product = options.product;
-
-        this.productId = this.product.get('id');
-
-        troller.app.setTitle(this.product.get('name'));
-
         return this.render();
       }
 
       // Same thing as before, and we've likely already rendered
-      if (options.productId == this.productId && this.productId == this.product.get('id') && this.productId != null)
+      if (options.productId === this.product.id)
         return this;
 
-      if (options.productId) this.productId = options.productId;
+      this.product.clear();
+      this.product.set('id', options.productId);
 
       troller.spinner.spin();
 
-      return this.fetchProduct(function(error, product) {
+      this.product.fetch({complete: function(error) {
         troller.spinner.stop();
 
         if (error) {
@@ -139,10 +131,8 @@ define(function(require){
           return troller.error(error);
         }
 
-        troller.app.setTitle(product.get('name'));
-
         this_.render();
-      });
+      }});
     }
 
   , onClose: function(){
@@ -151,14 +141,8 @@ define(function(require){
 
       // Navigate to page underneath
       utils.history.navigate(
-        utils.history.location.hash.replace('/products/' + this.productId, '').substring(1)
+        utils.history.location.hash.replace('/products/' + this.product.id, '').substring(1)
       );
-    }
-
-  , fetchProduct: function(callback){
-      this.product.fetch(this.dataOptions);
-      if (callback) callback(null, this.product);
-      return this;
     }
   });
 });

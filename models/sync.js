@@ -49,7 +49,11 @@ define(function(require) {
     }[method];
 
     func(url, data, function(error, data, meta) {
-      if (error) return;
+      options.complete = options.complete || function() {};
+      options.error    = options.error    || function() {};
+      options.success  = options.success  || function() {};
+
+      if (error) return options.error(error), options.complete(error);
 
       // make products singletons
       if (model instanceof utils.Collection && model.model === Product) {
@@ -57,7 +61,7 @@ define(function(require) {
         var data = utils.map(data, function(m) { return productsCache.get(m); });
       }
 
-      return options.success(data);
+      return options.success(data), options.complete(null, data);
     });
   }
 });
