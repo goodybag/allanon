@@ -102,8 +102,8 @@ define(function(require){
         this.pages[page].delegateEvents();
       }
 
+      if ( this.pages[old] && this.pages[old].onHide ) this.pages[old].onHide( options );
       transitions[transition]( this.pages[old], this.pages[page], transitionOptions, function() {
-        if ( this_.pages[old] && this_.pages[old].onHide ) this_.pages[old].onHide( options );
         if ( this_.pages[page].onShow ) this_.pages[page].onShow( options );
 
         if (callback) callback(null, this_.pages[page]);
