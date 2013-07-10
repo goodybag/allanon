@@ -26,7 +26,7 @@ define(function(require){
         'change:userWants': this.onFeelingsChange
       , 'change:userLikes': this.onFeelingsChange
       , 'change:userTried': this.onFeelingsChange
-      , 'change:likeCount': this.onLikeCountChange
+      , 'change:likes':     this.onLikeCountChange
       });
 
       return this;
