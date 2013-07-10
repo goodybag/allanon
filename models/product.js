@@ -56,15 +56,18 @@ define(function(require){
     },
 
     onChangeUserWants: function(e) {
-      this.set('wants', this.get('wants') + this.changed.userWants ? 1 : -1);
+      if (this.changed.userWants != null && this.previousAttributes().userWants != null)
+        this.set('wants', this.get('wants') + (this.changed.userWants ? 1 : -1));
     },
 
     onChangeUserLikes: function(e) {
-      this.set('likes', this.get('likes') + this.changed.userLikes ? 1 : -1);
+      if (this.changed.userLikes != null && this.previousAttributes().userLikes != null)
+        this.set('likes', this.get('likes') + (this.changed.userLikes ? 1 : -1));
     },
 
     onChangeUserTried: function(e) {
-      this.set('tries', this.get('tries') + this.changed.userTried ? 1 : -1);
+      if (this.changed.userTried != null && this.previousAttributes().userTried != null)
+        this.set('tries', this.get('tries') + (this.changed.userTried ? 1 : -1));
     }
   });
 });
