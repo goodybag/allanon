@@ -31,7 +31,7 @@ define(function(require){
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function() {
-        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+        this_.destroyPagination();
 
         oldRender.apply(this_.children.products, arguments);
 
@@ -123,7 +123,7 @@ define(function(require){
     }
 
   , onHide: function() {
-      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+      this.destroyPagination();
     }
 
   , fetchData: function(options, callback){
@@ -150,7 +150,7 @@ define(function(require){
         this_.provideData(options.append ? this_.products.concat(results) : results);
 
         if (results.length < this_.options.limit) // if it's the last page
-          troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+          this_.destroyPagination();
 
         if (callback) callback(null, results);
       });
@@ -186,7 +186,16 @@ define(function(require){
       return this;
     }
 
+  , destroyPagination: function(){
+      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+      this.paginationTrigger = null;
+
+      return this;
+    }
+
   , setupPagination: function(){
+      if (this.paginationTrigger) this.destroyPagination();
+
       // height at which to trigger fetching next page
       this.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
       troller.scrollWatcher.once('scroll-' + this.paginationTrigger, this.onScrollNearEnd, this);
