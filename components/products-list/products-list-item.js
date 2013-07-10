@@ -45,9 +45,11 @@ define(function(require){
       // statement above and getting the newly inserted elements
       setTimeout(function(){
         // Set the header top to the appropriate value based on height
-        var props = {this_.$el.find('.header'): 'top', this_.$el.find('.product-feelings'): 'bottom'};
-        for (var elem in props)
-          elem.css(props[elem], '-' + (elem.outerHeight() + 3) + 'px'); // extra 3 pixels is for drop shadow
+        var props = {'.header': 'top', '.product-feelings': 'bottom'};
+        for (var selector in props) {
+          var elem = this_.$el.find(selector);
+          elem.css(props[selector], '-' + (elem.outerHeight() + 3) + 'px'); // extra 3 pixels is for drop shadow
+        }
 
         // setup properties
         this_.$wantBtn  = this_.$el.find('.feeling-want');
@@ -63,8 +65,9 @@ define(function(require){
   , onFeelingsChange: function(e) {
       var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
       for (var prop in this.model.changed)
-        if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
+        if (this.model.changed[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
 
+      //TODO: consider replacing this with this.model.save().  but maybe not here.
       user.updateProductFeelings(this.model.get('id'), {
         isWanted: this.model.get('userWants')
       , isLiked:  this.model.get('userLikes')
@@ -76,35 +79,27 @@ define(function(require){
       this.$likeCount.text(this.model.get('likes'));
     }
 
-  , onWantClick: function(e){
+  , onFeelingsClick: function(e, prop, message) {
       e.preventDefault();
 
       if (!user.get('loggedIn')) return troller.promptUserLogin();
 
       // changing the property triggers an event which switches the button state
-      this.model.set('userWants', !this.model.get('userWants'));
+      this.model.set(prop, !this.model.get(prop));
 
-      troller.analytics.track('Click Want', this.model.toJSON());
+      troller.analytics.track(message, this.model.toJSON());
+    }
+
+  , onWantClick: function(e){
+      this.onFeelingsClick(e, 'userWants', 'Click Want');
     }
 
   , onTriedClick: function(e){
-      e.preventDefault();
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.set('userTried', !this.model.get('userTried'));
-
-      troller.analytics.track('Click Tried', this.model.toJSON());
+      this.onFeelingsClick(e, 'userTried', 'Click Tried');
     }
 
   , onLikeClick: function(e){
-      e.preventDefault();
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.set('userLikes', !this.model.get('userLikes'));
-
-      troller.analytics.track('Click Like', this.model.toJSON());
+      this.onFeelingsClick(e, 'userLikes', 'Click Like');
     }
 
   , onProductPhotoClick: function(e){
@@ -122,12 +117,6 @@ define(function(require){
       });
 
       this.trigger('product-details-modal:open', this.model);
-    }
-
-  , stopListening: function(){
-      // clean up events
-      this.stopListening(model);
-      utils.View.prototype.stopListening.apply(this, arguments);
     }
   });
 });

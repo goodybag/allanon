@@ -6,6 +6,7 @@ define(function(require){
   , troller     = require('troller')
   , config      = require('config')
   , Components  = require('components')
+  , models      = require('models')
   , Modal       = Components.Modal.Main
 
   , template    = require('hbt!./product-details-tmpl')
@@ -37,13 +38,9 @@ define(function(require){
       Modal.prototype.initialize.apply(this, arguments);
 
       this.productId = options.productId;
-      this.product = options.product || {};
+      this.product = options.product || new models.Product({id: this.productId}, {queryParams: {include: ['collections']}});
 
       this.children.pages.providePages(Pages);
-
-      this.dataOptions = {
-        include: ['collections']
-      };
 
       // Re-fetch on auth/deauth
       user.on('auth', function(){
@@ -77,7 +74,7 @@ define(function(require){
       var this_ = this;
 
       this.children.pages.remove();
-      this.$el.html( template({ product: this.product }) );
+      this.$el.html( template({ product: this.product.toJSON() }) );
 
       var $productPhoto     = this.$el.find('.product-photo-hidden')
         , $productSpinner   = this.$el.find('.product-photo-spinner');
@@ -116,27 +113,22 @@ define(function(require){
       if (options.product){
         this.product = options.product;
 
-        // If they're not logged in, the product won't have userWLTs
-        this.product.userLikes = this.product.userLikes || false;
-        this.product.userWants = this.product.userWants || false;
-        this.product.userTried = this.product.userTried || false;
+        this.productId = this.product.get('id');
 
-        this.productId = this.product.id;
-
-        troller.app.setTitle(this.product.name);
+        troller.app.setTitle(this.product.get('name'));
 
         return this.render();
       }
 
       // Same thing as before, and we've likely already rendered
-      if (options.productId == this.productId && this.productId == this.product.id && this.productId != null)
+      if (options.productId == this.productId && this.productId == this.product.get('id') && this.productId != null)
         return this;
 
       if (options.productId) this.productId = options.productId;
 
       troller.spinner.spin();
 
-      return this.fetchProduct(function(error, product){
+      return this.fetchProduct(function(error, product) {
         troller.spinner.stop();
 
         if (error) {
@@ -147,7 +139,7 @@ define(function(require){
           return troller.error(error);
         }
 
-        troller.app.setTitle(product.name);
+        troller.app.setTitle(product.get('name'));
 
         this_.render();
       });
@@ -164,21 +156,8 @@ define(function(require){
     }
 
   , fetchProduct: function(callback){
-      var this_ = this;
-
-      api.products.get(this.productId, this.dataOptions, function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        this_.product = result;
-
-        // If they're not logged in, the product won't have userWLTs
-        this_.product.userLikes = this_.product.userLikes || false;
-        this_.product.userWants = this_.product.userWants || false;
-        this_.product.userTried = this_.product.userTried || false;
-
-        if (callback) callback(null, result);
-      });
-
+      this.product.fetch(this.dataOptions);
+      if (callback) callback(null, this.product);
       return this;
     }
   });

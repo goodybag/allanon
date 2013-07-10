@@ -20,8 +20,6 @@ define(function(require){
   , initialize: function(options) {
       options = options || {};
 
-
-
       this.products = new ProductsCollection();;
       this._views = [];
 
@@ -35,13 +33,11 @@ define(function(require){
     }
 
   , render: function() {
-      var fragment  = document.createDocumentFragment();
+      var fragment = document.createDocumentFragment();
 
       // Remove old views
-      if (this._views.length > 0){
-        for (var i = 0, l = this._views.length; i < l; ++i){
-          this._views[i].remove();
-        }
+      for (var i = 0, l = this._views.length; i < l; ++i){
+        this._views[i].remove();
       }
 
       this._views = [];

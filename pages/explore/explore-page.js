@@ -68,7 +68,7 @@ define(function(require){
 
       // Set Correct Title
       this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.name);
+        troller.app.setTitle(product.get('name'));
       });
 
       this.children.products.on('product-details-modal:close', function(){
@@ -247,7 +247,7 @@ define(function(require){
       var result = this.options.filter != null;
       delete this.options.filter;
       this.$oldSortBtn.addClass('active');
-      this.$searchClearBtn.hide();   
+      this.$searchClearBtn.hide();
       this.options.sort = this.oldSort;
       return result;
     }
