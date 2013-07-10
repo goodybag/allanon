@@ -34,15 +34,15 @@ define(function(require){
     },
 
     defaults: {
-      price:      0,
-      tags:       [],
-      categories: [],
-      likes:      0,
-      wants:      0,
-      tries:      0,
-      userLikes:  false,
-      userWants:  false,
-      userTried:  false
+      price:       0,
+      tags:        [],
+      categories:  [],
+      likes:       0,
+      wants:       0,
+      tries:       0,
+      userLikes:   false,
+      userWants:   false,
+      userTried:   false
     },
 
     urlRoot: '/products',
