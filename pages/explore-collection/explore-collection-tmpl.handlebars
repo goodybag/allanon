@@ -7,7 +7,7 @@
       {{! Wrap input in form to use onSubmit event }}
       <form id="explore-search-form">
         <input class="field-search" placeholder="Search Gallery" type="text">
-        <button class="field-search-clear"><i class="icon-remove"></i></button>
+        <button class="field-search-clear" type="button"><i class="icon-remove"></i></button>
       </form>
     </div>
 
@@ -17,15 +17,15 @@
       <button class="btn btn-primary search-form-btn">Search</button>
 
       <div class="btn-group filters-btn-group">
-        <button class="btn btn-large btn-want"
+        <button class="btn btn-large btn-want">
           <i class="icon"></i>
           Want <span class="count">({{collection.totalMyWants}})</span>
         </button>
-        <button class="btn btn-large btn-like"
+        <button class="btn btn-large btn-like">
           <i class="icon"></i>
           Like <span class="count">({{collection.totalMyLikes}})</span>
         </button>
-        <button class="btn btn-large btn-tried"
+        <button class="btn btn-large btn-tried">
           <i class="icon"></i>
           Tried <span class="count">({{collection.totalMyTries}})</span>
         </button>
@@ -34,9 +34,11 @@
 
     {{! Edit Collection}}
     <div class="span2 edit-collection-wrapper header-actions-right">
+      {{#if collection.isEditable}}
       <button class="btn btn-edit-collection">
         Edit Collection
       </button>
+      {{/if}}
     </div>
   </div>
 </header>

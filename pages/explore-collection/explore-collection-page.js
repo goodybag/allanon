@@ -177,12 +177,12 @@ define(function(require){
 
       if (value == this.options.filter) return;
 
-      if (value) { 
+      if (value) {
         this.options.filter = value;
         this.$searchClearBtn.show();
-      } 
+      }
       else if (!this.onSearchClear()) return;
-     
+
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
@@ -207,18 +207,24 @@ define(function(require){
     }
 
   , onSearchClear: function(e) {
+      // Cleared by keyboard
       var result = this.options.filter != null;
       delete this.options.filter;
+      this.$searchClearBtn.hide();
       return result;
     }
 
   , onSearchClearClick: function(e) {
+      // Cleared by mouse
       this.$search.val('');
+      this.$searchClearBtn.hide();
       this.onSearchSubmit(e);
     }
 
   , onFiltersClick: function(e){
       troller.spinner.spin();
+
+      while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
 
       var $target = utils.dom(e.target);
 
