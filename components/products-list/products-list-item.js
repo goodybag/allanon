@@ -84,7 +84,7 @@ define(function(require){
       // changing the property triggers an event which switches the button state
       this.model.set('userWants', !this.model.get('userWants'));
 
-      troller.analytics.track('Click Want', this.model);
+      troller.analytics.track('Click Want', this.model.toJSON());
     }
 
   , onTriedClick: function(e){
@@ -94,7 +94,7 @@ define(function(require){
 
       this.model.set('userTried', !this.model.get('userTried'));
 
-      troller.analytics.track('Click Tried', this.model);
+      troller.analytics.track('Click Tried', this.model.toJSON());
     }
 
   , onLikeClick: function(e){
@@ -104,7 +104,7 @@ define(function(require){
 
       this.model.set('userLikes', !this.model.get('userLikes'));
 
-      troller.analytics.track('Click Like', this.model);
+      troller.analytics.track('Click Like', this.model.toJSON());
     }
 
   , onProductPhotoClick: function(e){
