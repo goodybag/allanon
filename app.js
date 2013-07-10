@@ -161,11 +161,21 @@
           }
 
         , changePage: function(page, options, callback){
+            if (typeof options === 'function') {
+              callback  = options;
+              options   = null;
+            }
+
+            options = options || {};
+
+            options.transitionOptions = options.transitionOptions || {};
+            options.transitionOptions.onViewAAnimationComplete = function(viewA) {
+              window.scrollTo(0);
+            }
+
             app.appView.changePage(page, options, callback);
 
             troller.trigger('change-page', {page: page});
-
-            window.scrollTo(0);
 
             if (page != 'explore') app.hideBanner();
 

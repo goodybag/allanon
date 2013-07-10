@@ -43,7 +43,7 @@ define(function(require){
     }
 
   , changePage: function(page, options, callback){
-      var this_ = this, transition;
+      var this_ = this, transition, transitionOptions;
 
       if (typeof options == 'function'){
         callback = options;
@@ -52,10 +52,12 @@ define(function(require){
 
       options = options || {};
 
-      transition = transitions[options.transition] ? options.transition : 'fade';
+      transition        = transitions[options.transition] ? options.transition : 'fade';
+      transitionOptions = options.transitionOptions || {} ;
 
       // Clear out options so pages onshow/hide do not get irrelev
       delete options.transition;
+      delete options.transitionOptions;
 
       // Do not transition into yourself
       if (page == this.current)
@@ -100,7 +102,7 @@ define(function(require){
         this.pages[page].delegateEvents();
       }
 
-      transitions[transition]( this.pages[old], this.pages[page], function(){
+      transitions[transition]( this.pages[old], this.pages[page], transitionOptions, function() {
         if ( this_.pages[old] && this_.pages[old].onHide ) this_.pages[old].onHide( options );
         if ( this_.pages[page].onShow ) this_.pages[page].onShow( options );
 
