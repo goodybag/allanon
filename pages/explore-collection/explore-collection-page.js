@@ -37,15 +37,13 @@ define(function(require){
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function(){
-        troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+        this_.destroyPagination();
 
         oldRender.apply(this_.children.products, arguments);
 
         if (this_.products.length === 0) return;
-        // trigger fetching next page
-        this_.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
-        troller.scrollWatcher.once('scroll-' + this_.paginationTrigger, this_.onScrollNearEnd, this_);
-        troller.scrollWatcher.addEvent(this_.paginationTrigger);
+
+        this_.setupPagination();
       };
 
       this.children.products.on('feelings:change', function(feeling, direction){
@@ -109,7 +107,7 @@ define(function(require){
     }
 
   , onHide: function() {
-      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+      this.destroyPagination();
     }
 
   , fetchData: function(options, callback){
@@ -147,7 +145,7 @@ define(function(require){
         if (window.scrollY >= 120) this_.stickHead();
 
         if (products.length < this_.options.limit) // if it's the last page
-          troller.scrollWatcher.removeEvent(this_.paginationTrigger);
+          this_.destroyPagination();
 
         if (callback) callback(null, products);
       });
@@ -166,6 +164,24 @@ define(function(require){
       this.$search = this.$el.find('.field-search');
       this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
+
+      return this;
+    }
+
+  , destroyPagination: function(){
+      troller.scrollWatcher.removeEvent(this.paginationTrigger);
+      this.paginationTrigger = null;
+
+      return this;
+    }
+
+  , setupPagination: function(){
+      if (this.paginationTrigger) this.destroyPagination();
+
+      // height at which to trigger fetching next page
+      this.paginationTrigger = utils.dom(document).height() - (utils.dom(window).height() / 4);
+      troller.scrollWatcher.once('scroll-' + this.paginationTrigger, this.onScrollNearEnd, this);
+      troller.scrollWatcher.addEvent(this.paginationTrigger);
 
       return this;
     }
