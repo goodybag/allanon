@@ -296,7 +296,13 @@
             if (typeof options == 'object')
               utils.extend( _options, options );
 
-            troller.analytics.track( 'Modal.Opened ' + modal, _options );
+            var trackingData = utils.clone(_options);
+            for (var key in trackingData) {
+              if (trackingData[key] instanceof utils.Model || trackingData[key] instanceof utils.Collection)
+                trackingData[key] = trackingData[key].toJSON();
+            }
+
+            troller.analytics.track( 'Modal.Opened ' + modal, trackingData );
           }
         , closeModal: function(modal, options){
             return app.appView.children.modals.close(modal, options);
