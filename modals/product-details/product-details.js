@@ -96,7 +96,9 @@ define(function(require){
     }
 
   , onOpen: function(options){
-      troller.analytics.track('Product Details Opened', options);
+      var trackingData = utils.clone(options);
+      trackingData.product = options.product ? options.product.toJSON() : options.product;
+      troller.analytics.track('Product Details Opened', trackingData);
 
       options = options || {};
 
