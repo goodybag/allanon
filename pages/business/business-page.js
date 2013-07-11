@@ -85,6 +85,7 @@ define(function(require){
         this_.business    = results.business;
         this_.locations   = results.locations;
         this_.products    = results.products;
+        this_.punchcard   = new utils.Model({}, {url: '/consumers/' + user.get('id') + '/loyalty/' + this_.business.id});
 
         var categories = utils.pluck(utils.union.apply(utils, this_.products.pluck('categories')), 'name').concat(['uncategorized']);
         this_.categories = utils.map(categories, function(name) {
@@ -167,11 +168,12 @@ define(function(require){
 
       troller.spinner.spin();
 
-      api.loyalty.userBusiness( user.get('id'), this.business.id, function(error, result){
-        troller.spinner.stop();
-        if (error) return troller.error(error);
+      var self = this;
 
-        troller.modals.open('punchcard', { punchcard: result });
+      this.punchcard.fetch({
+        error: function(err) { troller.error(err); }
+      , success: function() { troller.modals.open('punchcard', {punchcard: self.punchcard.toJSON()}); }
+      , complete: function() { troller.spinner.stop(); }
       });
     }
 
