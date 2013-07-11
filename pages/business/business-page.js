@@ -11,6 +11,14 @@ define(function(require){
   , template    = require('hbt!./business-tmpl')
   ;
 
+  var BusinessProducts = utils.Collection.extend({
+    model: models.Product
+    , queryParams: {
+      include: ['categories', 'collections']
+      , limit: 1000
+    }
+  });
+
   return Components.Pages.Page.extend({
     className: 'page page-business'
 
@@ -51,14 +59,6 @@ define(function(require){
         }
 
       , products: function(done){
-          var BusinessProducts = utils.Collection.extend({
-            model: models.Product
-          , queryParams: {
-              include: ['categories', 'collections']
-              , limit: 1000
-            }
-          });
-
           var prods = new BusinessProducts({}, { url: '/businesses/' + id + '/products' });
 
 
