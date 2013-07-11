@@ -30,6 +30,11 @@ define(function(require){
   , initialize: function(){
       this.business = {};
       this.locations = [];
+      var this_ = this;
+      this.punchcard   = new utils.Model({}, {url: function() {
+        return '/consumers/' + user.get('id') + '/loyalty/' + this_.business.id;
+      }});
+
       return this;
     }
 
@@ -85,7 +90,6 @@ define(function(require){
         this_.business    = results.business;
         this_.locations   = results.locations;
         this_.products    = results.products;
-        this_.punchcard   = new utils.Model({}, {url: '/consumers/' + user.get('id') + '/loyalty/' + this_.business.id});
 
         var categories = utils.pluck(utils.union.apply(utils, this_.products.pluck('categories')), 'name').concat(['uncategorized']);
         this_.categories = utils.map(categories, function(name) {
