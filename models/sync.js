@@ -3,7 +3,7 @@ define(function(require) {
   var api     = require('api');
   var Product = require('./product');
 
-  var productsCache = new utils.Collection({model: Product});
+  var productsCache = new utils.Collection({}, {model: Product});
 
   utils.Backbone.sync = function(method, model, options) {
     var options = options || {};
