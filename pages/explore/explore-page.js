@@ -68,7 +68,7 @@ define(function(require){
 
       // Set Correct Title
       this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.name);
+        troller.app.setTitle(product.get('name'));
       });
 
       this.children.products.on('product-details-modal:close', function(){

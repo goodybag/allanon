@@ -22,8 +22,12 @@ define(function(require){
   , initialize: function(options){
       this.template = options.template || template;
 
-      this._boundWltChange = utils.bind(this.onWltChange, this);
-      troller.on('product:' + this.model.id + ':change:wlt', this._boundWltChange);
+      this.listenTo(this.model, {
+        'change:userWants': this.onFeelingsChange
+      , 'change:userLikes': this.onFeelingsChange
+      , 'change:userTried': this.onFeelingsChange
+      , 'change:likes':     this.onLikeCountChange
+      });
 
       return this;
     }
@@ -33,111 +37,69 @@ define(function(require){
 
       this.$el.html(
         this.template({
-          product: this.model
+          product: this.model.toJSON()
         })
       );
 
-      // Set the header top to the appropriate value based on height
+      // the timeout is necessary make sure the dom has updated between the html
+      // statement above and getting the newly inserted elements
       setTimeout(function(){
-        this_.$el.find('.header').css(
-          'top'
-          // Extra to hide box-shadow
-        , '-' + (this_.$el.find('.header').outerHeight() + 3) + 'px'
-        );
+        // Set the header top to the appropriate value based on height
+        var props = {'.header': 'top', '.product-feelings': 'bottom'};
+        for (var selector in props) {
+          var elem = this_.$el.find(selector);
+          elem.css(props[selector], '-' + (elem.outerHeight() + 3) + 'px'); // extra 3 pixels is for drop shadow
+        }
 
-        this_.$el.find('.product-feelings').css(
-          'bottom'
-          // Extra to hide box-shadow
-        , '-' + (this_.$el.find('.product-feelings').outerHeight() + 3) + 'px'
-        );
+        // setup properties
+        this_.$wantBtn  = this_.$el.find('.feeling-want');
+        this_.$likeBtn  = this_.$el.find('.feeling-like');
+        this_.$triedBtn = this_.$el.find('.feeling-try');
+
+        this_.$likeCount = this_.$el.find('.like-count');
       }, 100)
 
       return this;
     }
 
-  , onWltChange: function(change, model){
-      var userAction = (
-        change == 'want' ? 'userWants' : (
-        change == 'like' ? 'userLikes' : 'userTried'
-      ));
+  , onFeelingsChange: function(e) {
+      var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
+      for (var prop in this.model.changed)
+        if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
 
-      // Could potentially be two different models, so sync them
-      this.model = model;
+      //TODO: consider replacing this with this.model.save().  but maybe not here.
+      user.updateProductFeelings(this.model.get('id'), {
+        isWanted: this.model.get('userWants')
+      , isLiked:  this.model.get('userLikes')
+      , isTried:  this.model.get('userTried')
+      });
+     }
 
-      this.$el.find('.feeling-' + change)[(this.model[userAction] ? 'add' : 'remove') + 'Class']('active');
+  , onLikeCountChange: function(e) {
+      this.$likeCount.text(this.model.get('likes'));
+    }
 
-      if (change == 'like') this.$el.find('.like-count').text(this.model.likes);
-      this.trigger('feelings:change', change, model[userAction], model);
+  , onFeelingsClick: function(e, prop, message) {
+      e.preventDefault();
+
+      troller.analytics.track(message, this.model.toJSON());
+
+      if (!user.get('loggedIn')) return troller.promptUserLogin();
+
+      // changing the property triggers an event which switches the button state
+      this.model.set(prop, !this.model.get(prop));
     }
 
   , onWantClick: function(e){
-      e.preventDefault();
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.userWants = !this.model.userWants;
-
-      if (this.model.userWants) this.model.wants++;
-      else this.model.wants--;
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.analytics.track('Click Want', this.model);
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'want', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.onFeelingsClick(e, 'userWants', 'Click Want');
     }
 
   , onTriedClick: function(e){
-      e.preventDefault();
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.userTried = !this.model.userTried;
-
-      if (this.model.userTried) this.model.tries++;
-      else this.model.tries--;
-
-      this.$el.find('.feeling-try')[(this.model.userTried ? 'add' : 'remove') + 'Class']('active');
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.analytics.track('Click Tried', this.model);
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'try', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.onFeelingsClick(e, 'userTried', 'Click Tried');
     }
 
   , onLikeClick: function(e){
-      e.preventDefault();
-
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
-
-      this.model.userLikes = !this.model.userLikes;
-
-      if (this.model.userLikes) this.model.likes++;
-      else this.model.likes--;
-
-      this.$el.find('.feeling-like')[(this.model.userLikes ? 'add' : 'remove') + 'Class']('active');
-
-      user.updateProductFeelings(this.model.id, {
-        isWanted: this.model.userWants
-      , isLiked:  this.model.userLikes
-      , isTried:  this.model.userTried
-      });
-
-      troller.analytics.track('Click Like', this.model);
-
-      troller.trigger('product:' + this.model.id + ':change:wlt', 'like', this.model);
-      troller.trigger('product:' + this.model.id + ':change', this.model);
+      this.onFeelingsClick(e, 'userLikes', 'Click Like');
     }
 
   , onProductPhotoClick: function(e){
@@ -145,7 +107,7 @@ define(function(require){
         utils.history.location.hash.substring(1) + '/products/' + this.model.id
       );
 
-      var options = { product: this.model, productId: this.model.id };
+      var options = { product: this.model, productId: this.model.get('id') };
       var this_ = this;
 
       troller.modals.open('product-details', options, function(error, modal){
@@ -155,12 +117,6 @@ define(function(require){
       });
 
       this.trigger('product-details-modal:open', this.model);
-    }
-
-  , stopListening: function(){
-      // clean up events
-      troller.off('product:' + this.model.id + ':change:wlt', this._boundWltChange);
-      utils.View.prototype.stopListening.apply(this, arguments);
     }
   });
 });
