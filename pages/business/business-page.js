@@ -182,8 +182,11 @@ define(function(require){
       while (e.target.className.indexOf('product-item') == -1)
         e.target = e.target.parentElement;
 
+      var product = this.products.get(utils.dom(e.target).data('id'));
+      troller.app.setTitle(product.get('name'));
+
       troller.modals.open('product-details', {
-        product: this.products.get(utils.dom(e.target).data('id'))
+        product: product
       }, function(error, modal){
         modal.once('close', function(){
           troller.app.setTitle(this_.title);
