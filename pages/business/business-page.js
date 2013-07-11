@@ -5,6 +5,7 @@ define(function(require){
   , user        = require('user')
   , api         = require('api')
   , troller     = require('troller')
+  , models      = require('models')
   , Components  = require('components')
 
   , template    = require('hbt!./business-tmpl')
@@ -50,13 +51,21 @@ define(function(require){
         }
 
       , products: function(done){
-          var options = {
-            include: ['categories', 'collections']
-          , limit: 1000
-          };
+          var BusinessProducts = utils.Collection.extend({
+            model: models.Product
+          , queryParams: {
+              include: ['categories', 'collections']
+              , limit: 1000
+            }
+          });
 
-          api.businesses.products.list(id, options, function(error, products, meta){
-            done(error, products);
+          var prods = new BusinessProducts({}, { url: '/businesses/' + id + '/products' });
+
+
+          prods.fetch({
+            complete: function(error) {
+              done(error, prods);
+            }
           });
         }
       }, function(error, results){
@@ -75,8 +84,19 @@ define(function(require){
 
         this_.business    = results.business;
         this_.locations   = results.locations;
-        this_.categories  = utils.getProductsByCategory( results.products );
-        this_.products    = utils.index(results.products, 'id');
+        this_.products    = results.products;
+
+        var Category = utils.Collection.extend({ model: models.Product });
+        var categories = utils.pluck(utils.union.apply(utils, this_.products.pluck('categories')), 'name').concat(['uncategorized']);
+        this_.categories = utils.map(categories, function(name) {
+          return {
+            name: name
+          , products: new Category( this_.products.filter(function(product) {
+              if (name === 'uncategorized') return product.get('categories').length === 0;
+              return utils.contains(utils.pluck(product.get('categories'), 'name'), name);
+            }))
+          };
+        });
 
         utils.index(this_.locations, this_.locationsById = {}, 'id');
 
@@ -117,36 +137,27 @@ define(function(require){
         template({
           business:   this.business
         , location:   this.currentLocation
-        , categories: this.categories
+        , categories: utils.map(this.categories, function(cat) { return {name: cat.name, products: cat.products.toJSON()}; })
         })
       );
       return this;
     }
 
   , setupProductEvents: function(){
-      this._boundWltChange = utils.bind(this.onWltChange, this);
-
-      for (var id in this.products){
-        troller.on('product:' + id + ':change:wlt', this._boundWltChange);
-      }
+      var self = this;
+      this.products.each(function(product) {
+        self.listenTo(product, 'change:likes', function(e) {
+          self.$el.find('#product-list-item-' + product.id + ' .product-menu-like-count').html(product.get('likes'));
+        });
+      });
 
       return this;
     }
 
   , destroyProductEvents: function(){
-      if (this._boundWltChange){
-        for (var id in this.products){
-          troller.off('product:' + id + ':change:wlt', this._boundWltChange);
-        }
-      }
+      if (this.products) this.products.each(function(product) { this.stopListening(product); }, this);
 
       return this;
-    }
-
-  , onWltChange: function(change, model){
-      if (change != 'like') return;
-
-      this.$el.find('#product-list-item-' + model.id + ' .product-menu-like-count').html(model.likes);
     }
 
   , onViewPunchCardClick: function(e){
@@ -171,7 +182,7 @@ define(function(require){
         e.target = e.target.parentElement;
 
       troller.modals.open('product-details', {
-        product: this.products[ utils.dom(e.target).data('id') ]
+        product: this.products.get(utils.dom(e.target).data('id'))
       }, function(error, modal){
         modal.once('close', function(){
           troller.app.setTitle(this_.title);
