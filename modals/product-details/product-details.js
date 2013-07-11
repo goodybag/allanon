@@ -120,8 +120,7 @@ define(function(require){
       if (options.productId === this.product.id)
         return this;
 
-      this.product.clear();
-      this.product.set('id', options.productId);
+      this.product = new models.Product({id: options.productId});
 
       troller.spinner.spin();
 
