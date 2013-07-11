@@ -11,7 +11,7 @@ define(function(require) {
 
     // Ensure that we have a URL.
 
-    var url = !options.url ? (utils.result(model, 'url') || urlError()) : options.url;
+    var url = !options.url ? utils.result(model, 'url') : options.url;
 
     // add query params to url, if any
     var queryParams = utils.extend(model.queryParams || {}, options.queryParams);
