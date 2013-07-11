@@ -86,15 +86,14 @@ define(function(require){
         this_.locations   = results.locations;
         this_.products    = results.products;
 
-        var Category = utils.Collection.extend({ model: models.Product });
         var categories = utils.pluck(utils.union.apply(utils, this_.products.pluck('categories')), 'name').concat(['uncategorized']);
         this_.categories = utils.map(categories, function(name) {
           return {
             name: name
-          , products: new Category( this_.products.filter(function(product) {
+          , products: new utils.Collection( this_.products.filter(function(product) {
               if (name === 'uncategorized') return product.get('categories').length === 0;
               return utils.contains(utils.pluck(product.get('categories'), 'name'), name);
-            }))
+            }), { model: models.Product })
           };
         });
 
