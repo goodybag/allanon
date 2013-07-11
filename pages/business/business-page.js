@@ -146,8 +146,9 @@ define(function(require){
   , setupProductEvents: function(){
       var self = this;
       this.products.each(function(product) {
+        var selector = '#product-list-item-' + product.id + ' .product-menu-like-count';
         self.listenTo(product, 'change:likes', function(e) {
-          self.$el.find('#product-list-item-' + product.id + ' .product-menu-like-count').html(product.get('likes'));
+          self.$el.find(selector).html(product.get('likes'));
         });
       });
 
