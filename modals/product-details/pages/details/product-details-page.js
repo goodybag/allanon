@@ -25,31 +25,30 @@ define(function(require){
       wlt:    '.wlt'
     }
 
-  , initialize: function(options){
+  , initialize: function(options) {
       return this;
     }
 
-  , provideModel: function(model){
+  , provideModel: function(model) {
+      this.stopListening(this.model);
       this.model = model;
+      this.listenTo(this.model, 'change:likes', this.onChangeLikeCount);
       this.children.wlt.provideModel(this.model);
-      this.children.wlt.on('wlt:change', utils.bind(this.onWltChange, this));
       return this;
     }
 
-  , render: function(){
+  , render: function() {
       this.$el.html(
         template({
-          product: this.model
+          product: this.model.toJSON()
         })
       );
       this.applyRegions();
       return this;
     }
 
-  , onWltChange: function(change, model){
-      // Update like count if necessary
-      if (change == 'like')
-        this.$el.find('.product-stat-likes > .product-stat-value').text(model.likes);
+  , onChangeLikeCount: function(e) {
+      this.$el.find('.product-stat-likes > .product-stat-value').text(this.model.get('likes'));
     }
 
   , onAddToCollections: function(e){

@@ -50,7 +50,7 @@ define(function(require){
       this.$el.html(
         template({
           collections:  this.collections
-        , product:      this.product
+        , product:      this.product.toJSON()
         })
       );
       return this;
@@ -70,15 +70,19 @@ define(function(require){
   , save: function(callback){
       var fns = [], this_ = this;
 
+      var collections = this.product.get('collections');
+
       for (var id in this.pending.add){
         fns.push( getAddFn( id, this.product.id ) );
-        this.product.collections.push(id);
+        collections.push(id);
       }
 
       for (var id in this.pending.remove){
         fns.push( getRemoveFn( id, this.product.id ) );
-        this.product.collections = utils.without(this.product.collections, id);
+        collections = utils.without(collections, id);
       }
+
+      this.product.set('collections', collections);
 
       utils.parallel( fns, function(error, results){
         if (error) return callback ? callback(error) : troller.error(error);
