@@ -58,7 +58,7 @@ define(function(require){
   , appendRender: function(data) {
       var self = this;
       this.products.add(data);
-      var addedProds = data instanceof uitls.Collection ? data.models : utils.map(data, function(p) {
+      var addedProds = data instanceof utils.Collection ? data.models : utils.map(data, function(p) {
         return self.products.get(p.id);
       });
 
