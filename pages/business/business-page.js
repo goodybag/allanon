@@ -125,6 +125,7 @@ define(function(require){
     }
 
   , changeLocation: function(id){
+      if (id == null) return this;
       if (!this.locationsById[id]) {
         troller.modals.close(null, {silent: true});
         troller.app.changePage('404');
