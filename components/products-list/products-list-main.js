@@ -28,29 +28,46 @@ define(function(require){
 
   , provideData: function(data) {
       this.products.reset(data);
-
       return this;
     }
 
-  , render: function() {
+  , prepareViews: function(products) {
       var fragment = document.createDocumentFragment();
-
-      // Remove old views
-      utils.invoke(this._views, 'remove');
-
-      var self = this;
-      this._views = this.products.map(function(prod) {
+      var views = utils.map(products, function(prod) {
         var item = (new self.ItemView( {model: prod} )).render();
         fragment.appendChild(item.el);
         item.on('product-details-modal:open', self.onProductModalOpen, self);
         item.on('product-details-modal:close', self.onProductModalClose, self);
         return item;
       });
+      return { fragment: fragment, views: views };
+    }
 
-      this.$el.html(fragment);
+  , render: function() {
+      // Remove old views
+      utils.invoke(this._views, 'remove');
+
+      var res = this.prepareViews(this.products.models);
+      this._views = res.views;
+      this.$el.html(res.fragment);
 
       return this;
     }
+
+  , appendRender: function(data) {
+      var self = this;
+      this.products.add(data);
+      var addedProds = data instanceof uitls.Collection ? data.models : utils.map(data, function(p) {
+        return self.products.get(p.id);
+      });
+
+      var res = this.prepareViews(addedProds);
+      this._views = this._views.concat(res.views);
+      this.$el.append(res.fragment);
+
+      return this;
+    }
+
 
   , onProductModalOpen: function(model){
       this.trigger('product-details-modal:open', model);
