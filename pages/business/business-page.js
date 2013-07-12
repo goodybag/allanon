@@ -30,6 +30,11 @@ define(function(require){
   , initialize: function(){
       this.business = {};
       this.locations = [];
+      var this_ = this;
+      this.punchcard   = new utils.Model({}, {url: function() {
+        return '/consumers/' + user.get('id') + '/loyalty/' + this_.business.id;
+      }});
+
       return this;
     }
 
@@ -168,11 +173,12 @@ define(function(require){
 
       troller.spinner.spin();
 
-      api.loyalty.userBusiness( user.get('id'), this.business.id, function(error, result){
-        troller.spinner.stop();
-        if (error) return troller.error(error);
+      var self = this;
 
-        troller.modals.open('punchcard', { punchcard: result });
+      this.punchcard.fetch({
+        error: function(err) { troller.error(err); }
+      , success: function() { troller.modals.open('punchcard', {punchcard: self.punchcard.toJSON()}); }
+      , complete: function() { troller.spinner.stop(); }
       });
     }
 

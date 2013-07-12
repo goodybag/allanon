@@ -10,6 +10,13 @@ define(function(require){
   , template    = require('hbt!./punch-cards-tmpl')
   ;
 
+  var Punchcards = utils.Collection.extend({
+    queryParams: {limit: 5000}
+  , url: '/loyalty'
+  , elite:   function() { return this.where({isElite: true}); }
+  , regular: function() { return this.where({isElite: false}); }
+  });
+
   return Components.Pages.Page.extend({
     className: 'page page-punch-cards'
 
@@ -22,52 +29,24 @@ define(function(require){
     }
 
   , initialize: function(){
-      this.queryOptions = {
-        limit: 5000
-      };
+      this.punchcards = new Punchcards();
     }
 
   , onShow: function(options){
       // This view is unlikely to be invalidated, so we can reasonably say
       // to render it only once
-      if (this.punchcards) return this;
+      if (this.punchcards.length > 0) return this;
 
       var this_ = this;
 
-      this.fetchData(function(error){
-        if (error) troller.error(error);
-
-        this_.render();
+      this.punchcards.fetch({
+        error: function(error){
+          troller.error(error);
+        }
+      , success: function() {
+          this_.render();
+        }
       });
-
-      return this;
-    }
-
-  , fetchData: function(callback){
-      var this_ = this;
-
-      api.loyalty.list(this.queryOptions, function(error, punchcards){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        this_.providePunchcards(punchcards);
-
-        callback(null, punchcards);
-      });
-
-      return this;
-    }
-
-  , providePunchcards: function(punchcards){
-      this.punchcards = punchcards;
-      this.punchcards_ = {};
-
-      this.elite = [];
-      this.regular = [];
-
-      for (var i = 0, l = punchcards.length; i < l; ++i){
-        this[punchcards[i].isElite ? 'elite' : 'regular'].push(punchcards[i]);
-        this.punchcards_[punchcards[i].id] = punchcards[i];
-      }
 
       return this;
     }
@@ -75,8 +54,8 @@ define(function(require){
   , render: function(){
       this.$el.html(
         template({
-          elite:    this.elite
-        , regular:  this.regular
+          elite:    utils.invoke(this.punchcards.elite(), 'toJSON')
+        , regular:  utils.invoke(this.punchcards.regular(), 'toJSON')
         })
       );
       return this;
@@ -87,7 +66,7 @@ define(function(require){
       while (e.target.className.indexOf('row') == -1) e.target = e.target.parentElement;
 
       troller.modals.open('punchcard', {
-        punchcard: this.punchcards_[ utils.dom(e.target).data('id') ]
+        punchcard: this.punchcards.get(utils.dom(e.target).data('id')).toJSON()
       });
     }
   });
