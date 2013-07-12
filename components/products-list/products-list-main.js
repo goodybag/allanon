@@ -36,25 +36,16 @@ define(function(require){
       var fragment = document.createDocumentFragment();
 
       // Remove old views
-      for (var i = 0, l = this._views.length; i < l; ++i){
-        this._views[i].remove();
-      }
+      utils.invoke(this._views, 'remove');
 
-      this._views = [];
-
-      for (var i = 0, l = this.products.length, item; i < l; ++i){
-        this._views.push( item = new this.ItemView({
-          model: this.products.at(i)
-        }).render() );
-
-        // Should make this dynamic based on screen-width
-        if (i % 5 === 0) item.$el.addClass('first');
-
-        fragment.appendChild( item.el );
-
-        item.on('product-details-modal:open', utils.bind(this.onProductModalOpen, this));
-        item.on('product-details-modal:close', utils.bind(this.onProductModalClose, this));
-      }
+      var self = this;
+      this._views = this.products.map(function(prod) {
+        var item = (new self.ItemView( {model: prod} )).render();
+        fragment.appendChild(item.el);
+        item.on('product-details-modal:open', self.onProductModalOpen, self);
+        item.on('product-details-modal:close', self.onProductModalClose, self);
+        return item;
+      });
 
       this.$el.html(fragment);
 

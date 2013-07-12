@@ -5,10 +5,10 @@
 @productHoverTransition: ease-in-out 0.3s;
 
 .products-list {
-  width: 100%;
+  width: (@gridRowWidth + @gridGutterWidth);
   position: relative;
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 -@gridGutterWidth;
   padding: 0;
 }
 
@@ -23,10 +23,6 @@
   border-radius: @productBorderRadius;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0,0,0, 0.45);
-}
-
-.products-list .product-list-item.first {
-  margin-left: 0;
 }
 
 .products-list .product-footer {
