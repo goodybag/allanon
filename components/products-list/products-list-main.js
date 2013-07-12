@@ -32,6 +32,7 @@ define(function(require){
     }
 
   , prepareViews: function(products) {
+      var self = this;
       var fragment = document.createDocumentFragment();
       var views = utils.map(products, function(prod) {
         var item = (new self.ItemView( {model: prod} )).render();
