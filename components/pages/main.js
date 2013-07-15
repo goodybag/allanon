@@ -25,7 +25,22 @@ define(function(require){
       return this;
     }
 
-  , get: function(name){
+  , get: function(name, options){
+      if (!this.Pages[name]){
+        // TODO: don't do this
+        var error = {
+          message: "Cannot find page: " + page
+        , page: name
+        };
+
+        if (callback) callback(error);
+        else troller.error(error);
+
+        return this;
+      }
+
+      if (!this.pages[name]) this.instantiatePage(name, options);
+
       return this.pages[name];
     }
 
@@ -40,6 +55,24 @@ define(function(require){
         this.pages[this.current].delegateEvents();
       }
       return this;
+    }
+
+  , instantiatePage: function(page, options) {
+      options = options || {};
+      // Attach parent view to Page
+      if (this.parentView)
+        this.Pages[page].prototype.parentView = this.parentView;
+
+      this.pages[page] = new this.Pages[page](options);
+      this.pages[page].$el.css('display', 'none');
+
+      // Allow child pages to request change pages
+      this.pages[page].setPageManager(this);
+
+      // Set initial display to none so we can switch them out
+      if (options && options.renderFn) options.renderFn();
+
+      this.$el.append(this.pages[page].$el);
     }
 
   , changePage: function(page, options, callback){
@@ -76,22 +109,7 @@ define(function(require){
         return this;
       }
 
-      if (!this.pages[page]){
-        // Attach parent view to Page
-        if (this.parentView)
-          this.Pages[page].prototype.parentView = this.parentView;
-
-        this.pages[page] = new this.Pages[page](options);
-        this.pages[page].$el.css('display', 'none');
-
-        // Allow child pages to request change pages
-        this.pages[page].setPageManager(this);
-
-        // Set initial display to none so we can switch them out
-        if (options && options.renderFn) options.renderFn();
-
-        this.$el.append(this.pages[page].$el);
-      }
+      if (!this.pages[page]) this.instantiatePage(page, options);
 
       // Store the old
       var old = this.current;
