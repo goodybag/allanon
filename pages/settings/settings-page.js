@@ -21,10 +21,25 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
+
+      this.successOptions = {
+        success: true
+      , header: 'Settings Saved!'
+      , message: 'You are very handsome.'
+      };
+
+      this.errorOptions = {
+        success: false
+      , header: 'Oh no!'
+      };
+
+      this.alert = new Components.Alert.Main(this.successOptions);
     }
 
   , render: function(){
       this.$el.html( template({ user: this.model.toJSON() }) );
+
+      this.$el.find('.alert-container').html(this.alert.render().$el);
       return this;
     }
 
@@ -54,13 +69,16 @@ define(function(require){
         this_.model.save(function(error){
           troller.spinner.stop();
 
+
           if (error){
             if (error.name == 'SCREENNAME_TAKEN') error.details = {
               screenName: null
-            }
+            };
 
-            return troller.error(error, this_.$el)
+            return troller.error(error, this_.$el);
           }
+
+          this_.alert.show();
         });
       });
 

@@ -1,0 +1,9 @@
+{{#if success}}
+<div class="alert alert-success">
+{{else}}
+<div class="alert alert-error">
+{{/if}}
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{header}}</strong>
+  {{message}}
+</div>
