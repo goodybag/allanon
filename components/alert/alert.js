@@ -47,7 +47,11 @@ define(function(require){
       this.$el.hide();
     }
 
-  , show: function() {
+  , show: function(options) {
+      options = options || {};
+      if(options.render)
+        this.render();
+      
       this.$el.show();
     }
   });

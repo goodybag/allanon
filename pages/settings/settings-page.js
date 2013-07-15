@@ -33,7 +33,7 @@ define(function(require){
       , header: 'Oh no!'
       };
 
-      this.alert = new Components.Alert.Main(this.successOptions);
+      this.alert = new Components.Alert(this.successOptions);
     }
 
   , render: function(){
@@ -50,7 +50,11 @@ define(function(require){
       (function(next){
         if ((password = this_.$el.find('#form-settings-password').val()).length > 0){
           if (this_.$el.find('#form-settings-password-confirm').val() != password){
-            return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el);
+            //return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el);
+            this_.errorOptions.message = "Passwords must match.";
+            this_.alert.setOptions(this_.errorOptions);
+            this_.alert.show({render: true});
+            return;
           }
 
           return troller.modals.open('update-password', {
@@ -78,7 +82,7 @@ define(function(require){
             return troller.error(error, this_.$el);
           }
 
-          this_.alert.show();
+          this_.alert.show({render: true});
         });
       });
 
