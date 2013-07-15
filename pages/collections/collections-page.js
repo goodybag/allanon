@@ -13,6 +13,8 @@ define(function(require){
 
   , title: 'My Collections'
 
+  , requiresLogin: true
+
   , events: {
       'click .add-new-collection':          'onNewCollectionClick'
     , 'click .collection':                  'onCollectionClick'
