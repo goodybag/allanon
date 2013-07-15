@@ -151,6 +151,8 @@
 
             app.appView.render();
 
+            troller.add('pages',            app.appView.children.pages);
+
             app.loadTypekit();
 
             // The only browser we support that doesn't support ajax is
@@ -161,33 +163,38 @@
           }
 
         , changePage: function(page, options, callback){
-            if (typeof options === 'function') {
-              callback  = options;
-              options   = null;
+            var changePage = function(page, options, callback) {
+              if (typeof options === 'function') {
+                callback  = options;
+                options   = null;
+              }
+
+              options = options || {};
+
+              options.transitionOptions = options.transitionOptions || {};
+              options.transitionOptions.onViewAAnimationComplete = function(viewA) {
+                window.scrollTo(0);
+              }
+
+              app.appView.changePage(page, options, callback);
+
+              troller.trigger('change-page', {page: page});
+
+              if (page != 'explore') app.hideBanner();
+
+              var title = app.appView.children.pages.pages[page].title || 'Goodybag'
+              app.setTitle( title );
+
+              var _options = { hash: utils.history.location.hash };
+              if (typeof options == 'object')
+                utils.extend( _options, options );
+
+              troller.analytics.track( 'Page.Loaded ' + title, _options );
+              troller.analytics.pageview();
             }
 
-            options = options || {};
-
-            options.transitionOptions = options.transitionOptions || {};
-            options.transitionOptions.onViewAAnimationComplete = function(viewA) {
-              window.scrollTo(0);
-            }
-
-            app.appView.changePage(page, options, callback);
-
-            troller.trigger('change-page', {page: page});
-
-            if (page != 'explore') app.hideBanner();
-
-            var title = app.appView.children.pages.pages[page].title || 'Goodybag'
-            app.setTitle( title );
-
-            var _options = { hash: utils.history.location.hash };
-            if (typeof options == 'object')
-              utils.extend( _options, options );
-
-            troller.analytics.track( 'Page.Loaded ' + title, _options );
-            troller.analytics.pageview();
+            var go = troller.pages.Pages[page].prototype.requiresLogin ? user.loginGatedFunction(changePage) : changePage;
+            go(page, options, callback);
           }
 
         , currentPage: function(){
@@ -304,6 +311,7 @@
 
             troller.analytics.track( 'Modal.Opened ' + modal, trackingData );
           }
+
         , closeModal: function(modal, options){
             return app.appView.children.modals.close(modal, options);
           }
