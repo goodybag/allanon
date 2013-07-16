@@ -1,6 +1,7 @@
 **Components.Alert** extends utils.View
 
-**Example**
+Example
+-----
 
 Constructing a new Alert view
 
@@ -19,10 +20,30 @@ Usage
 
     alert.hide();
     alert.show();
-    
-Change options
 
-    alert.setOptions({
-      header: 'Oh noes!'
-    , message: 'Passwords do not match, please try again.'
-    });
+API
+----
+
+**new Alert([options])**
+
+The `options` object is used to populate the alert dialog. The following fields may be used:
+
+  * success: boolean - For showing a success or error style alert
+  * header: string - A bolded header
+  * message: string - The main alert message
+  * className: string - Override the $el class name
+
+**setOptions(options)**
+
+Use `setOptions` to restyle the alert dialog. In addition to the above options, you can specify
+
+  * render: boolean - Force re-rendering the view
+
+**hide()**
+
+Hides the alert box
+
+**show([options])**
+
+Shows alert box. Passing in `options` can be used for handling multiple types of 
+alerts using a single Alert View.
