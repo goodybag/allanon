@@ -19,37 +19,37 @@ define(function(require){
     }
 
   , byCategory: function(){
-      var cats = [{ name: 'Uncategorized', products: [] }];
+      var cats  = [{ name: 'Uncategorized', products: [] }];
       var _cats = { 'Uncategorized': cats[0] };
       var pcats;
 
       this.each(function(product){
-        if (products[i].categories && products[i].categories.length){
-          pcats = products[i].categories;
+        if (product.get('categories') && product.get('categories').length){
+          pcats = product.get('categories');
 
           for (var ii = 0, ll = pcats.length; ii < ll; ++ii){
             if (!_cats[pcats[ii].name]){
               cats.push(
                 _cats[pcats[ii].name] = {
                   name:     pcats[ii].name
-                , products: [ products[i] ]
+                , products: [ product.toJSON() ]
                 }
               );
             } else {
-              _cats[pcats[ii].name].products.push( products[i] );
+              _cats[pcats[ii].name].products.push( product.toJSON() );
             }
           }
         } else {
-          _cats.Uncategorized.products.push( products[i] );
+          _cats.Uncategorized.products.push( product.toJSON() );
         }
       });
 
+      if (cats[0].products.length == 0) cats.shift();
 
-    if (cats[0].products.length == 0) cats.shift();
+      _cats = null;
 
-    _cats = null;
-
-    return cats;
+      return cats;
+    }
   });
 
   return Components.Pages.Page.extend({
@@ -81,6 +81,9 @@ define(function(require){
 
   , changeBusiness: function(id, lid){
       var this_ = this;
+
+      this.products = new BusinessProducts({}, { url: '/businesses/' + id + '/products' });
+
       troller.spinner.spin();
 
       utils.parallel({
@@ -97,12 +100,8 @@ define(function(require){
         }
 
       , products: function(done){
-          var prods = new BusinessProducts({}, { url: '/businesses/' + id + '/products' });
-
-          prods.fetch({
-            complete: function(error) {
-              done(error, prods);
-            }
+          this_.products.fetch({
+            complete: done
           });
         }
       }, function(error, results){
@@ -121,18 +120,6 @@ define(function(require){
 
         this_.business    = results.business;
         this_.locations   = results.locations;
-        this_.products    = results.products;
-
-        var categories = utils.pluck(utils.union.apply(utils, this_.products.pluck('categories')), 'name').concat(['uncategorized']);
-        this_.categories = utils.map(categories, function(name) {
-          return {
-            name: name
-          , products: new utils.Collection( this_.products.filter(function(product) {
-              if (name === 'uncategorized') return product.get('categories').length === 0;
-              return utils.contains(utils.pluck(product.get('categories'), 'name'), name);
-            }), { model: models.Product })
-          };
-        });
 
         utils.index(this_.locations, this_.locationsById = {}, 'id');
 
@@ -174,7 +161,7 @@ define(function(require){
         template({
           business:   this.business
         , location:   this.currentLocation
-        , categories: utils.map(this.categories, function(cat) { return {name: cat.name, products: cat.products.toJSON()}; })
+        , categories: this.products.byCategory()
         })
       );
       return this;
