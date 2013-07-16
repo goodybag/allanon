@@ -60,7 +60,6 @@ define(function(require){
         this_.model.save(function(error){
           troller.spinner.stop();
 
-
           if (error){
             if (error.name == 'SCREENNAME_TAKEN') error.details = {
               screenName: null
