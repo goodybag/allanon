@@ -6,7 +6,7 @@
       {
         "name":     "utils",
         "location": "lib",
-        "main":     "utils.js"
+        "main":     "utils/index.js"
       }
     , {
         "name":     "troller",
