@@ -8,6 +8,7 @@ define(function(require){
   , ModalManager:         require('./modal-manager/component')
   , WLT:                  require('./wlt/component')
   , AddToCollections:     require('./add-to-collection/component')
+  , Alert:                require('./alert/component') 
   // , ProductPhotoViewer:   require('./product-photo-viewer/component')
-  }
+  };
 });

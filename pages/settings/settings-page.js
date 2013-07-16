@@ -21,10 +21,15 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
+      this.alert = new Components.Alert.Main();
+
+      // Bind this view to various helpers
+      utils.bindAll(this, 'showSuccessAlert', 'showMismatchingPasswordsAlert', 'showScreenNameTakenAlert');
     }
 
   , render: function(){
       this.$el.html( template({ user: this.model.toJSON() }) );
+      this.$el.find('.alert-container').html(this.alert.render().$el);
       return this;
     }
 
@@ -35,7 +40,7 @@ define(function(require){
       (function(next){
         if ((password = this_.$el.find('#form-settings-password').val()).length > 0){
           if (this_.$el.find('#form-settings-password-confirm').val() != password){
-            return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el);
+            return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el, this_.showMismatchingPasswordsAlert);
           }
 
           return troller.modals.open('update-password', {
@@ -57,14 +62,43 @@ define(function(require){
           if (error){
             if (error.name == 'SCREENNAME_TAKEN') error.details = {
               screenName: null
-            }
+            };
 
-            return troller.error(error, this_.$el)
+            return troller.error(error, this_.$el, this_.showScreenNameTakenAlert);
           }
+
+          this_.showSuccessAlert();
         });
       });
 
       this.$el.find('.field-password').val("");
+    }
+
+  , showSuccessAlert: function(msg, error) {
+      this.alert.show({
+        success: true
+      , header: 'Settings Saved!'
+      , randomize: true
+      , render: true
+      });
+    }
+
+  , showMismatchingPasswordsAlert: function(msg, error) {
+      this.alert.show({
+        success: false
+      , header: 'Oh no!'
+      , message: msg
+      , render: true
+      });
+    }
+
+  , showScreenNameTakenAlert: function(msg, error) {
+      this.alert.show({
+        success: false
+      , header: 'Warning!'
+      , message: msg
+      , render: true
+      });
     }
 
   , onChangePhotoClick: function(e){
@@ -77,6 +111,23 @@ define(function(require){
         this_.render();
         this_.model.save();
       });
+    }
+
+  , onHide: function() {
+      this.destroyAlert();
+    }
+
+  , onShow: function() {
+      this.setupAlert();
+    }
+
+  , destroyAlert: function() {
+      this.alert.undelegateEvents();
+      this.alert.hide();
+    }
+
+  , setupAlert: function() {
+      this.alert.delegateEvents();
     }
   });
 });
