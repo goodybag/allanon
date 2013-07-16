@@ -11,8 +11,8 @@ define(function(require){
       'You are very handsome.'
     , 'Well done!'
     , 'That looks about right.'
-    , 'Congratulations, you are the best!'
-    , 'Impressive!'
+    , 'You are the best.'
+    , 'I like the way you think.'
     ]
 
   , errorMesages: [
@@ -58,7 +58,6 @@ define(function(require){
 
       if (options.render)
         this.render();
-
     }
 
   , setRandomMessage: function() {
