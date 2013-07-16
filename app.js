@@ -356,7 +356,7 @@
       troller.add('confirm',          app.confirm);
 
       troller.add('spinner.spin',     app.spin);
-      troller.add('spinner.stop',     app.stopSpinning)
+      troller.add('spinner.stop',     app.stopSpinning);
 
       troller.add('modals.open',      app.openModal);
       troller.add('modals.close',     app.closeModal);
