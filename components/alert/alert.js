@@ -37,7 +37,8 @@ define(function(require){
       this.message    = options.message || 'Something has gone awry..';
       this.className  = options.className || this.className;
 
-      this.render();
+      if (options.render)
+        this.render();
     }
 
   , onCloseClick: function(e) {

@@ -21,19 +21,6 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
-
-      this.successOptions = {
-        success: true
-      , header: 'Settings Saved!'
-      , message: 'You are very handsome.'
-      };
-
-      this.errorOptions = {
-        success: false
-      , header: 'Oh no!'
-      , message: 'Passwords must match.'
-      };
-
       this.alert = new Components.Alert(this.successOptions);
 
       // Bind this view to various helpers
@@ -79,10 +66,10 @@ define(function(require){
               screenName: null
             };
 
-            return troller.error(error, this_.$el);
+            return troller.error(error, this_.$el, this_.showScreenNameTakenAlert);
           }
 
-          this_.alert.show();
+          this_.showSuccessAlert();
         });
       });
 
@@ -90,15 +77,30 @@ define(function(require){
     }
 
   , showSuccessAlert: function(msg, error) {
-      this.alert.show(this.successOptions);
+      this.alert.show({
+        success: true
+      , header: 'Settings Saved!'
+      , message: 'You are very handsome.'
+      , render: true
+      });
     }
 
   , showMismatchingPasswordsAlert: function(msg, error) {
-      this.alert.show(this.errorOptions);
+      this.alert.show({
+        success: false
+      , header: 'Oh no!'
+      , message: msg
+      , render: true
+      });
     }
 
   , showScreenNameTakenAlert: function(msg, error) {
-
+      this.alert.show({
+        success: false
+      , header: 'Warning!'
+      , message: msg
+      , render: true
+      });
     }
 
   , onChangePhotoClick: function(e){
@@ -111,6 +113,23 @@ define(function(require){
         this_.render();
         this_.model.save();
       });
+    }
+
+  , onHide: function() {
+      this.destroyAlert();
+    }
+
+  , onShow: function() {
+      this.setupAlert();
+    }
+
+  , destroyAlert: function() {
+      this.alert.undelegateEvents();
+      this.alert.hide();
+    }
+
+  , setupAlert: function() {
+      this.alert.delegateEvents();
     }
   });
 });
