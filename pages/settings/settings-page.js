@@ -21,7 +21,7 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
-      this.alert = new Components.Alert.Main(this.successOptions);
+      this.alert = new Components.Alert.Main();
 
       // Bind this view to various helpers
       utils.bindAll(this, 'showSuccessAlert', 'showMismatchingPasswordsAlert', 'showScreenNameTakenAlert');
@@ -29,7 +29,6 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template({ user: this.model.toJSON() }) );
-
       this.$el.find('.alert-container').html(this.alert.render().$el);
       return this;
     }
