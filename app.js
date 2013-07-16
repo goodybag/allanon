@@ -267,10 +267,6 @@
             }
           }
 
-        , alert: function($el, options, action) {
-            
-          }
-
         , getKeyNiceName: function(key){
             return config.niceNames[key] || key;
           }

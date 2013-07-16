@@ -35,7 +35,9 @@ define(function(require){
       this.success    = options.success || false;
       this.header     = options.header || 'Alert!';
       this.message    = options.message || 'Something has gone awry..';
-      this.className  = options.className || this.className;      
+      this.className  = options.className || this.className;
+
+      this.render();
     }
 
   , onCloseClick: function(e) {
@@ -48,10 +50,8 @@ define(function(require){
     }
 
   , show: function(options) {
-      options = options || {};
-      if(options.render)
-        this.render();
-      
+      if (options)
+         this.setOptions(options);
       this.$el.show();
     }
   });

@@ -31,9 +31,13 @@ define(function(require){
       this.errorOptions = {
         success: false
       , header: 'Oh no!'
+      , message: 'Passwords must match.'
       };
 
       this.alert = new Components.Alert(this.successOptions);
+
+      // Bind this view to various helpers
+      utils.bindAll(this, 'showSuccessAlert', 'showMismatchingPasswordsAlert', 'showScreenNameTakenAlert');
     }
 
   , render: function(){
@@ -50,11 +54,7 @@ define(function(require){
       (function(next){
         if ((password = this_.$el.find('#form-settings-password').val()).length > 0){
           if (this_.$el.find('#form-settings-password-confirm').val() != password){
-            //return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el);
-            this_.errorOptions.message = "Passwords must match.";
-            this_.alert.setOptions(this_.errorOptions);
-            this_.alert.show({render: true});
-            return;
+            return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el, this_.showMismatchingPasswordsAlert);
           }
 
           return troller.modals.open('update-password', {
@@ -82,11 +82,23 @@ define(function(require){
             return troller.error(error, this_.$el);
           }
 
-          this_.alert.show({render: true});
+          this_.alert.show();
         });
       });
 
       this.$el.find('.field-password').val("");
+    }
+
+  , showSuccessAlert: function(msg, error) {
+      this.alert.show(this.successOptions);
+    }
+
+  , showMismatchingPasswordsAlert: function(msg, error) {
+      this.alert.show(this.errorOptions);
+    }
+
+  , showScreenNameTakenAlert: function(msg, error) {
+
     }
 
   , onChangePhotoClick: function(e){
