@@ -1,5 +1,7 @@
 define(function(require){
   require('less!./alert-style');
 
-  return require('./alert');
+  return {
+    Main: require('./alert')
+  };
 });

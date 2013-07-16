@@ -21,7 +21,7 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
-      this.alert = new Components.Alert(this.successOptions);
+      this.alert = new Components.Alert.Main(this.successOptions);
 
       // Bind this view to various helpers
       utils.bindAll(this, 'showSuccessAlert', 'showMismatchingPasswordsAlert', 'showScreenNameTakenAlert');
