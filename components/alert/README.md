@@ -1,11 +1,11 @@
-**Components.Alert** extends utils.View
+**Components.Alert.Main** extends utils.View
 
 Example
 -----
 
 Constructing a new Alert view
 
-    var alert = require('Components').Alert({
+    var alert = require('Components').Alert.Main({
       success: true
     , header: 'Settings Saved!'
     , message: 'You are very handsome.'
@@ -24,7 +24,7 @@ Usage
 API
 ----
 
-**new Alert([options])**
+**new Alert.Main([options])**
 
 The `options` object is used to populate the alert dialog. The following fields may be used:
 
