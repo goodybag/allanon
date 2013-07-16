@@ -78,7 +78,7 @@ define(function(require){
       this.alert.show({
         success: true
       , header: 'Settings Saved!'
-      , message: 'You are very handsome.'
+      , randomize: true
       , render: true
       });
     }

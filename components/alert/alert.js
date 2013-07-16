@@ -7,6 +7,21 @@ define(function(require){
   return utils.View.extend({
     className: 'alert-view'
 
+  , successMessages: [
+      'You are very handsome.'
+    , 'Well done!'
+    , 'That looks about right.'
+    , 'Congratulations, you are the best!'
+    , 'Impressive!'
+    ]
+
+  , errorMesages: [
+      'It\'s only a flesh wound'
+    , 'That ain\'t right'
+    , 'I don\'t think we\'re in Kansas anymore'
+    , 'Reticulating splines, please try again'
+    ]
+
   , events: {
       'click .alert .close':  'onCloseClick'
     }
@@ -36,9 +51,21 @@ define(function(require){
       this.header     = options.header || 'Alert!';
       this.message    = options.message || 'Something has gone awry..';
       this.className  = options.className || this.className;
+      this.randomize  = options.randomize || false;
+
+      if (this.randomize)
+        this.setRandomMessage();
 
       if (options.render)
         this.render();
+
+    }
+
+  , setRandomMessage: function() {
+      if (this.success)
+        this.message = this.successMessages[Math.floor(Math.random()*this.successMessages.length)];
+      else
+        this.message = this.errorMesages[Math.floor(Math.random()*this.errorMesages.length)];
     }
 
   , onCloseClick: function(e) {
