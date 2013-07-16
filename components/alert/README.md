@@ -16,10 +16,26 @@ Render and attach alert view to parent $el
     alert.render();    
     this.$el.find('alert-container').html(alert.$el);
     
-Usage
+Basic usage
 
     alert.hide();
     alert.show();
+    
+Swapping between alerts
+
+    alert.show({
+      success: true
+    , header: 'Success!'
+    , message: 'User settings saved'
+    });
+    
+    ...
+    
+    alert.show({
+      success: false
+    , header: 'Validation Error:'
+    , message: 'Last Name Missing'
+    });
 
 API
 ----
@@ -32,6 +48,8 @@ The `options` object is used to populate the alert dialog. The following fields 
   * header: string - A bolded header
   * message: string - The main alert message
   * className: string - Override the $el class name
+  * randomize: boolean - Override `message` with a default string. Comes in two flavors, based on the `success` 
+    value.
 
 **setOptions(options)**
 
