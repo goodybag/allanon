@@ -134,6 +134,7 @@ define(function(require){
         } else
           this_.currentLocation = this_.locations.length > 0 ? this_.locations[0] : null;
 
+        this_.formatPhone(this_.currentLocation);
         this_.render();
 
         this_.setupProductEvents();
@@ -141,6 +142,17 @@ define(function(require){
         this_.title = this_.business.name;
         troller.app.setTitle(this_.business.name);
       });
+    }
+
+  , formatPhone: function(location) {
+      location = location || {};
+
+      if (location.phone) {
+        var a = location.phone.slice(0, 3)
+          , b = location.phone.slice(3, 6)
+          , c = location.phone.slice(6, 9);
+        location.phone = '(' + a + ')' + ' ' + b + '-' + c;
+      }
     }
 
   , changeLocation: function(id){
