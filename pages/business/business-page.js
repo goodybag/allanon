@@ -150,7 +150,7 @@ define(function(require){
       if (location.phone) {
         var a = location.phone.slice(0, 3)
           , b = location.phone.slice(3, 6)
-          , c = location.phone.slice(6, 9);
+          , c = location.phone.slice(6, 10);
         location.phone = '(' + a + ')' + ' ' + b + '-' + c;
       }
     }
