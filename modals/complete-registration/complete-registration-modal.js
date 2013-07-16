@@ -8,7 +8,7 @@ define(function(require) {
   var troller     = require('troller');
 
   return Components.Modal.Main.extend({
-    className: 'modal hide fade modal-span4 complete-registration-modal',
+    className: 'modal hide fade modal-span4 login-modal complete-registration-modal',
 
     events: {
       'click .facebook-login-button': 'oauth',
