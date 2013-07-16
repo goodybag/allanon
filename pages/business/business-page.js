@@ -17,6 +17,39 @@ define(function(require){
       include: ['categories', 'collections']
       , limit: 1000
     }
+
+  , byCategory: function(){
+      var cats = [{ name: 'Uncategorized', products: [] }];
+      var _cats = { 'Uncategorized': cats[0] };
+      var pcats;
+
+      this.each(function(product){
+        if (products[i].categories && products[i].categories.length){
+          pcats = products[i].categories;
+
+          for (var ii = 0, ll = pcats.length; ii < ll; ++ii){
+            if (!_cats[pcats[ii].name]){
+              cats.push(
+                _cats[pcats[ii].name] = {
+                  name:     pcats[ii].name
+                , products: [ products[i] ]
+                }
+              );
+            } else {
+              _cats[pcats[ii].name].products.push( products[i] );
+            }
+          }
+        } else {
+          _cats.Uncategorized.products.push( products[i] );
+        }
+      });
+
+
+    if (cats[0].products.length == 0) cats.shift();
+
+    _cats = null;
+
+    return cats;
   });
 
   return Components.Pages.Page.extend({
@@ -65,7 +98,6 @@ define(function(require){
 
       , products: function(done){
           var prods = new BusinessProducts({}, { url: '/businesses/' + id + '/products' });
-
 
           prods.fetch({
             complete: function(error) {
