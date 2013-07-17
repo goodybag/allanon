@@ -28,7 +28,6 @@ define(function(require){
 
   , initialize: function(options) {
       this.setOptions(options);
-      this.hide();
       return this;
     }
 
@@ -70,6 +69,11 @@ define(function(require){
   , onCloseClick: function(e) {
       e.preventDefault();
       this.hide();
+    }
+
+  , close: function() {
+      this.remove();
+      this.unbind();
     }
 
   , hide: function() {
