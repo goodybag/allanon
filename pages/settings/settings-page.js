@@ -21,7 +21,9 @@ define(function(require){
 
   , initialize: function(){
       this.model = user;
-      this.alert = new Components.Alert.Main();
+      this.children = {
+        alert: new Components.Alert.Main()
+      };
 
       // Bind this view to various helpers
       utils.bindAll(this, 'showSuccessAlert', 'showMismatchingPasswordsAlert', 'showScreenNameTakenAlert');
@@ -29,9 +31,8 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template({ user: this.model.toJSON() }) );
-      this.alert.setElement(
-        this.$el.find('.alert-container')[0]
-      ).render();
+      this.children.alert.setElement('.alert-container').render();
+      this.children.alert.hide();
       return this;
     }
 
@@ -77,7 +78,7 @@ define(function(require){
     }
 
   , showSuccessAlert: function(msg, error) {
-      this.alert.show({
+      this.children.alert.show({
         success: true
       , header: 'Settings Saved!'
       , randomize: true
@@ -86,7 +87,7 @@ define(function(require){
     }
 
   , showMismatchingPasswordsAlert: function(msg, error) {
-      this.alert.show({
+      this.children.alert.show({
         success: false
       , header: 'Oh no!'
       , message: msg
@@ -95,7 +96,7 @@ define(function(require){
     }
 
   , showScreenNameTakenAlert: function(msg, error) {
-      this.alert.show({
+      this.children.alert.show({
         success: false
       , header: 'Warning!'
       , message: msg
@@ -116,8 +117,9 @@ define(function(require){
     }
 
   , onHide: function() {
-      // Remove subviews
-      this.alert.remove();
+      utils.each(this.children, function(view) {
+        view.close();
+      });
     }
   });
 });
