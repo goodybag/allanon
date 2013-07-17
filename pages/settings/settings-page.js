@@ -29,7 +29,9 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template({ user: this.model.toJSON() }) );
-      this.$el.find('.alert-container').html(this.alert.render().$el);
+      this.alert.setElement(
+        this.$el.find('.alert-container')[0]
+      ).render();
       return this;
     }
 
@@ -114,20 +116,8 @@ define(function(require){
     }
 
   , onHide: function() {
-      this.destroyAlert();
-    }
-
-  , onShow: function() {
-      this.setupAlert();
-    }
-
-  , destroyAlert: function() {
-      this.alert.undelegateEvents();
-      this.alert.hide();
-    }
-
-  , setupAlert: function() {
-      this.alert.delegateEvents();
+      // Remove subviews
+      this.alert.remove();
     }
   });
 });
