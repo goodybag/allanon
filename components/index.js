@@ -4,11 +4,12 @@ define(function(require){
   , Pages:                require('./pages/component')
   , HeaderNav:            require('./header-nav/component')
   , ProductsList:         require('./products-list/component')
+  , ProductSearch:        require('./product-search/component')
   , Modal:                require('./modal/component')
   , ModalManager:         require('./modal-manager/component')
   , WLT:                  require('./wlt/component')
   , AddToCollections:     require('./add-to-collection/component')
-  , Alert:                require('./alert/component') 
+  , Alert:                require('./alert/component')
   // , ProductPhotoViewer:   require('./product-photo-viewer/component')
   };
 });

@@ -3,19 +3,10 @@
 
   <div class="row">
     {{! Search }}
-    <div class="span2 search-wrapper">
-      {{! Wrap input in form to use onSubmit event }}
-      <form id="explore-search-form">
-        <input class="field-search" placeholder="Search Gallery" type="text">
-        <button class="field-search-clear" type="button"><i class="icon-remove"></i></button>
-      </form>
-    </div>
+    <div class="product-search"></div>
 
     {{! Filters Button Group }}
     <div class="span6 filters-wrapper">
-      {{! Need to put search button here Like design}}
-      <button class="btn btn-primary search-form-btn">Search</button>
-
       <div class="btn-group filters-btn-group">
         <a class="btn btn-large filter-popular{{#in options.sort "popular"}} active{{/in}}"
             href="#/explore/popular">

@@ -16,16 +16,13 @@ define(function(require){
   , title: 'Explore Goodybag'
 
   , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'keyup  .field-search':               'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
+      'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
   , initialize: function(options){
       this.children = {
         products: new Components.ProductsList.Main()
+      , search:   new Components.ProductSearch.Main()
       };
 
       // Override products list render to reset pagination height
@@ -170,6 +167,10 @@ define(function(require){
       this.children.products.setElement(
         this.$el.find('.products-list')[0]
       ).render();
+
+      // Attach search component
+      this.children.search.render();
+      this.$el.find('.product-search').html(this.children.search.$el);
 
       this.$search = this.$el.find('.field-search');
       this.$searchClearBtn = this.$el.find('.field-search-clear');
