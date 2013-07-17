@@ -117,9 +117,7 @@ define(function(require){
     }
 
   , onHide: function() {
-      utils.each(this.children, function(view) {
-        view.close();
-      });
+      utils.invoke(this.children, 'close');
     }
   });
 });
