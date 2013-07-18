@@ -240,8 +240,12 @@
             if (error){
               var msg, detailsAdded = false;
 
-              if (typeof error == "object")
+              if (typeof error == "object") {
+                // Filepicker.FPError 101: The user closed the dialog without picking a file
+                if (error.code == 101)
+                  return;
                 msg = error.message || (window.JSON ? window.JSON.stringify(error) : error);
+              }
               else
                 msg = error;
 
