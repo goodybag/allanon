@@ -5,10 +5,6 @@ Usage
 
 From a parent view, instantiate a ProductSearch view and 
 [listenTo](http://backbonejs.org/#Events-listenTo) ProductSearch events.
-The two events are:
-
-* _"search:submit"_ : Triggered on key up, form submit or clicking search button
-* _"search:clear"_  : Triggered by clicking the 'x' to clear text input
 
 **Example**
 
@@ -45,3 +41,18 @@ Then attach the ProductSearch view to the parent $el.
     this.$el.find('.product-search').html(this.productSearchView.$el);
   }
 ```
+
+API
+---
+
+**new ProductSearch.Main()**
+
+Construct a new ProductSearch view.
+
+**'search:submit'** event
+
+Triggered by key up, form submission or clicking search button.
+
+**'search:clear'** event
+
+Triggered by clicking the clear button in the search text field.
