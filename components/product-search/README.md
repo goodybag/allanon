@@ -8,7 +8,7 @@ From a parent view, instantiate a ProductSearch view and
 
 **Example**
 
-```
+```javascript
 var ExplorePage = Components.Pages.Page.extend({
   className: 'page page-explore'
 , title: 'Explore Goodybag'
@@ -32,7 +32,7 @@ var ExplorePage = Components.Pages.Page.extend({
 
 Then attach the ProductSearch view to the parent $el.
 
-```
+```javascript
 , render: function() {
     // Render parent's template
     this.$el.html( template() );
