@@ -11,7 +11,7 @@ define(function(require){
       'submit #explore-search-form':           'onSearchSubmit'
     , 'keyup .field-search':                   'onSearchSubmit'
     , 'click .search-form-btn':                'onSearchSubmit'
-    , 'click .field-search-clear':             'onSearchClearClick'
+    , 'click .field-search-clear':             'onSearchClear'
     }
 
   , initialize: function(options) {
@@ -27,13 +27,22 @@ define(function(require){
       this.$el.html(
         template({ })
       );
-
+      
+      this.$fieldSearch = this.$el.find('.field-search');
+      
       return this;
     }
 
   , onSearchSubmit: function(e) {
       e.preventDefault();
-      console.log('hi');
+
+      this.trigger('search:submit', e, this.$fieldSearch.val());
+    }
+
+  , onSearchClear: function(e) {
+      e.preventDefault();
+      console.log('i pooped');
+      this.trigger('search:clear', e);
     }
     
   });

@@ -74,6 +74,10 @@ define(function(require){
 
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
+
+      // Listen to search events
+      this.listenTo(this.children.search, 'search:submit', this.onSearchSubmit);
+      this.listenTo(this.children.search, 'search:clear', this.onSearchClear);
     }
 
   , onShow: function(options){
@@ -205,7 +209,7 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
+  , onSearchSubmit: function(e, searchTxt){
       e.preventDefault();
 
       var value = this.$search.val(), this_ = this;
