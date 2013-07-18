@@ -14,7 +14,7 @@ define(function(require){
   , tagName: 'section'
 
   , events: {
-      'click .btn-close':                    'onCloseClick'
+      'click .btn-close':  'onCloseClick'
     }
 
   , initialize: function(options){

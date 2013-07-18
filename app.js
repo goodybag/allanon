@@ -235,7 +235,6 @@
               $el = null;
             }
 
-            // Default action is the global alert modal
             if (!action) action = troller.alert;
 
             if (error){
