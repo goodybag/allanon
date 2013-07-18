@@ -6,8 +6,10 @@ define(function(require){
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('components')
+  , models      = require('models')
 
   , template    = require('hbt!./explore-tmpl')
+  , collections = require('./collections')
   ;
 
   return Components.Pages.Page.extend({
@@ -23,84 +25,102 @@ define(function(require){
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
+  , defaultOptions: {
+      sort: 'popular'
+    , pageSize: 30
+    }
+
+  , allowedOptions: ['sort', 'lat', 'lon', 'pageSize', 'filter']
+
+  , getSort: function(sort) {
+      var val = {
+        'popular': 'popular'
+      , 'nearby':  'distance'
+      , 'random':  'random'
+      }[sort];
+      return val ? '-' + val : null;
+    }
+
+  , getOptions: function(options) {
+      return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
+      // TODO: make sure sort agrees with presence of lat/lon
+    }
+
   , initialize: function(options){
-      this.children = {
-        products: new Components.ProductsList.Main()
+
+      this.options = this.getOptions(options);
+
+      this.products = {
+        popular: new collections.Products([], {
+          queryParams: { sort: '-popular' }
+          , pageSize: this.options.pageSize
+        })
+      , nearby: new collections.Nearby([], {
+          queryParams: { sort: '-distance' }
+        , pageSize: this.options.pageSize
+        })
+      , random: new collections.Products([], {
+          queryParams: { sort: 'random' }
+        , pageSize: this.options.pageSize
+        })
       };
 
-      // Override products list render to reset pagination height
-      var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function() {
-        this_.destroyPagination();
+      this.children = {}
+      for (var key in this.products) {
+        this.children[key] = new Components.ProductsList.Main({products: this.products[key]})
+        this.children[key].on('render', this.setupPagination, this);
 
-        oldRender.apply(this_.children.products, arguments);
+        // Set Correct Title
+        // TODO: listen to the modal directly instead of bubbling up the event
+        this.children[key].on('product-details-modal:open', function(product){
+          troller.app.setTitle(product.get('name'));
+        });
 
-        if (this.products.length === 0) return;
-
-        this_.setupPagination();
-      };
-
-      this._page = 1;
-
-      this.products = [];
+        this.children[key].on('product-details-modal:close', function(){
+          troller.app.setTitle(this.title);
+        }, this);
+      }
 
       this.spinner = new utils.Spinner();
 
-      // Page state
-      this.options = utils.extend({
-        sort:       '-popular'
-      , limit:      30
-      , offset:     0
-      , include:    ['collections']
-      , hasPhoto:   true
-      }, options);
-
       // Reset products on auth/de-auth
-      user.on('auth', function(){
-        this_.products = [];
-        this_.onShow();
-      });
+      // TODO: do this in a way that doesn't invoke onShow
 
-      user.on('deauth', function(){
-        this_.products = [];
-        this_.onShow();
-      });
+      // user.on('auth', function() {
+      //   this.products = [];
+      //   this.onShow();
+      // }, this);
 
-      // Set Correct Title
-      this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.get('name'));
-      });
+      // user.on('deauth', function() {
+      //   this.products = [];
+      //   this.onShow();
+      // }, this);
 
-      this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this_.title);
-      });
 
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
+
+      this.render();
+      this.$head = this.$el.find('.page-header-box');
+      troller.scrollWatcher.addEvent(120);
+      if (window.scrollY >= 120) this.stickHead();
+
+      this.once('show', this.showBanner, this);
     }
 
   , onShow: function(options){
       troller.spinner.spin();
 
-      var isDifferent = false;
-      for (var key in options) {
-        if (this.options[key] !== options[key]) {
-          this.options[key] = options[key];
-          isDifferent = true;
-        }
-      }
+      options = this.getOptions(options);
+      var isDifferent = !utils.isEqual(this.options, options);
+      this.options = options;
 
       // Don't fetch again if nothing has changed
-      if (!isDifferent && this.products && this.products.length > 0){
+      if (!isDifferent && this.products[options.sort] && this.products[options.sort].length > 0){
         this.setupPagination();
         troller.spinner.stop();
         return this;
       }
-
-      // Reset offset/query
-      this.options.offset = 0;
-      delete this.options.filter;
-      this.products = [];
 
       // this makes onSearchClear a nop if you call it before running a search
       this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
@@ -108,15 +128,22 @@ define(function(require){
 
       var this_ = this;
 
-      this.fetchData(function(error, results){
-        if (error) return troller.error(error), troller.spinner.stop();
+      var coll = this.products[options.sort];
+      var subview = this.children[options.sort];
 
-        troller.spinner.stop();
-        this_.render();
+      utils.invoke(this.children, 'hide');
 
-        this_.$head = this_.$el.find('.page-header-box');
-        troller.scrollWatcher.addEvent(120);
-        if (window.scrollY >= 120) this_.stickHead();
+      subview.show();
+
+      coll.reset([]);
+
+      coll.nextPage({
+        error: function(err) { troller.error(err); }
+      , success: function(data) {
+          subview.render(null, {reset: true});
+          if (data.length < this_.options.pageSize) this_.destroyPagination();
+        }
+      , complete: function(err, data) { troller.spinner.stop(); }
       });
 
       return this;
@@ -126,55 +153,33 @@ define(function(require){
       this.destroyPagination();
     }
 
-  , fetchData: function(options, callback){
-      if (typeof options == 'function'){
-        callback = options;
-        options = null;
-      }
-
-      options = options || { spin: true };
-
-      var this_ = this;
-
-      if (options.spin) troller.spinner.spin();
-
-      if (this.previousRequest)
-        this.previousRequest.abort();
-
-      this.previousRequest = api.products.food(this.options, function(error, results){
-        troller.spinner.stop();
-        this_.previousRequest = null;
-
-        if (error) return typeof callback === 'function' ? callback(error) : troller.error(error);
-
-        this_.provideData(options.append ? this_.products.concat(results) : results);
-
-        if (results.length < this_.options.limit) // if it's the last page
-          this_.destroyPagination();
-
-        if (callback) callback(null, results);
-      });
-    }
-
   , provideData: function(data){
-      this.products = data;
-      this.children.products.provideData(data); // multiple references to the same piece of mutable state break modularity.  TODO: fix
+      if (data instanceof utils.Collection) {
+        this.products = data;
+        this.children.products.provideData(data);
+      } else
+        this.products.reset(data);
 
       return this;
     }
 
-  , render: function(){
+  , render: function() {
       this.$el.html( template({ options: this.options }) );
 
+      // TODO: do we need to defer the rest until the dom update?
+
       // Attach products list
-      this.children.products.setElement(
-        this.$el.find('.products-list')[0]
-      ).render();
+      for (var key in this.children)
+        this.children[key].setElement(this.$el.find('.products-list#' + key)[0]);
 
       this.$search = this.$el.find('.field-search');
       this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
+      return this;
+    }
+
+  , showBanner: function() {
       if (!troller.app.bannerShown()){
         this.bannerShown = true;
         troller.app.showBanner();
@@ -182,8 +187,6 @@ define(function(require){
           troller.app.hideBanner();
         }, 6500);
       };
-
-      return this;
     }
 
   , destroyPagination: function(){
@@ -216,39 +219,37 @@ define(function(require){
         this.$searchClearBtn.show();
       } else if (!this.onSearchClear()) return;
 
-      // Reset offset so results don't get effed
-      this.options.offset = 0;
-      this._page = 1;
+      var active = this.$el.find('.filters-btn-group > .btn.active');
+      if (active) this.$oldSortBtn = active;
+
+      var options = {
+        filter: this.options.filter
+      , reset: true
+      , error: function(err) {
+          troller.error(err);
+        }
+      , success: function(data) {
+          this_.$el.find('.no-results').toggleClass('hide', data.length > 0);
+        }
+      , complete: function(err, data) {
+          clearTimeput( loadTooLong );
+          this_.spinner.stop();
+        }
+      }
+
+      // goodybag/allonon#133 Don't sort when searching, except by distance
+      if (value && this.options.sort !== 'distance') {
+        this.$el.find('.filters-btn-group > .btn').removeClass('active');
+        options.queryParams = {sort: null};
+      }
 
       // If keyup takes too long, put up spinner
       var loadTooLong = setTimeout(function(){
         troller.spinner.spin();
       }, 1000);
 
-      // goodybag/allonon#133 Don't sort when searching, except by distance
-      if (this.options.sort != null) {
-        this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
-        this.oldSort = this.options.sort;
-      }
-
-      if (value && this.options.sort !== '-distance') {
-        this.$el.find('.filters-btn-group > .btn').removeClass('active');
-        delete this.options.sort;
-      }
-
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
-        if (error) return troller.error(error);
-
-        this_.children.products.render();
-
-        // Add/Remove hide class based on number of products
-        this_.$el.find('.no-results')[
-          (results.length == 0 ? 'remove' : 'add')
-        + 'Class'
-        ]('hide');
-      });
+      if (e.type !== 'keyup') this.spinner.spin();
+      this.products.fetch(options);
     }
 
   , onSearchClear: function(e) {
@@ -276,20 +277,22 @@ define(function(require){
     }
 
   , onScrollNearEnd: function() {
-      var this_ = this;
+      // var this_ = this;
 
-      if (this.options.offset > this.products.length) return;
+      // this.spinner.spin(this.$spinnerContainer);
 
-      troller.analytics.track('InfiniScroll Paginated', { page: this._page++ });
-
-      this.options.offset += this.options.limit; // bump the page
-
-      this.spinner.spin(this.$spinnerContainer);
-      this.fetchData({ append: true, spin: false }, function(error, results) {
-        this_.spinner.stop();
-        if (error) troller.error(error);
-        this_.children.products.render();
-      })
+      // this.products[this.options.sort].nextPage({
+      //   error: function(err) {
+      //     troller.error(err);
+      //   }
+      // , success: function(data) {
+      //     this_.render();
+      //   }
+      // , complete: function(err, data) {
+      //     this_.spinner.stop();
+      //     troller.analytics.track('InfiniScroll Paginated', { page: this_.page });
+      //   }
+      // });
     }
 
   , stickHead: function() {
