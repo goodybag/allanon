@@ -121,6 +121,7 @@
         , 'forgot-password':          require('./modals/forgot-password/index')
         , 'reset-password':           require('./modals/reset-password/index')
         , 'complete-registration':    require('./modals/complete-registration/index')
+        , 'alert':                    require('./modals/alert/index')
         }
 
       , app = {
@@ -234,7 +235,7 @@
               $el = null;
             }
 
-            if (!action) action = alert;
+            if (!action) action = troller.alert;
 
             if (error){
               var msg, detailsAdded = false;
@@ -265,6 +266,10 @@
 
               return msg;
             }
+          }
+
+        , alert: function(message, error) {
+            troller.modals.open('alert', { message: message, error: error });
           }
 
         , getKeyNiceName: function(key){
@@ -354,6 +359,8 @@
       troller.add('app.error',        app.error);
       troller.add('error',            app.error);
       troller.add('confirm',          app.confirm);
+
+      troller.add('alert',            app.alert);
 
       troller.add('spinner.spin',     app.spin);
       troller.add('spinner.stop',     app.stopSpinning);
