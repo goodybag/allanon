@@ -241,14 +241,10 @@
               var msg, detailsAdded = false;
 
               if (typeof error == "object") {
-                switch (error.code) {
-                  case 101:
-                    // Filepicker: The user closed the dialog without picking a file
-                    return;
-                  default: 
-                    msg = error.message || (window.JSON ? window.JSON.stringify(error) : error);
-                    break;
-                }
+                // Filepicker.FPError 101: The user closed the dialog without picking a file
+                if (error.code == 101)
+                  return;
+                msg = error.message || (window.JSON ? window.JSON.stringify(error) : error);
               }
               else
                 msg = error;
