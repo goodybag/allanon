@@ -5,4 +5,4 @@ Usage
 
 Trigger modal pop up directly via 
 
-    `troller.alert(message, error)`.
+    troller.alert(message, error)
