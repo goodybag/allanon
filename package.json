@@ -1,6 +1,6 @@
 {
   "name": "website-panel",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "description": "Goodybag website login panel",
   "main": "app.js",
   "scripts": {
