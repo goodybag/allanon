@@ -240,8 +240,16 @@
             if (error){
               var msg, detailsAdded = false;
 
-              if (typeof error == "object")
-                msg = error.message || (window.JSON ? window.JSON.stringify(error) : error);
+              if (typeof error == "object") {
+                switch (error.code) {
+                  case 101:
+                    // Filepicker: The user closed the dialog without picking a file
+                    return;
+                  default: 
+                    msg = error.message || (window.JSON ? window.JSON.stringify(error) : error);
+                    break;
+                }
+              }
               else
                 msg = error;
 
