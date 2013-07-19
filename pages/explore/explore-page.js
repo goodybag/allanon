@@ -198,7 +198,7 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
+  , onSearchSubmit: utils.throttle(function(e){
       e.preventDefault();
 
       var value = this.$search.val(), this_ = this;
@@ -241,7 +241,7 @@ define(function(require){
 
       if (e.type !== 'keyup') this.spinner.spin();
       this.products.fetch(options);
-    }
+    }, 666)
 
   , onSearchClear: function(e) {
       // Cleared by keyboard
