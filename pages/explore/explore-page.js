@@ -176,7 +176,7 @@ define(function(require){
         troller.app.showBanner();
         setTimeout(function(){
           troller.app.hideBanner();
-        }, 6500);
+        }, 2500);
       };
     }
 
