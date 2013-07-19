@@ -22,16 +22,16 @@ define(function(require){
 
       this.products = options.products || new ProductsCollection();
 
+      this.collectionEvents = {
+        'coll-add': this.onCollectionAdd
+        , 'reset': this.onReset
+      };
+
       this.listenTo(this.products, this.collectionEvents);
 
       this._views = [];
 
       this.ItemView = options.ItemView || ItemView;
-    }
-
-  , collectionEvents: {
-      'bulk-add': this.onBulkAdd
-    , 'reset': this.onReset
     }
 
   , provideData: function(data) {
@@ -88,7 +88,7 @@ define(function(require){
       this.$el.hide();
     }
 
-  , onBulkAdd: function(added, coll, options) {
+  , onCollectionAdd: function(added, coll, options) {
       this.render(added);
     }
 

@@ -277,22 +277,19 @@ define(function(require){
     }
 
   , onScrollNearEnd: function() {
-      // var this_ = this;
+      var this_ = this;
 
-      // this.spinner.spin(this.$spinnerContainer);
+      this.spinner.spin(this.$spinnerContainer);
 
-      // this.products[this.options.sort].nextPage({
-      //   error: function(err) {
-      //     troller.error(err);
-      //   }
-      // , success: function(data) {
-      //     this_.render();
-      //   }
-      // , complete: function(err, data) {
-      //     this_.spinner.stop();
-      //     troller.analytics.track('InfiniScroll Paginated', { page: this_.page });
-      //   }
-      // });
+      this.products[this.options.sort].nextPage({
+        error: function(err) {
+          troller.error(err);
+        }
+      , complete: function(err, data) {
+          this_.spinner.stop();
+          troller.analytics.track('InfiniScroll Paginated', { page: this_.page });
+        }
+      });
     }
 
   , stickHead: function() {
