@@ -79,20 +79,6 @@ define(function(require){
 
       this.spinner = new utils.Spinner();
 
-      // Reset products on auth/de-auth
-      // TODO: do this in a way that doesn't invoke onShow
-
-      // user.on('auth', function() {
-      //   this.products = [];
-      //   this.onShow();
-      // }, this);
-
-      // user.on('deauth', function() {
-      //   this.products = [];
-      //   this.onShow();
-      // }, this);
-
-
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
 
