@@ -32,15 +32,6 @@ define(function(require){
 
   , allowedOptions: ['sort', 'lat', 'lon', 'pageSize', 'filter']
 
-  , getSort: function(sort) {
-      var val = {
-        'popular': 'popular'
-      , 'nearby':  'distance'
-      , 'random':  'random'
-      }[sort];
-      return val ? '-' + val : null;
-    }
-
   , getOptions: function(options) {
       return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
       // TODO: make sure sort agrees with presence of lat/lon
