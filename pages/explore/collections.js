@@ -29,6 +29,7 @@ define(function(require) {
       });
     },
     initialize: function(model, options) {
+      options.queryParams = utils.extend({sort: '-distance'}, options.queryParams);
       exports.Products.prototype.initialize.apply(this, arguments);
     }
   })

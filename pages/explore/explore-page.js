@@ -21,7 +21,7 @@ define(function(require){
       'submit #explore-search-form':        'onSearchSubmit'
     , 'keyup  .field-search':               'onSearchSubmit'
     , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
+    , 'click .field-search-clear':          'onSearchClear'
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
@@ -47,12 +47,17 @@ define(function(require){
           , pageSize: this.options.pageSize
         })
       , nearby: new collections.Nearby([], {
-          queryParams: { sort: '-distance' }
-        , pageSize: this.options.pageSize
+          pageSize: this.options.pageSize
         })
       , random: new collections.Products([], {
           queryParams: { sort: 'random' }
         , pageSize: this.options.pageSize
+        })
+      , search: new collections.Products([], {
+          pageSize: this.options.pageSize
+        })
+      , searchNearby: new collections.Nearby([], {
+          pageSize: this.options.pageSize
         })
       };
 
@@ -112,10 +117,6 @@ define(function(require){
         troller.spinner.stop();
         return this;
       }
-
-      // this makes onSearchClear a nop if you call it before running a search
-      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
-      this.oldSort = this.options.sort;
 
       var this_ = this;
 
@@ -180,14 +181,15 @@ define(function(require){
       };
     }
 
-  , destroyPagination: function(){
+  , destroyPagination: function() {
       troller.scrollWatcher.removeEvent(this.paginationTrigger);
       this.paginationTrigger = null;
 
       return this;
     }
 
-  , setupPagination: function(){
+  , setupPagination: function() {
+      if (this.$el.is(':hidden')) return;
       if (this.paginationTrigger) this.destroyPagination();
 
       // height at which to trigger fetching next page
@@ -201,67 +203,73 @@ define(function(require){
   , onSearchSubmit: utils.throttle(function(e){
       e.preventDefault();
 
-      var value = this.$search.val(), this_ = this;
+      var value = this.$search.val();
 
-      if (value == this.options.filter) return;
+      // empty search should be noop
+      if (!value) return this.onSearchClear();
 
-      if (value) {
-        this.options.filter = value;
-        this.$searchClearBtn.show();
-      } else if (!this.onSearchClear()) return;
+      // cache old state for reverting on clear
+      if (this.preSearchState == null) this.preSearchState = {
+        activeChild: utils.find(this.children, function(child) { return child.$el.is(':visible'); })
+      , activeBtn: this.$el.find('.filters-btn-group > .btn.active')
+      }
 
-      var active = this.$el.find('.filters-btn-group > .btn.active');
-      if (active) this.$oldSortBtn = active;
+      var key = this.options.sort === 'nearby' ? 'searchNearby' : 'search';
 
-      var options = {
-        filter: this.options.filter
+      var coll = this.products[key];
+      var view = this.children[key];
+
+      utils.invoke(this.children, 'hide');
+      view.show();
+
+      // if you're searching for the same thing as last time:
+      // TODO: might think about having some sort of cache expires value and redoing the search if it's expired.
+      if (coll.queryParams.filter === value) return;
+
+      // unless it's a nearby search, remove the active state on the current active button
+      if (key === 'search') this.$el.find('.filters-btn-group > .btn').removeClass('active');
+
+      var spinner = this.spinner;
+      // If keyup takes too long, put up spinner
+      var loadTooLong = setTimeout(function(){
+        spinner.spin();
+      }, 1000);
+      if (e.type !== 'keyup') spinner.spin();
+
+      var $noResults = this.$el.find('.no-results');
+      coll.fetch({
+        queryParams: {filter: value}
       , reset: true
       , error: function(err) {
           troller.error(err);
         }
       , success: function(data) {
-          this_.$el.find('.no-results').toggleClass('hide', data.length > 0);
+          $noResults.toggleClass('hide', data.length > 0);
         }
       , complete: function(err, data) {
-          clearTimeput( loadTooLong );
-          this_.spinner.stop();
+          clearTimeout( loadTooLong );
+          spinner.stop();
         }
-      }
-
-      // goodybag/allonon#133 Don't sort when searching, except by distance
-      if (value && this.options.sort !== 'distance') {
-        this.$el.find('.filters-btn-group > .btn').removeClass('active');
-        options.queryParams = {sort: null};
-      }
-
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
-
-      if (e.type !== 'keyup') this.spinner.spin();
-      this.products.fetch(options);
+      });
     }, 666)
 
   , onSearchClear: function(e) {
-      // Cleared by keyboard
-      var result = this.options.filter != null;
-      delete this.options.filter;
-      this.$oldSortBtn.addClass('active');
-      this.$searchClearBtn.hide();
-      this.options.sort = this.oldSort;
-      return result;
-    }
-
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
       this.$search.val('');
       this.$searchClearBtn.hide();
-      this.onSearchSubmit(e);
+
+      if (this.preSearchState == null) return;
+      this.$el.find('.filters-btn-group > .btn').removeClass('active');
+      utils.invoke(this.children, 'hide')
+
+      this.preSearchState.activeBtn.addClass('active');
+      this.preSearchState.activeChild.show();
+
+      this.preSearchState = null;
     }
 
   , onFiltersClick: function(e){
       if (utils.dom(e.target).hasClass('active')) e.preventDefault();
+      else this.onSearchClear();
       this.$el.find('.filters-btn-group > .btn').removeClass('active');
       utils.dom(e.target).addClass('active');
       troller.analytics.track('Click Explore Filter', { filter: e.target.href });
@@ -272,7 +280,9 @@ define(function(require){
 
       this.spinner.spin(this.$spinnerContainer);
 
-      this.products[this.options.sort].nextPage({
+      var activeChild = utils.find(this.children, function(child) { return child.$el.is(':visible'); });
+
+      activeChild.products.nextPage({
         error: function(err) {
           troller.error(err);
         }
