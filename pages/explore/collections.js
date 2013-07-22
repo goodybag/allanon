@@ -1,20 +1,31 @@
 define(function(require) {
-  var utils = require('utils');
+  var utils  = require('utils');
   var models = require('models');
+  var user   = require('user');
 
   var exports = {};
 
   exports.Products = utils.Collection.extend({
     model: models.Product,
+
     url: '/products',
+
     queryParams: {
       include: ['collections'],
       hasPhoto: true
     },
+
     initialize: function(models, options) {
       options = options || {};
       if (options.pageSize) this.pageSize = options.pageSize;
       this.queryParams = utils.extend(utils.clone(this.queryParams), options.queryParams || {});
+
+      this.listenTo(user, 'auth', this.onUserAuth, this);
+    },
+
+    onUserAuth: function() {
+      this.reset([]);
+      this.nextPage();
     }
   });
 
