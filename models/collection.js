@@ -29,6 +29,28 @@ define(function(require) {
     initialize: function(models, options) {
       utils.Collection.prototype.initialize.apply(this, arguments);
       if (options && options.id) this.id = options.id;
+    },
+
+    toggleFilter: function(filter, bool) {
+      if (['userWants', 'userLikes', 'userTried'].indexOf(filter) === -1) return;
+      var newState = bool != null ? !!bool : !this.queryParams[filter];
+      newState ? this.queryParams[filter] = newState : delete this.queryParams[filter];
+      this.reset([]);
+      return newState;
+    },
+
+    search: function(search, options) {
+      if (search === this.queryParams.filter || (!search && this.queryParams.filter == null)) return false;
+      if (search) this.queryParams.filter = search;
+      else delete this.queryParams.filter;
+      this.reset([]);
+      this.nextPage(options);
+      return true;
+    },
+
+    clear: function() {
+      this.queryParams = utils.omit(this.queryParams, ['filter', 'userWants', 'userLikes', 'userTried']);
+      this.reset([]);
     }
   });
 
