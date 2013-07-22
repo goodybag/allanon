@@ -50,13 +50,13 @@ define(function(require) {
       return this;
     }
 
-  , onUserFeelingsChange: function(e) {
+  , onUserFeelingsChange: function(model, collection, options) {
       var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
       for (var prop in this.model.changed)
         if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
 
       //TODO: consider replacing this with this.model.save().  but maybe not here.
-      user.updateProductFeelings(this.model.get('id'), {
+      if (!options.deauth) user.updateProductFeelings(this.model.get('id'), {
         isWanted: this.model.get('userWants')
       , isLiked:  this.model.get('userLikes')
       , isTried:  this.model.get('userTried')
