@@ -54,7 +54,7 @@ define(function(require){
                'change:userLikes': this.onChangeUserLikes,
                'change:userTried': this.onChangeUserTried
               });
-      this.listenTo(user, 'deauth', this.onUserDeauth, this);
+      this.listenTo(user, 'deauth', this.onUserDeAuth, this);
     },
 
     onChangeUserWants: function(model, collection, options) {
