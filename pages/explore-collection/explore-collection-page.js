@@ -6,6 +6,7 @@ define(function(require){
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('components')
+  , models      = require('models')
 
   , template    = require('hbt!./explore-collection-tmpl')
   ;
@@ -20,9 +21,19 @@ define(function(require){
     , 'click .search-form-btn':             'onSearchSubmit'
     , 'keyup .field-search':                'onSearchSubmit'
     , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
 
     , 'click .btn-edit-collection':         'onEditCollectionClick'
+    }
+
+  , defaultOptions: {
+      pageSize: 30
+    }
+
+  , allowedOptions: ['pageSize', 'filter', 'collection', 'cid', 'pid']
+
+  , getOptions: function(options) {
+      return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
+      // TODO: make sure sort agrees with presence of lat/lon
     }
 
   , children: {
@@ -33,46 +44,33 @@ define(function(require){
       products: '.products-list'
     }
 
-  , initialize: function(options){
-      // Override products list render to reset pagination height
-      var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function(){
-        this_.destroyPagination();
+  , initialize: function(options) {
+      this.options = this.getOptions(options);
 
-        oldRender.apply(this_.children.products, arguments);
-
-        if (this_.products.length === 0) return;
-
-        this_.setupPagination();
-      };
-
-      this.children.products.on('feelings:change', function(feeling, direction){
-        var pluralFeel = (
-          feeling == 'like' ? 'Likes' : (
-          feeling == 'want' ? 'Wants' :
-                              'Tries'
-        ));
-
-        this_.$el.find('.filters-btn-group > .btn-' + feeling + ' > .count').html(
-          '(' + (
-            direction
-            ? ++this_.collection['totalMy' + pluralFeel]
-            : --this_.collection['totalMy' + pluralFeel]
-           ) + ')'
-        );
+      utils.extend(this.events, {
+        'click .filters-btn-group > .btn.btn-like':  utils.bind(this.onFiltersClick, this, 'userLikes')
+      , 'click .filters-btn-group > .btn.btn-want':  utils.bind(this.onFiltersClick, this, 'userWants')
+      , 'click .filters-btn-group > .btn.btn-tried': utils.bind(this.onFiltersClick, this, 'userTried')
       });
 
-      this.products = [];
+      if (!options.cid && !options.collection) {
+        troller.modals.close();
+        troller.app.changePage('404');
+        return;
+      }
+
+      var model;
+      if (options.collection) model = options.collection;
+      else {
+        model = new models.Collection({id: options.cid});
+        model.fetch();
+      }
+
+      this.provideCollection(model);
 
       this.spinner = new utils.Spinner();
 
-      // Page state
-      this.options = {
-        limit:      30
-      , offset:     0
-      , include:    ['collections', 'userPhotos']
-      };
-
+      // TODO: listen to modal directly
       // Set Correct Title
       this.children.products.on('product-details-modal:open', function(product){
         troller.app.setTitle(product.name);
@@ -82,26 +80,36 @@ define(function(require){
         troller.app.setTitle(this_.title);
       });
 
+      this.render();
+
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
     }
 
   , onShow: function(options){
+      this.options = this.getOptions(options);
+
       // Don't worry about this. Data might go stale
       // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
-      // Data might be stale, reset query params
-      this.options.offset = 0;
-      delete this.options.filter;
-      delete this.options.userWants;
-      delete this.options.userLikes;
-      delete this.options.userTried;
+      if (this.options.collection != null) this.provideCollection(this.options.collection);
 
-      this.collection = options.collection;
+      this.model.products.clear();
 
-      this.title = this.collection.name;
+      this.title = this.model.name;
 
-      this.fetchData();
+      troller.scrollWatcher.addEvent(120);
+      if (window.scrollY >= 120) this.stickHead();
+
+      var self = this;
+      this.spinner.spin();
+
+      this.model.products.nextPage({
+        complete: function(err, data) {
+          if (data.length < self.options.pageSize) self.destroyPagination();
+          self.spinner.stop();
+        }
+      });
 
       return this;
     }
@@ -110,60 +118,36 @@ define(function(require){
       this.destroyPagination();
     }
 
-  , fetchData: function(options, callback){
-      if (typeof options === 'function'){
-        callback = options;
-        options = null;
-      }
-
-      options = options || { spin: true };
-
-      var this_ = this;
-
-      if (options.spin) troller.spinner.spin();
-
-      if (this.previousRequest)
-        this.previousRequest.abort();
-
-      this.previousRequest = api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
-        troller.spinner.stop();
-
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        for (var i = 0, l = products.length, p; i < l; ++i){
-          p = products[i];
-          if (!p.photoUrl && p.photos && p.photos.length > 0) p.photoUrl = p.photos[0].url;
-        }
-
-        this_.products = options.append ? this_.products.concat(products) : products;
-        this_.children.products.provideData(this_.products).render();
-
-        this_.$head = this_.$el.find('.page-header-box');
-
-        this_.$head = this_.$el.find('.page-header-box');
-        troller.scrollWatcher.addEvent(120);
-        if (window.scrollY >= 120) this_.stickHead();
-
-        if (products.length < this_.options.limit) // if it's the last page
-          this_.destroyPagination();
-
-        if (callback) callback(null, products);
-      });
-    }
-
   , provideCollection: function(collection){
-      this.collection = collection;
+      this.stopListening(this.model);
+
+      this.model = collection;
+
+      this.listenTo(this.model, 'change:totalMyLikes change:totalMyWants change:TotalMyTries', function(model, value, options) {
+        utils.each(utils.pluck(model.changed, ['totalMyLikes', 'totalMyWants', 'totalMyTries']), function(val, key, changed) {
+          var btnSelector = '.btn-' + {
+            totalMyWants: 'want'
+          , totalMyLikes: 'like'
+          , totalMyTries: 'tried'
+          }[key];
+          this.$el.find('.filters-btn-group > ' + btnSelector + ' > .count').text(val);
+        }, this);
+      });
+
+      utils.each(this.children, function(val, key, obj) { val.provideData(this.model.products) }, this);
       return this;
     }
 
   , render: function(){
-      this.$el.html( template({ collection: this.collection }) );
+      this.$el.html( template({ collection: this.model.toJSON() }) );
 
       this.applyRegions();
 
+      // TODO: does this need to be defered?  will this ever run before the dom update on any browser?
       this.$search = this.$el.find('.field-search');
       this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
+      this.$head = this.$el.find('.page-header-box');
 
       return this;
     }
@@ -189,81 +173,59 @@ define(function(require){
   , onSearchSubmit: function(e){
       e.preventDefault();
 
-      var value = this.$search.val(), this_ = this;
+      var value = this.$search.val();
 
-      if (value == this.options.filter) return;
+      this.$searchClearBtn.toggle(value);
 
-      if (value) {
-        this.options.filter = value;
-        this.$searchClearBtn.show();
-      }
-      else if (!this.onSearchClear()) return;
-
-      // Reset offset so results don't get effed
-      this.options.offset = 0;
+      var self = this;
 
       // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
+      if (e.type === 'keyup') {
+        var loadTooLong = setTimeout(function(){
+          self.spinner.spin();
+        }, 1000);
+      } else
+        this.spinner.spin();
 
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
-        if (error) return troller.error(error);
-
-        this_.children.products.render()
-
-        // Add/Remove hide class based on number of products
-        this_.$el.find('.no-results')[
-          (results.length == 0 ? 'remove' : 'add')
-        + 'Class'
-        ]('hide');
-      });
-    }
-
-  , onSearchClear: function(e) {
-      // Cleared by keyboard
-      var result = this.options.filter != null;
-      delete this.options.filter;
-      this.$searchClearBtn.hide();
-      return result;
+      this.model.products.search({
+        error: function(err) {
+          troller.error(err);
+        }
+      , success: function(data) {
+          self.$el.find('.no-results').toggleClass('hide', data.length > 0);
+        }
+      , complete: function(error, data) {
+          clearTimeout(loadTooLong);
+          self.spinner.stop();
+        }
+      })
     }
 
   , onSearchClearClick: function(e) {
       // Cleared by mouse
       this.$search.val('');
-      this.$searchClearBtn.hide();
       this.onSearchSubmit(e);
     }
 
-  , onFiltersClick: function(e){
-      troller.spinner.spin();
+  , onFiltersClick: function(filter, e){
+      this.spinner.spin();
 
-      while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
+      // wtf.
+      // while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
 
-      var $target = utils.dom(e.target);
+      var active = this.model.products.toggleFilter(filter);
+      utils.dom(e.target).toggleClass('active', active);
 
-      var filter = (
-        $target.hasClass('btn-like') ? 'userLikes' : (
-        $target.hasClass('btn-want') ? 'userWants' : 'userTried'
-      ));
-
-      if ($target.hasClass('active')){
-        $target.removeClass('active');
-        delete this.options[filter];
-      } else {
-        $target.addClass('active');
-        this.options[filter] = true;
-      }
-
-      this.options.offset = 0;
-
-      this.fetchData();
+      var self = this;
+      this.model.products.nextPage({
+        complete: function(err, data) {
+          self.spinner.stop();
+        }
+      });
     }
 
   , onEditCollectionClick: function(e){
-      troller.modals.open('edit-collection', { collection: this.collection });
+      troller.modals.open('edit-collection', { collection: this.model });
     }
 
   , onScrollNearEnd: function() {
