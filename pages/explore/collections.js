@@ -16,9 +16,7 @@ define(function(require) {
     },
 
     initialize: function(models, options) {
-      options = options || {};
-      if (options.pageSize) this.pageSize = options.pageSize;
-      this.queryParams = utils.extend(utils.clone(this.queryParams), options.queryParams || {});
+      utils.Collection.prototype.initialize.apply(this, arguments);
 
       this.listenTo(user, 'auth', this.onUserAuth, this);
     },
