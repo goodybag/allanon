@@ -52,7 +52,7 @@ define(function(require){
   , render: function(models, options) {
       options = options || {};
 
-      var reset = options.reset;
+      var reset = options.reset || models == null;
       var products = models || this.products.models;
 
       // Remove old views
