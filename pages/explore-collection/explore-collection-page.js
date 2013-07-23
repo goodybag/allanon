@@ -60,14 +60,12 @@ define(function(require){
         return;
       }
 
-      var model;
-      if (options.collection) model = options.collection;
-      else {
-        model = new models.Collection({id: options.cid});
-        model.fetch();
+      if (options.collection) {
+        this.provideCollection(options.collection);
+      } else {
+        var model = new models.Collection({id: options.cid});
+        model.fetch({success: utils.bind(this.provideCollection, this, model)});
       }
-
-      this.provideCollection(model);
 
       this.spinner = new utils.Spinner();
 
@@ -80,8 +78,6 @@ define(function(require){
       this.children.products.on('product-details-modal:close', function(){
         troller.app.setTitle(this_.title);
       });
-
-      this.render();
 
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
@@ -137,6 +133,8 @@ define(function(require){
       });
 
       utils.each(this.children, function(val, key, obj) { val.provideData(this.model.products) }, this);
+
+      this.render();
       return this;
     }
 
