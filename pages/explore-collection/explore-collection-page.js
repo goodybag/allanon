@@ -175,7 +175,7 @@ define(function(require){
 
       var value = this.$search.val();
 
-      this.$searchClearBtn.toggle(value);
+      this.$searchClearBtn.toggle(!!value);
 
       var self = this;
 
