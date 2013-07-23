@@ -170,7 +170,7 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
+  , onSearchSubmit: utils.throttle(function(e){
       e.preventDefault();
 
       var value = this.$search.val();
@@ -199,7 +199,7 @@ define(function(require){
           self.spinner.stop();
         }
       })
-    }
+    }, 666)
 
   , onSearchClearClick: function(e) {
       // Cleared by mouse
