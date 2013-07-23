@@ -47,6 +47,7 @@ define(function(require){
   , initialize: function(options) {
       this.options = this.getOptions(options);
 
+      // I love partial appliation of functions
       utils.extend(this.events, {
         'click .filters-btn-group > .btn.btn-like':  utils.bind(this.onFiltersClick, this, 'userLikes')
       , 'click .filters-btn-group > .btn.btn-want':  utils.bind(this.onFiltersClick, this, 'userWants')
@@ -209,9 +210,6 @@ define(function(require){
 
   , onFiltersClick: function(filter, e){
       this.spinner.spin();
-
-      // wtf.
-      // while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
 
       var active = this.model.products.toggleFilter(filter);
       utils.dom(e.target).toggleClass('active', active);
