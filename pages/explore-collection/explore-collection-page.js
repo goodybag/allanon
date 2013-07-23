@@ -124,7 +124,7 @@ define(function(require){
       this.model = collection;
 
       this.listenTo(this.model, 'change:totalMyLikes change:totalMyWants change:TotalMyTries', function(model, value, options) {
-        utils.each(utils.pluck(model.changed, ['totalMyLikes', 'totalMyWants', 'totalMyTries']), function(val, key, changed) {
+        utils.each(utils.pick(model.changed, ['totalMyLikes', 'totalMyWants', 'totalMyTries']), function(val, key, changed) {
           var btnSelector = '.btn-' + {
             totalMyWants: 'want'
           , totalMyLikes: 'like'
