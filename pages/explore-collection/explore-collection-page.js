@@ -195,6 +195,7 @@ define(function(require){
         }
       , success: function(data) {
           self.$el.find('.no-results').toggleClass('hide', data.length > 0);
+          self.setupPagination();
         }
       , complete: function(error, data) {
           clearTimeout(loadTooLong);
@@ -219,6 +220,7 @@ define(function(require){
       this.model.products.nextPage({
         complete: function(err, data) {
           self.spinner.stop();
+          self.setupPagination();
         }
       });
     }
