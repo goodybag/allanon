@@ -21,24 +21,20 @@ define(function(require) {
     }
   ;
 
+  var UserCollections = utils.Collection.extend({
+    model: Collection
+  , url: function() { return '/consumers/' + this.user.id + '/collections'; }
+  });
+
   return utils.Model.extend({
     defaults: {
       avatarUrl:  config.defaults.avatarUrl
     }
 
-  , collections: new utils.Collection({
-      model: Collection
-    })
+  , urlRoot: '/consumers'
 
-  // TODO: with the overridden sync method, this might no longer be necessary
-  , save: function(callback){
-      var user = this.toJSON();
-      delete user.id;
-
-      api.consumers.update(this.get('id'), user, callback || function(error, result){
-        if (error) return troller.error(error);
-      });
-      return this;
+  , initialize: function(attrs, options) {
+      this.collections = new UserCollections([], {user: this});
     }
 
   // TODO: figure out why this is a separate route
@@ -70,64 +66,6 @@ define(function(require) {
       });
 
       return this;
-    }
-
-  // TODO: these three should be built in to the collections collection
-  , addCollection: function(name, callback){
-      var this_ = this, collection = { name: name };
-      api.collections.create(this.get('id'), collection, function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        // Collection ids are usually returned as strings
-        collection.id = "" + result.id;
-        collection.numProducts = 0;
-        collection.isEditable = true;
-
-        this_.get('collections').unshift(collection);
-        troller.trigger('user:collections:change', this_.get('collections'));
-
-        if (callback) callback(null, result);
-      });
-    }
-
-  , editCollection: function(cid, data, callback){
-      var this_ = this, collections = this.get('collections');
-
-      api.collections.update(this.get('id'), cid, data, function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        if (collections){
-          for (var i = 0, l = collections.length; i < l; ++i){
-            if (collections[i].id == cid){
-              for (var key in data) collections[i][key] = data[key];
-              break;
-            }
-          }
-
-          troller.trigger('user:collections:change', this_.get('collections'));
-        }
-
-        if (callback) callback(null, result);
-      });
-    }
-
-  , removeCollection: function(cid, callback){
-      var this_ = this, collections = this.get('collections');
-
-      api.collections.del(this.get('id'), cid, function(error){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        var updated = [];
-        for (var i = 0, l = collections.length; i < l; ++i){
-          if (collections[i].id != cid) updated.push( collections[i] );
-        }
-
-        this_.set('collections', updated);
-
-        troller.trigger('user:collections:change', this_.get('collections'));
-
-        if (callback) callback(null);
-      });
     }
 
   // TODO: move these two to product model
