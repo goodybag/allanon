@@ -139,7 +139,7 @@ define(function(require){
     }
 
   , render: function(){
-      this.$el.html( template({ collection: this.model.toJSON() }) );
+      this.$el.html( template({ collection: utils.extend(this.model.toJSON(), {isEditable: this.model.isEditable()} }) );
 
       this.applyRegions();
 
