@@ -71,6 +71,10 @@ define(function(require) {
       totalMyTries: 0
     },
 
+    isEditable: function() {
+      return !utils.contains(['all', 'food'], this.id);
+    },
+
     urlRoot: function() {
       return '/consumers/' + user.id + '/collections'
     },
