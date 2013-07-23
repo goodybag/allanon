@@ -109,6 +109,7 @@ define(function(require){
         complete: function(err, data) {
           if (data.length < self.options.pageSize) self.destroyPagination();
           self.spinner.stop();
+          self.setupPagination();
         }
       });
 
@@ -227,15 +228,12 @@ define(function(require){
     }
 
   , onScrollNearEnd: function() {
-      var this_ = this;
-
-      if (this.options.offset > this.products.length) return;
-
-      this.options.offset += this.options.limit; // bump the page
-
+      var self = this;
       this.spinner.spin(this.$spinnerContainer);
-      this.fetchData({ append: true, spin: false }, function() {
-        this_.spinner.stop();
+      this.model.products.nextPage({
+        complete: function() {
+          self.spinner.stop();
+        }
       });
     }
 
