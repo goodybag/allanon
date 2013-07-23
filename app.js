@@ -130,6 +130,7 @@
             utils.parallel({
               session: function(done){ user.isLoggedIn(done); }
             , domready: function(done){ utils.domready(function(){ done() }); }
+            , sync: utils.partial(require, ['./models/sync'])
             }, function(error){
               if (error) troller.error(error);
 
