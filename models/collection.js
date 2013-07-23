@@ -1,6 +1,5 @@
 define(function(require) {
   var utils   = require('utils');
-  var user    = require('user');
   var Product = require('./product');
 
   var acceptable = [
@@ -17,7 +16,7 @@ define(function(require) {
 
   var GBCollection = utils.Collection.extend({
     url: function() {
-      return '/consumers/' + user.id + '/collections/' + this.id + '/products';
+      return '/consumers/' + require('user').id + '/collections/' + this.id + '/products';
     },
 
     model: Product,
@@ -76,7 +75,7 @@ define(function(require) {
     },
 
     urlRoot: function() {
-      return '/consumers/' + user.id + '/collections'
+      return '/consumers/' + require('user').id + '/collections'
     },
 
     initialize: function(attrs, options) {

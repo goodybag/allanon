@@ -1,6 +1,5 @@
 define(function(require){
   var utils = require('utils');
-  var user = require('user');
 
   var acceptable = [
     'id',
@@ -54,7 +53,7 @@ define(function(require){
                'change:userLikes': this.onChangeUserLikes,
                'change:userTried': this.onChangeUserTried
               });
-      this.listenTo(user, 'deauth', this.onUserDeAuth, this);
+      this.listenTo(require('user'), 'deauth', this.onUserDeAuth, this);
     },
 
     onChangeUserWants: function(model, collection, options) {
