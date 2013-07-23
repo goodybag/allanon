@@ -16,7 +16,7 @@ define(function(require) {
 
   var GBCollection = utils.Collection.extend({
     url: function() {
-      return '/consumers/' + require('user').id + '/collections/' + this.id + '/products';
+      return '/consumers/' + require('user').id + '/collections/' + this.collection.id + '/products';
     },
 
     model: Product,
@@ -50,6 +50,27 @@ define(function(require) {
     clear: function() {
       this.queryParams = utils.omit(this.queryParams, ['filter', 'userWants', 'userLikes', 'userTried']);
       this.reset([]);
+    },
+
+    // I'm not sure if this should go here or on the containing model.
+    addProduct: function(product, callback) {
+      if (!(product instanceof Product)) {
+        product = new Product({id: product});
+        product.fetch(); // don't care when this completes.  might need to change that later
+      }
+      this.sync('create', this, {
+        data: {productId: product.id},
+        complete: callback
+      });
+    },
+
+    removeProduct: function(product, callback) {
+      this.remove(product);
+      var id = product.id || product;
+      this.sync('delete', this, {
+        url: this.url() + '/' + id,
+        complete: callback
+      });
     }
   });
 
@@ -79,7 +100,7 @@ define(function(require) {
     },
 
     initialize: function(attrs, options) {
-      this.products = new GBCollection([], {id: this.id});
+      this.products = new GBCollection([], {collection: this});
 
       this.listenTo(this.products, 'change:userWants', function(model, value, options) {
         if (model.changed.userWants != null && model.previousAttributes().userWants != null && !options.deauth)

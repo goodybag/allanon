@@ -68,27 +68,6 @@ define(function(require) {
       return this;
     }
 
-  // TODO: move these two to product model
-  , addToCollection: function(cid, pid, callback){
-      var this_ = this;
-
-      api.collections.add(this.get('id'), cid, pid, function(error){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        if (callback) callback();
-      });
-    }
-
-  , removeFromCollection: function(cid, pid, callback){
-      var this_ = this;
-
-      api.collections.remove(this.get('id'), cid, pid, function(error){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        if (callback) callback();
-      });
-    }
-
   // apparently never used
   , getCollectionWithProduct: function(id, options, callback){
       var
