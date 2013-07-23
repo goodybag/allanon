@@ -68,33 +68,6 @@ define(function(require) {
       return this;
     }
 
-  // apparently never used
-  , getCollectionWithProduct: function(id, options, callback){
-      var
-        this_ = this
-
-      , fns = {
-          collection: function(done){
-            api.collections.get(this_.get('id'), id, function(error, collection){
-              done(error, collection);
-            });
-          }
-
-        , products: function(done){
-            api.collections.products(this_.get('id'), id, function(error, products){
-              done(error, products);
-            });
-          }
-        }
-
-      , pCallback = function(error, results){
-
-        }
-      ;
-
-      utils.parallel(fns, pCallback);
-    }
-
   // TODO: should become backbone collection of Collection models
   , getCollections: function(options, callback){
       if (typeof options == 'function'){
