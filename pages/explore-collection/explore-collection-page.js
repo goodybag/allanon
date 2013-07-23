@@ -187,7 +187,7 @@ define(function(require){
       } else
         this.spinner.spin();
 
-      this.model.products.search({
+      this.model.products.search(value, {
         error: function(err) {
           troller.error(err);
         }
