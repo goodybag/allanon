@@ -53,7 +53,7 @@ define(function(require){
 
   , onAddToCollections: function(e){
       var this_ = this;
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
+      if (!user.loggedIn) return troller.promptUserLogin();
       this.pageManager.changePage('add-to-collections', { product: this.model });
     }
   });
