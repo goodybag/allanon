@@ -5,22 +5,6 @@ define(function(require) {
   var troller    = require('troller');
   var Collection = require('./collection');
 
-  var getCollectionLookAheadFn = function(uid, collection){
-      var options = {
-        limit: 3
-      , offset: parseInt(Math.random() * (collection.numProducts - 3))
-      };
-
-      if (options.offset < 0) options.offset = 0;
-
-      return function(done){
-        api.collections.products(uid, collection.id, options, function(error, results, meta){
-          done(error, results);
-        });
-      };
-    }
-  ;
-
   var UserCollections = utils.Collection.extend({
     model: Collection
   , url: function() { return '/consumers/' + this.user.id + '/collections'; }
