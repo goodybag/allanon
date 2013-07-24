@@ -64,24 +64,6 @@ define(function(require) {
       return this;
     }
 
-  // TODO: is this just this.fetch?
-  , getConsumerRecord: function(callback){
-      var this_ = this;
-
-      // Uhmm. yeah
-      if (!this.get('id')) throw new Error('Cannot get consumer record when id is null');
-
-      api.consumers.get(this.get('id'), function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        this_.set(result);
-
-        callback();
-      });
-
-      return this;
-    }
-
   , auth: function(email, password, remember, callback){
       if (typeof remember === 'function' && callback == null) {
         callback = remember;
@@ -103,15 +85,17 @@ define(function(require) {
           this_.loggedIn = true;
           this_.set(result);
 
-          this_.getConsumerRecord(function(error, result){
-            if (error) return callback ? callback(error) : troller.error(error);
+          this_.fetch({
+            error: function(error){
+              callback ? callback(error) : troller.error(error);
+            }
+          , success: function(result) {
+              this_.trigger('auth');
+              troller.trigger('user.auth')
+              troller.analytics.track('Auth Email');
 
-            this_.trigger('auth');
-            troller.trigger('user.auth')
-            troller.analytics.track('Auth Email');
-
-
-            if (callback) callback();
+              if (callback) callback(null, result);
+            }
           });
         });
       });
@@ -162,14 +146,17 @@ define(function(require) {
           this_.loggedIn = true;
           this_.set(result);
 
-          this_.getConsumerRecord(function(error, result){
-            if (error) return callback ? callback(error) : troller.error(error);
+          this_.fetch({
+            error: function(error) {
+              callback ? callback(error) : troller.error(error);
+            }
+          , success: function(result) {
+              this_.trigger('auth');
+              troller.trigger('user.auth')
+              troller.analytics.track('User Registered Email');
 
-            this_.trigger('auth');
-            troller.trigger('user.auth')
-            troller.analytics.track('User Registered Email');
-
-            if (callback) callback();
+              if (callback) callback(null, result);
+            }
           });
         });
       });
@@ -193,13 +180,16 @@ define(function(require) {
         this_.loggedIn = true;
         this_.set(result);
 
-        this_.getConsumerRecord(function(error, result){
-          if (error) return callback ? callback(error) : troller.error(error);
+        this_.fetch({
+          error: function(error) {
+            callback ? callback(error) : troller.error(error);
+          }
+        , success: function(result) {
+            this_.trigger('auth');
+            troller.trigger('user.auth')
 
-          this_.trigger('auth');
-          troller.trigger('user.auth')
-
-          if (callback) callback();
+            if (callback) callback(null, result);
+          }
         });
       });
     }
@@ -236,13 +226,16 @@ define(function(require) {
         this_.loggedIn = true;
         this_.set(result);
 
-        this_.getConsumerRecord(function(error, result){
-          if (error) return callback ? callback(error) : troller.error(error);
+        this_.fetch({
+          error: function(error){
+            callback ? callback(error) : troller.error(error);
+          }
+        , success: function(result) {
+            this_.trigger('auth');
+            troller.trigger('user.auth')
 
-          this_.trigger('auth');
-          troller.trigger('user.auth')
-
-          if (callback) callback();
+            if (callback) callback(null, result);
+          }
         });
       });
 
