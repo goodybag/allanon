@@ -24,6 +24,15 @@ define(function(require) {
   var UserCollections = utils.Collection.extend({
     model: Collection
   , url: function() { return '/consumers/' + this.user.id + '/collections'; }
+  , fetch: function(options) {
+      options = options || {};
+      var success = options.success;
+      options.success = function(coll, resp, opts) {
+        if (opts.withSecondaries) coll.invoke('getSecondaries');
+        success.apply(this, arguments);
+      };
+      utils.Collection.prototype.fetch.call(this, options);
+    }
   });
 
   return utils.Model.extend({
@@ -65,57 +74,6 @@ define(function(require) {
         }
       });
 
-      return this;
-    }
-
-  // TODO: should become backbone collection of Collection models
-  , getCollections: function(options, callback){
-      if (typeof options == 'function'){
-        callback = options;
-        options = {};
-      }
-
-      // Can we respond without making a network request?
-      if (!options.force && this.get('collections') && (!options.withSecondaries || this._addedSecondaries))
-        return callback ? callback(null, this.get('collections')) : null;
-
-      var this_ = this;
-
-      api.collections.list(this.get('id'), { limit: 1000 }, function(error, collections){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        for (var i = 0, l = collections.length; i < l; ++i){
-          collections[i].isEditable = !utils.contains(['all', 'food'], collections[i].id);
-        }
-
-        this_.set('collections', collections);
-
-        if (!options.withSecondaries){
-          if (callback) return callback(null, collections);
-        }
-
-        // If they're requesting secondary images, queue up the network calls
-        var reqs = [];
-
-        for (var i = 0, l = collections.length; i < l; ++i){
-          reqs.push(getCollectionLookAheadFn(this_.get('id'), collections[i]));
-        }
-
-        utils.parallel(reqs, function(error, results){
-          if (error) return callback ? callback(error) : troller.error(error);
-
-          for (var i = 0, l = results.length; i < l; ++i){
-            // Ensure secondary integrity
-            while (results[i].length < 3) results[i].push({});
-
-            collections[i].secondaries = results[i];
-          }
-
-          this_._addedSecondaries = true;
-
-          if (callback) callback(null, collections);
-        });
-      });
       return this;
     }
 

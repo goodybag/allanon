@@ -27,7 +27,7 @@ define(function(require) {
 
     initialize: function(models, options) {
       utils.Collection.prototype.initialize.apply(this, arguments);
-      if (options && options.id) this.id = options.id;
+      if (options && options.collection) this.collection = options.collection;
     },
 
     toggleFilter: function(filter, bool) {
@@ -97,6 +97,28 @@ define(function(require) {
 
     urlRoot: function() {
       return '/consumers/' + require('user').id + '/collections'
+    },
+
+    secondaries: [{}, {}, {}],
+
+    getSecondaries: function() {
+      var coll = this;
+      this.sync('read', this.products, {
+        queryParams: {
+          limit: 3,
+          offset: this.get('numProducts') > 3 ? parseInt(Math.random() * (this.get('numProducts') - 3)) : 0
+        },
+        success: function(data) {
+          coll.secondaries = utils.map(data, function(e) {
+            return e instanceof utils.Model ? e.toJSON() : e;
+          });
+        }
+      });
+    },
+
+    toJSON: function(options) {
+      var obj = utils.Collection.prototype.toJSON.apply(this, arguments);
+      return (options && options.withSecondaries) ? utils.extend(obj, {secondaries: this.secondaries}) : obj;
     },
 
     initialize: function(attrs, options) {
