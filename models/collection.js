@@ -60,7 +60,7 @@ define(function(require) {
         product.fetch(); // don't care when this completes.  might need to change that later
       }
 
-      product.set('collections', product.get('collections').push('' + this.collection.id));
+      product.set('collections', product.get('collections').concat('' + this.collection.id));
 
       this.sync('create', this, {
         data: {productId: product.id},
