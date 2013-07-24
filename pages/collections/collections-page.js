@@ -15,8 +15,8 @@ define(function(require){
   , title: 'My Collections'
 
   , events: {
-      'click .add-new-collection':          'onNewCollectionClick'
-    , 'click .collection':                  'onCollectionClick'
+      'click .collection-new':                  'onNewCollectionClick'
+    , 'click .collection:not(.collection-new)': 'onCollectionClick'
     }
 
   , initialize: function(){
@@ -51,7 +51,6 @@ define(function(require){
 
   , onCollectionClick: function(e){
       var $target = utils.dom(e.target);
-      if ($target.hasClass('add-new-collection')) return;
 
       var id = $target.closest('li.collection').data('id');
       var collection = this.collections.get(id);
