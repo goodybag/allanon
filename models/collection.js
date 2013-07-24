@@ -128,7 +128,7 @@ define(function(require) {
     },
 
     sync: function(method, model, options) {
-      if (model === this && method === 'create' && options.data == null)
+      if (model === this && utils.contains(['create', 'update'], method) && options.data == null)
         options.data = utils.pick(this.toJSON(), ['name']);
       utils.Model.prototype.sync.apply(this, arguments);
     },
