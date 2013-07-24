@@ -40,7 +40,11 @@ define(function(require){
   , provideCollections: function(collections){
       this.stopListening(this.collections);
       this.collections = collections;
-      this.listenTo(this.collections, 'change fetch:secondaries', this.render)
+      this.listenTo(this.collections, 'change', this.render);
+      var self = this;
+      this.listenTo(this.collections, 'destroy', function(model, collection, options) {
+        self.$el.find('.collection[data-id="' + model.id + '"]').remove();
+      });
       return this;
     }
 
