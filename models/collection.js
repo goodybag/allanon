@@ -58,6 +58,9 @@ define(function(require) {
         product = new Product({id: product});
         product.fetch(); // don't care when this completes.  might need to change that later
       }
+
+      product.set('collections', product.get('collections').push('' + this.collection.id));
+
       this.sync('create', this, {
         data: {productId: product.id},
         complete: callback
@@ -66,9 +69,11 @@ define(function(require) {
 
     removeProduct: function(product, callback) {
       this.remove(product);
-      var id = product.id || product;
+
+      product.set('collections', utils.without(product.get('collections'), ''+this.collection.id));
+
       this.sync('delete', this, {
-        url: this.url() + '/' + id,
+        url: this.url() + '/' + product.id,
         complete: callback
       });
     }
