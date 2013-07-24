@@ -11,7 +11,8 @@ define(function(require) {
     'photoUrl',
     'totalMyLikes',
     'totalMyWants',
-    'totalMyTries'
+    'totalMyTries',
+    'secondaries'
   ];
 
   var GBCollection = utils.Collection.extend({
@@ -93,7 +94,8 @@ define(function(require) {
       numProducts: 0,
       totalMyLikes: 0,
       totalMyWants: 0,
-      totalMyTries: 0
+      totalMyTries: 0,
+      secondaries: [{}, {}, {}]
     },
 
     isEditable: function() {
@@ -104,8 +106,6 @@ define(function(require) {
       return '/consumers/' + require('user').id + '/collections'
     },
 
-    secondaries: [{}, {}, {}],
-
     getSecondaries: function() {
       var coll = this;
       this.sync('read', this.products, {
@@ -114,17 +114,11 @@ define(function(require) {
           offset: this.get('numProducts') > 3 ? parseInt(Math.random() * (this.get('numProducts') - 3)) : 0
         },
         success: function(data) {
-          coll.secondaries = utils.first(utils.map(data, function(e) {
+          coll.set('secondaries', utils.first(utils.map(data, function(e) {
             return e instanceof utils.Model ? e.toJSON() : e;
-          }).concat([{}, {}, {}]), 3);
-          coll.trigger('fetch:secondaries', coll, coll.secondaries);
+          }).concat([{}, {}, {}]), 3));
         }
       });
-    },
-
-    toJSON: function(options) {
-      var obj = utils.Model.prototype.toJSON.apply(this, arguments);
-      return (options && options.withSecondaries) ? utils.extend(obj, {secondaries: this.secondaries}) : obj;
     },
 
     sync: function(method, model, options) {
