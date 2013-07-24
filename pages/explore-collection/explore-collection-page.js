@@ -72,12 +72,12 @@ define(function(require){
       // TODO: listen to modal directly
       // Set Correct Title
       this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.name);
+        troller.app.setTitle(product.get('name'));
       });
 
       this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this_.title);
-      });
+        troller.app.setTitle(this.title);
+      }, this);
 
       troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
       troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
@@ -93,7 +93,7 @@ define(function(require){
 
       this.model.products.clear();
 
-      this.title = this.model.name;
+      this.title = this.model.get('name');
 
       troller.scrollWatcher.addEvent(120);
       if (window.scrollY >= 120) this.stickHead();
