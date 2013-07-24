@@ -127,6 +127,12 @@ define(function(require) {
       return (options && options.withSecondaries) ? utils.extend(obj, {secondaries: this.secondaries}) : obj;
     },
 
+    sync: function(method, model, options) {
+      if (model === this && method === 'create' && options.data == null)
+        options.data = utils.pick(this.toJSON(), ['name']);
+      utils.Model.prototype.sync.apply(this, arguments);
+    },
+
     initialize: function(attrs, options) {
       this.products = new GBCollection([], {collection: this});
 
