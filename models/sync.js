@@ -56,7 +56,7 @@ define(function(require) {
       if (error) return options.error(error), options.complete(error);
 
       // make products singletons
-      if (model instanceof utils.Collection && model.model === Product) {
+      if (model instanceof utils.Collection && model.model === Product && data) {
         productsCache.add(data, {merge: true});
         var data = utils.map(data, function(m) { return productsCache.get(m); });
       }
