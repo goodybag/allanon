@@ -45,7 +45,6 @@ define(function(require){
     }
 
   , render: utils.debounce(function(){
-      console.log('render collections');
       this.$el.html( template({ collections: this.collections.toJSON({withSecondaries: true}) }) );
       return this;
     }, 100)
