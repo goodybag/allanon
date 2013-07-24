@@ -132,6 +132,10 @@ define(function(require){
         }, this);
       });
 
+      this.listenTo(this.model, 'change:name', function(model, value, options) {
+        this.$el.find('.page-title').text(value);
+      });
+
       utils.each(this.children, function(val, key, obj) { val.provideData(this.model.products) }, this);
 
       this.render();
