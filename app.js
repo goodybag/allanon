@@ -125,12 +125,11 @@
         }
 
       , app = {
-          init: function(){
+          init: utils.partial(require, ['./models/sync'], function(){
             // Initial call to session
             utils.parallel({
               session: function(done){ user.isLoggedIn(done); }
             , domready: function(done){ utils.domready(function(){ done() }); }
-            , sync: utils.partial(require, ['./models/sync'])
             }, function(error){
               if (error) troller.error(error);
 
@@ -160,7 +159,7 @@
             if (!utils.support.cors) app.loadIEModules();
 
             user.on('auth', function(){ troller.analytics.track('Auth'); });
-          }
+          })
 
         , changePage: function(page, options, callback){
             if (typeof options === 'function') {
