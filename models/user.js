@@ -13,9 +13,12 @@ define(function(require) {
       var success = options.success;
       options.success = function(coll, resp, opts) {
         if (opts.withSecondaries) coll.invoke('getSecondaries');
-        success.apply(this, arguments);
+        if (success) success.apply(this, arguments);
       };
       utils.Collection.prototype.fetch.call(this, options);
+    }
+  , initialize: function(attrs, options) {
+      if (options && options.user) this.user = options.user;
     }
   });
 

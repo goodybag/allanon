@@ -114,15 +114,15 @@ define(function(require) {
           offset: this.get('numProducts') > 3 ? parseInt(Math.random() * (this.get('numProducts') - 3)) : 0
         },
         success: function(data) {
-          coll.secondaries = utils.map(data, function(e) {
+          coll.secondaries = utils.first(utils.map(data, function(e) {
             return e instanceof utils.Model ? e.toJSON() : e;
-          });
+          }).concat([{}, {}, {}]), 3);
         }
       });
     },
 
     toJSON: function(options) {
-      var obj = utils.Collection.prototype.toJSON.apply(this, arguments);
+      var obj = utils.Model.prototype.toJSON.apply(this, arguments);
       return (options && options.withSecondaries) ? utils.extend(obj, {secondaries: this.secondaries}) : obj;
     },
 
