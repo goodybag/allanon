@@ -117,6 +117,7 @@ define(function(require) {
           coll.secondaries = utils.first(utils.map(data, function(e) {
             return e instanceof utils.Model ? e.toJSON() : e;
           }).concat([{}, {}, {}]), 3);
+          coll.trigger('fetch:secondaries', coll, coll.secondaries);
         }
       });
     },
