@@ -4,18 +4,6 @@ define(function(require){
   , troller   = require('troller')
   , user      = require('user')
   , template  = require('hbt!./add-to-collection-tmpl')
-
-  , getAddFn = function(cid, pid){
-      return function(done){
-        user.addToCollection( cid, pid, done );
-      };
-    }
-
-  , getRemoveFn = function(cid, pid){
-      return function(done){
-        user.removeFromCollection( cid, pid, done );
-      };
-    }
   ;
 
   return utils.View.extend({
@@ -26,13 +14,7 @@ define(function(require){
     }
 
   , initialize: function(options){
-      this.pending = {
-        add:    {}
-      , remove: {}
-      };
-
-      this.numPending = 0;
-
+      this.pending = {};
       return this;
     }
 
@@ -49,46 +31,30 @@ define(function(require){
   , render: function(){
       this.$el.html(
         template({
-          collections:  this.collections
+          collections:  this.collections.toJSON()
         , product:      this.product.toJSON()
         })
       );
+      this.delegateEvents();
       return this;
     }
 
   , cancel: function(){
-      this.pending = {
-        add:    {}
-      , remove: {}
-      };
-
-      this.numPending = 0;
-
+      this.pending = {};
       return this;
     }
 
   , save: function(callback){
-      var fns = [], this_ = this;
+      var fns = utils.map(this.pending, function(val, key, obj) {
+        var collection = this.collections.get(key);
+        return utils.bind(collection.products[val ? 'addProduct' : 'removeProduct'], collection.products, this.product);
+      }, this);
 
-      var collections = this.product.get('collections');
-
-      for (var id in this.pending.add){
-        fns.push( getAddFn( id, this.product.id ) );
-        collections.push(id);
-      }
-
-      for (var id in this.pending.remove){
-        fns.push( getRemoveFn( id, this.product.id ) );
-        collections = utils.without(collections, id);
-      }
-
-      this.product.set('collections', collections);
-
+      var this_ = this;
       utils.parallel( fns, function(error, results){
         if (error) return callback ? callback(error) : troller.error(error);
-
-        // Reset pending
-        this_.cancel();
+        this_.cancel(); // Reset pending
+        if (callback) callback(error, results);
       });
 
       return this;
@@ -96,13 +62,7 @@ define(function(require){
 
   , onCheckboxChange: function(e){
       var val = e.target.value;
-      var newList = e.target.checked ? this.pending.add : this.pending.remove;
-      var oldList  = e.target.checked ? this.pending.remove : this.pending.add;
-
-      if (!oldList[val]) newList[val] = true;
-      delete oldList[val];
-      this.numPending = utils.size(this.pending.add) + utils.size(this.pending.remove);
-
+      this.pending[val] == null ? this.pending[val] = e.target.checked : delete this.pending[val];
       this.trigger('checkbox:change', val, e.target.checked);
     }
   });
