@@ -54,7 +54,7 @@ define(function(require){
       var $target = utils.dom(e.target);
       if ($target.hasClass('add-new-collection')) return;
 
-      var id = $(e.target).closest('li.collection').data('id');
+      var id = $target.closest('li.collection').data('id');
       var collection = this.collections.get(id);
 
       utils.navigate('/collections/' + collection.id + '/explore');
