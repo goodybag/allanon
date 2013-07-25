@@ -62,6 +62,9 @@ define(function(require){
         this.provideCollections(options.collections);
         this.render();
       }
+
+      this.delegateEvents();
+      utils.invoke(this.children, 'delegateEvents');
     }
 
   , provideCollections: function(collections){
@@ -85,8 +88,6 @@ define(function(require){
       );
 
       this.applyRegions();
-
-      this.delegateEvents();
 
       return this;
     }
