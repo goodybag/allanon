@@ -24,7 +24,7 @@ define(function(require){
 
       this.collectionEvents = {
         'coll-add': this.onCollectionAdd
-        , 'reset': this.onReset
+      , 'reset': this.onReset
       };
 
       this.listenTo(this.products, this.collectionEvents);
@@ -63,6 +63,10 @@ define(function(require){
       var fragment = document.createDocumentFragment();
       var views = utils.map(products, function(prod) {
         var item = (new self.ItemView( {model: prod} )).render();
+        item.listenToOnce(prod, 'remove', function(model, collection, options) {
+          item.remove();
+          self.views = utils.without(self.views, item);
+        });
         fragment.appendChild(item.el);
         item.on('product-details-modal:open', self.onProductModalOpen, self);
         item.on('product-details-modal:close', self.onProductModalClose, self);
