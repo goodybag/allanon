@@ -1,0 +1,66 @@
+define(function(require) {
+  var utils = require('utils');
+  var template = require('hbt!./products-list-header-tmpl')
+
+  // require('less!./products-list-header-style');
+
+  return utils.View.extend({
+    className: 'page-header-box',
+
+    tagName: 'header',
+
+    events: {
+      'submit #header-search-form': 'search'
+    , 'keyup .field-search': 'search'
+    },
+
+    initialize: function(options) {
+      this.context = options || {};
+      this.render();
+    },
+
+    render: function(context) {
+      this.$el.html(template(context || this.context));
+      var buttons = (context || this.context).buttons;
+      this.btnStates = utils.object(utils.pluck(buttons, 'class'), utils.pluck(buttons, 'active'));
+
+      this.$searchInput = this.$el.find('.field-search');
+      this.$searchClearBtn = this.$el.find('.field-search-clear');
+    },
+
+    delegateEvents: function() {
+      utils.View.prototype.delegateEvents.apply(this, arguments);
+      var self = this;
+      // trigger a toggle event
+      utils.each(this.context.buttons, function(button) {
+        utils.dom('body').on('click', '.filters-btn-group .btn.' + button.class, function(e) {
+          var changes = [];
+          for (var key in self.btnStates) {
+            var active = self.$el.find('.btn.'+key).hasClass('active');
+            if (active !== !!self.btnStates[key]) {
+              self.trigger('toggle:' + key, active, e, self);
+              var change = {};
+              change[key] = active;
+              changes.push(change);
+            }
+            self.btnStates[key] = active;
+          }
+
+          if (changes.length > 0) self.trigger('toggle', changes, e, self);
+        });
+      });
+    },
+
+    search: function(e) {
+      e.preventDefault();
+      var val = this.$searchInput.val();
+      this.$searchClearBtn.toggleClass('hide', !val);
+      this.triggerSearch(val);
+    },
+
+    // debounced to emit event only after user stops typing
+    triggerSearch: utils.debounce(function(val) {
+      this.trigger('search', val, this);
+    }, 666)
+  });
+});
