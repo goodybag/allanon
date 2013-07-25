@@ -2,7 +2,7 @@
 
 <div class="row">
   {{! Filters Button Group }}
-  <div class="btn-group filters-btn-group span6" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">
+  <div class="btn-group filters-btn-group span3" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">
   {{#each buttons}}
     <button type="button" class="btn btn-large {{this.class}} {{#if this.active}}active{{/if}}">
       {{this.name}}
@@ -10,8 +10,10 @@
   {{/each}}
   </div>
 
+  <span class="span4">Let us help decide your next meal!</span>
+
   {{! Search }}
-  <form id="header-search-form" class="form-search span2">
+  <form id="header-search-form" class="form-search span3">
     <div class="input-append">
       <input class="field-search" placeholder="Search Gallery" type="text">
       <button class="btn btn-primary" type="submit">Search</button>
