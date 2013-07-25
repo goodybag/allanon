@@ -35,7 +35,6 @@ define(function(require){
         , product:      this.product.toJSON()
         })
       );
-      this.delegateEvents();
       return this;
     }
 
