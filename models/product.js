@@ -22,6 +22,7 @@ define(function(require){
     'popular',
     'tags',
     'categories',
+    'collections'
   ]
 
   return utils.Model.extend({
