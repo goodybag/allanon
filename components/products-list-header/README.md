@@ -9,8 +9,8 @@ button toggle and search user interaction events.
 When the user triggers a search by clicking the search button or by typing in
 the search field, the component handles aborting the form submission and
 toggling the clear search button.  It then triggers a 'search' event on the
-component.  This event is debounced to 666ms so it only triggers after the user
-stops typing.
+component containing the current value of the search input.  This event is
+debounced to 666ms so it only triggers after the user stops typing.
 
 The component also watches click events on the buttons, triggering toggle
 events on itself when the click results in a button state change.  There is a
