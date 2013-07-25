@@ -327,5 +327,11 @@ define(function(require) {
       var url = 'users/password-reset/' + token;
       utils.api.post(url, {password: password}, callback);
     }
+
+  , sync: function(method, model, options) {
+      if (model === this && utils.contains(['create', 'update'], method) && options.data == null)
+        options.data = utils.pick(this.toJSON(), ['username', 'firstName', 'lastName', 'email', 'cardId', 'avatarUrl']);
+      utils.Model.prototype.sync.apply(this, arguments);
+    }
   });
 });
