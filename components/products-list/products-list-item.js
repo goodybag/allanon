@@ -12,21 +12,21 @@ define(function(require){
   , tagName: 'li'
 
   , events: {
-      'click .feeling-like':      'onLikeClick'
-    , 'click .feeling-try':       'onTriedClick'
-    , 'click .feeling-want':      'onWantClick'
-
-    , 'click .product-photo':     'onProductPhotoClick'
+      'click .product-photo':     'onProductPhotoClick'
     }
 
   , initialize: function(options){
       this.template = options.template || template;
 
       this.listenTo(this.model, {
-        'change:userWants': this.onFeelingsChange
-      , 'change:userLikes': this.onFeelingsChange
-      , 'change:userTried': this.onFeelingsChange
-      , 'change:likes':     this.onLikeCountChange
+        'change:userWants change:userLikes change:userTried': this.onFeelingsChange
+      , 'change:likes': this.onLikeCountChange
+      });
+
+      utils.extend(this.events, {
+        'click .feeling-like': utils.bind(this.onFeelingsClick, this, 'userLikes', 'Click Like')
+      , 'click .feeling-try':  utils.bind(this.onFeelingsClick, this, 'userTried', 'Click Tried')
+      , 'click .feeling-want': utils.bind(this.onFeelingsClick, this, 'userWants', 'Click Want')
       });
 
       return this;
@@ -79,7 +79,7 @@ define(function(require){
       this.$likeCount.text(this.model.get('likes'));
     }
 
-  , onFeelingsClick: function(e, prop, message) {
+  , onFeelingsClick: function(prop, message, e) {
       e.preventDefault();
 
       troller.analytics.track(message, this.model.toJSON());
@@ -87,19 +87,7 @@ define(function(require){
       if (!user.loggedIn) return troller.promptUserLogin();
 
       // changing the property triggers an event which switches the button state
-      this.model.set(prop, !this.model.get(prop));
-    }
-
-  , onWantClick: function(e){
-      this.onFeelingsClick(e, 'userWants', 'Click Want');
-    }
-
-  , onTriedClick: function(e){
-      this.onFeelingsClick(e, 'userTried', 'Click Tried');
-    }
-
-  , onLikeClick: function(e){
-      this.onFeelingsClick(e, 'userLikes', 'Click Like');
+      this.model.save(prop, !this.model.get('prop'), {patch: true});
     }
 
   , onProductPhotoClick: function(e){
