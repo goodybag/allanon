@@ -10,8 +10,9 @@ define(function(require) {
     tagName: 'header',
 
     events: {
-      'submit #header-search-form': 'search'
-    , 'keyup .field-search': 'search'
+      'submit #header-search-form': 'search',
+      'keyup .field-search': 'search',
+      'click .field-search-clear': 'clearSearch'
     },
 
     initialize: function(options) {
@@ -33,6 +34,7 @@ define(function(require) {
       var self = this;
       // trigger a toggle event
       utils.each(this.context.buttons, function(button) {
+        // This has to go on the body because that's where the bootstrap event handler that updates the active state is
         utils.dom('body').on('click', '.filters-btn-group .btn.' + button.class, function(e) {
           var changes = [];
           for (var key in self.btnStates) {
@@ -61,6 +63,11 @@ define(function(require) {
     // debounced to emit event only after user stops typing
     triggerSearch: utils.debounce(function(val) {
       this.trigger('search', val, this);
-    }, 666)
+    }, 666),
+
+    clearSearch: function(e) {
+      this.$searchInput.val('');
+      this.search(e);
+    }
   });
 });
