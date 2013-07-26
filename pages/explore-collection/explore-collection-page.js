@@ -16,16 +16,18 @@ define(function(require){
   , title: 'Explore My Collection'
 
   , headerContext: function() {
-      return {
+      var context = {
         'data-toggle': 'checkbox'
       , buttons: [
           {class: 'btn-want',  name: 'Want <span class="count">('  + this.collection.totalMyWants + ')</span>'}
         , {class: 'btn-like',  name: 'Like <span class="count">('  + this.collection.totalMyLikes + ')</span>'}
         , {class: 'btn-tried', name: 'Tried <span class="count">(' + this.collection.totalMyTries + ')</span>'}
         ]
-      , topButtons: {right: 'Edit Collection'}
       , tagline: this.collection.name
-      }
+      };
+
+      if (this.collection.isEditable) context[topButtons] = {right: 'Edit Collection'};
+      return context;
     }
 
   , children: {
