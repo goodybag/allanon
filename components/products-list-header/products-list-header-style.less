@@ -14,9 +14,20 @@
   padding-top: 4px;
   margin-bottom: 0; /* override rule for forms */
   float: right;
+  position: relative;
 }
 
 #header-search-form input.field-search {
   font-size: 15px;
   width: 229px;
+}
+
+#header-search-form .field-search-clear {
+  position: absolute;
+  top: 0;
+  margin-top: 11px;
+  right: 81px;
+  z-index: 2;
+  border: none;
+  background: none;
 }
