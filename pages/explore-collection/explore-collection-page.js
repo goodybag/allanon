@@ -11,7 +11,7 @@ define(function(require){
   ;
 
   return Components.Pages.Page.extend({
-    className: 'page page-explore'
+    className: 'page page-explore explore-collection'
 
   , title: 'Explore My Collection'
 
