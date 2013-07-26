@@ -34,6 +34,24 @@ define(function(require) {
       this.$searchClearBtn = this.$el.find('.field-search-clear');
     },
 
+    activeButtons: function() {
+      var obj = {};
+      var $active = this.$el.find('.filters-btn-group .btn.active');
+      for (var class in this.btnStates) {
+        var $btn = $active.filter('.' + class);
+        if ($btn.length > 0) obj[class] = $btn;
+      }
+      return obj;
+    },
+
+    toggle: function(class) {
+      this.$el.find('.filters-btn-group .btn.' + class).button('toggle');
+    },
+
+    clearButtons: function() {
+      this.$el.find('.filters-btn-group .btn').removeClass('active');
+    },
+
     delegateEvents: function() {
       utils.View.prototype.delegateEvents.apply(this, arguments);
       var self = this;
