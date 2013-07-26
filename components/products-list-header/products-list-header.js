@@ -17,6 +17,10 @@ define(function(require) {
     },
 
     initialize: function(options) {
+      var triggerToggle = utils.bind(this.triggerToggle, this);
+      this.triggerToggle = function() {
+        utils.defer(triggerToggle, arguments);
+      };
       this.context = options || {};
       this.render();
     },
