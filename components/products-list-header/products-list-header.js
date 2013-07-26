@@ -1,6 +1,7 @@
 define(function(require) {
   var utils = require('utils');
-  var template = require('hbt!./products-list-header-tmpl')
+  var template = require('hbt!./products-list-header-tmpl');
+  require('bootstrap-button');
 
   require('less!./products-list-header-style');
 

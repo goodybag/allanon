@@ -12,6 +12,7 @@
       "backbone": "1.0.x",
       "domReady": "2.0.x",
       "bootstrap-modal": "2.3.x",
+      "bootstrap-button": "2.3.x",
       "hbt": "0.0.x",
       "spin-js": "1.2.5-jam.1",
       "require-css": "0.1.x",
