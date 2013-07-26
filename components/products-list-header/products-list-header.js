@@ -42,8 +42,8 @@ define(function(require) {
       }));
     },
 
-    toggle: function(class) {
-      this.$el.find('.filters-btn-group .btn.' + class).button('toggle');
+    toggle: function(btnClass) {
+      this.$el.find('.filters-btn-group .btn.' + btnClass).button('toggle');
     },
 
     clearButtons: function() {
