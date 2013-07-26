@@ -167,12 +167,24 @@ define(function(require){
     }
 
   , render: function(){
+      // reset button states.  this will be significantly less ugly in the #160 version
+      utils.each(this.headerContext.buttons, function(button) { button.active = false });
+
+      var btnClass = {
+        '-popular': 'filter-popular'
+      , '-distance': 'filter-nearby'
+      , '-random': 'filter-random'
+      }[this.options.sort]
+
+      utils.find(this.headerContext.buttons, function(button) {return button.class === btnClass}).active = true;
+
+
       this.$el.html( template({ options: this.options }) );
 
       // Attach header
       this.children.header.setElement(
         this.$el.find('.page-header-box')[0]
-      ).render();
+      ).render(this.headerContext);
 
       // Attach products list
       this.children.products.setElement(
@@ -248,6 +260,7 @@ define(function(require){
     }
 
   , onFilterToggle: function(href, active, e, component){
+      if (!active) return;
       utils.history.navigate(href, {trigger: true});
       troller.analytics.track('Click Explore Filter', { filter: href });
     }
