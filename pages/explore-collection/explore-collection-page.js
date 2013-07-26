@@ -191,30 +191,19 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
-      e.preventDefault();
-
-      var value = this.$search.val(), this_ = this;
-
+  , onSearchSubmit: function(value, component){
       if (value == this.options.filter) return;
 
       if (value) {
         this.options.filter = value;
-        this.$searchClearBtn.show();
       }
       else if (!this.onSearchClear()) return;
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
-
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
+      var this_ = this;
+      this.fetchData({ spin: true }, function(error, results){
         if (error) return troller.error(error);
 
         this_.children.products.render()
