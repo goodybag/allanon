@@ -1,3 +1,13 @@
+
+<div class="row header-top-buttons{{#unless topButtons}} hide{{/unless}}">
+  <div class="span5">
+    <button class="btn top-left-btn{{#unless topButtons.left}} hide{{/unless}}">{{topButtons.left}}</button>
+  </div>
+  <div class="span5">
+    <button class="btn top-right-btn{{#unless topButtons.right}} hide{{/unless}}">{{topButtons.right}}</button>
+  </div>
+</div>
+
 <div class="row header-controls">
   {{! Filters Button Group }}
   <div class="btn-group filters-btn-group span3" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">

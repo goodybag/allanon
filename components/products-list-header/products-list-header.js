@@ -13,7 +13,9 @@ define(function(require) {
     events: {
       'submit #header-search-form': 'search',
       'keyup .field-search': 'search',
-      'click .field-search-clear': 'clearSearch'
+      'click .field-search-clear': 'clearSearch',
+      'click .top-left-btn': 'clickTopLeft',
+      'click .top-right-btn': 'clickTopRight'
     },
 
     initialize: function(options) {
@@ -94,6 +96,14 @@ define(function(require) {
     clearSearch: function(e) {
       this.$searchInput.val('');
       this.search(e);
+    },
+
+    clickTopLeft: function(e) {
+      this.trigger('click:top-left-btn', e, this);
+    },
+
+    clickTopRight: function(e) {
+      this.trigger('click:top-right-btn', e, this);
     }
   });
 });
