@@ -12,7 +12,7 @@
   <div class="btn-group filters-btn-group span3" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">
   {{#each buttons}}
     <button type="button" class="btn btn-large {{this.class}} {{#if this.active}}active{{/if}}">
-      {{this.name}}
+      {{{this.name}}}
     </button>
   {{/each}}
   </div>
