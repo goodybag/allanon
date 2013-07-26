@@ -15,15 +15,6 @@ define(function(require){
 
   , title: 'Explore Goodybag'
 
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'keyup  .field-search':               'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
-    }
-
-
   , headerContext: {
       'data-toggle': 'radio'
     , buttons: [
@@ -38,6 +29,14 @@ define(function(require){
         products: new Components.ProductsList.Main()
       , header:   new Components.ProductsListHeader(this.headerContext)
       };
+
+
+      this.listenTo(this.children.header, 'search', this.onSearchSubmit, this);
+      this.listenTo(this.children.header, {
+        'toggle:filter-popular': utils.bind(this.onFilterToggle, this, '/explore/popular')
+      , 'toggle:filter-nearby':  utils.bind(this.onFilterToggle, this, '/explore/nearby')
+      , 'toggle:filter-random':  utils.bind(this.onFilterToggle, this, '/explore/random')
+      });
 
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
@@ -180,8 +179,6 @@ define(function(require){
         this.$el.find('.products-list')[0]
       ).render();
 
-      this.$search = this.$el.find('.field-search');
-      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       if (!troller.app.bannerShown()){
@@ -213,26 +210,16 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
-      e.preventDefault();
-
-      var value = this.$search.val(), this_ = this;
-
+  , onSearchSubmit: function(value, component){
       if (value == this.options.filter) return;
 
       if (value) {
         this.options.filter = value;
-        this.$searchClearBtn.show();
       } else if (!this.onSearchClear()) return;
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
-
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
 
       // goodybag/allonon#133 Don't sort when searching, except by distance
       if (this.options.sort != null) {
@@ -245,9 +232,8 @@ define(function(require){
         delete this.options.sort;
       }
 
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
+      var this_ = this;
+      this.fetchData({ spin: true }, function(error, results){
         if (error) return troller.error(error);
 
         this_.children.products.render();
@@ -265,23 +251,13 @@ define(function(require){
       var result = this.options.filter != null;
       delete this.options.filter;
       this.$oldSortBtn.addClass('active');
-      this.$searchClearBtn.hide();
       this.options.sort = this.oldSort;
       return result;
     }
 
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
-      this.$search.val('');
-      this.$searchClearBtn.hide();
-      this.onSearchSubmit(e);
-    }
-
-  , onFiltersClick: function(e){
-      if (utils.dom(e.target).hasClass('active')) e.preventDefault();
-      this.$el.find('.filters-btn-group > .btn').removeClass('active');
-      utils.dom(e.target).addClass('active');
-      troller.analytics.track('Click Explore Filter', { filter: e.target.href });
+  , onFilterToggle: function(href, active, e, component){
+      utils.history.navigate(href, {trigger: true});
+      troller.analytics.track('Click Explore Filter', { filter: href });
     }
 
   , onScrollNearEnd: function() {
