@@ -8,9 +8,17 @@
 .header-tagline {
   text-align: center;
   line-height: 42px;
+  height: 42px;
+  overflow: hidden; /* truncate should take care of this, but just in case */
   color: #eb2217;
   font-size: 23px;
   font-weight: 500;
+}
+
+.header-tagline.custom-tagline {
+  font-size: 26px;
+  font-weight: normal;
+  text-transform: uppercase;
 }
 
 #header-search-form {

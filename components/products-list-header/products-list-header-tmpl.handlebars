@@ -8,7 +8,9 @@
   {{/each}}
   </div>
 
-  <span class="span4 header-tagline">Let us help decide your next meal!</span>
+  <span class="span4 header-tagline{{#if tagline}} custom-tagline{{/if}}">
+    {{#if tagline}}{{truncate tagline 30}}{{else}}Let us help decide your next meal!{{/if}}
+  </span>
 
   {{! Search }}
   <div class="span3">
