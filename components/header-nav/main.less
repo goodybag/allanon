@@ -15,10 +15,10 @@
 @header-navbar-link-padding-top:        (@header-navbar-height - (@header-navbar-font-size + 1)) / 2;
 @header-navbar-shadow-color:            rgba(29, 26, 27, 0.33);
 @header-navbar-shadow:                  0 2px 3px @header-navbar-shadow-color;
-@header-navbar-background-color:        #dc291e;
-@header-navbar-badge-gradient-top: #fe5438;
-@header-navbar-badge-gradient-bottom: #eb1d13;
-@header-navbar-badge-avatar-stroke: #8f251f;
+@header-navbar-background-color:        @gb-primary;
+@header-navbar-badge-gradient-top:      #fe5438;
+@header-navbar-badge-gradient-bottom:   #eb1d13;
+@header-navbar-badge-avatar-stroke:     #8f251f;
 
 .header-navbar {
   position: fixed;
@@ -172,12 +172,12 @@ li.get-the-app .icon-iphone-app {
   height: 100%;
 
   background: @header-navbar-badge-gradient-top; /* Old browsers */
-  background: -moz-linear-gradient(top,  @header-navbar-badge-gradient-top 0%, @header-navbar-badge-gradient-bottom 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@header-navbar-badge-gradient-top), color-stop(100%,@header-navbar-badge-gradient-bottom)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 100%); /* IE10+ */
-  background: linear-gradient(to bottom,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 100%); /* W3C */
+  background: -moz-linear-gradient(top,  @header-navbar-badge-gradient-top 0%, @header-navbar-badge-gradient-bottom 50%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@header-navbar-badge-gradient-top), color-stop(50%,@header-navbar-badge-gradient-bottom)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 50%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 50%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 50%); /* IE10+ */
+  background: linear-gradient(to bottom,  @header-navbar-badge-gradient-top 0%,@header-navbar-badge-gradient-bottom 50%); /* W3C */
   // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#484848', endColorstr='#1d1a1b',GradientType=0 ); /* IE6-9 */
 
   box-shadow:
