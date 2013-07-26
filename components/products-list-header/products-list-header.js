@@ -35,13 +35,11 @@ define(function(require) {
     },
 
     activeButtons: function() {
-      var obj = {};
       var $active = this.$el.find('.filters-btn-group .btn.active');
-      for (var class in this.btnStates) {
-        var $btn = $active.filter('.' + class);
-        if ($btn.length > 0) obj[class] = $btn;
-      }
-      return obj;
+      return utils.compact(utils.map(this.btnStates, function(val, key, obj) {
+        var $btn = $active.filter('.' + key);
+        return $btn.length > 0 ? {key: $btn} : undefined;
+      }));
     },
 
     toggle: function(class) {
