@@ -33,24 +33,13 @@ define(function(require) {
       utils.View.prototype.delegateEvents.apply(this, arguments);
       var self = this;
       // trigger a toggle event
-      utils.each(this.context.buttons, function(button) {
-        // This has to go on the body because that's where the bootstrap event handler that updates the active state is
-        utils.dom('body').on('click', '.filters-btn-group .btn.' + button.class, function(e) {
-          var changes = [];
-          for (var key in self.btnStates) {
-            var active = self.$el.find('.btn.'+key).hasClass('active');
-            if (active !== !!self.btnStates[key]) {
-              self.trigger('toggle:' + key, active, e, self);
-              var change = {};
-              change[key] = active;
-              changes.push(change);
-            }
-            self.btnStates[key] = active;
-          }
+      // This has to go on the body because that's where the bootstrap event handler that updates the active state is
+      utils.dom('body').on('click', '.filters-btn-group .btn', this.triggerToggle);
+    },
 
-          if (changes.length > 0) self.trigger('toggle', changes, e, self);
-        });
-      });
+    undelegateEvents: function() {
+      utils.View.prototype.undelegateEvents.apply(this, arguments);
+      utils.dom('body').off('click', '.filters-btn-group .btn', this.triggerToggle);
     },
 
     search: function(e) {
@@ -64,6 +53,22 @@ define(function(require) {
     triggerSearch: utils.debounce(function(val) {
       this.trigger('search', val, this);
     }, 666),
+
+    triggerToggle: function(e) {
+      var changes = [];
+      for (var key in self.btnStates) {
+        var active = self.$el.find('.btn.'+key).hasClass('active');
+        if (active !== !!self.btnStates[key]) {
+          self.trigger('toggle:' + key, active, e, self);
+          var change = {};
+          change[key] = active;
+          changes.push(change);
+        }
+        self.btnStates[key] = active;
+      }
+
+      if (changes.length > 0) self.trigger('toggle', changes, e, self);
+    },
 
     clearSearch: function(e) {
       this.$searchInput.val('');
