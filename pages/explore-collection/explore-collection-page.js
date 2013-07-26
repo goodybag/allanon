@@ -15,25 +15,31 @@ define(function(require){
 
   , title: 'Explore My Collection'
 
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'keyup .field-search':                'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
-
-    , 'click .btn-edit-collection':         'onEditCollectionClick'
+  , headerContext: function() {
+      return {
+        'data-toggle': 'checkbox'
+      , buttons: [
+          {class: 'btn-want',  name: 'Want <span class="count">('  + this.collection.totalMyWants + ')</span>'}
+        , {class: 'btn-like',  name: 'Like <span class="count">('  + this.collection.totalMyLikes + ')</span>'}
+        , {class: 'btn-tried', name: 'Tried <span class="count">(' + this.collection.totalMyTries + ')</span>'}
+        ]
+      , topButtons: {right: 'Edit Collection'}
+      , tagline: this.collection.name
+      }
     }
 
   , children: {
       products: new Components.ProductsList.Main()
+    , header: new Components.ProductsListHeader()
     }
 
   , regions: {
       products: '.products-list'
+    , header: '.page-header-box'
     }
 
   , initialize: function(options){
+      this.children.header.context = this.headerContext();
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function(){
@@ -60,6 +66,14 @@ define(function(require){
             : --this_.collection['totalMy' + pluralFeel]
            ) + ')'
         );
+      });
+
+      this.children.header.on({
+        'click:top-right-btn': utils.bind(this.onEditCollectionClick, this)
+      , 'search': utils.bind(this.onSearchSubmit, this)
+      , 'toggle:btn-want':  utils.bind(this.onFiltersToggle, this, 'userWants')
+      , 'toggle:btn-like':  utils.bind(this.onFiltersToggle, this, 'userLikes')
+      , 'toggle:btn-tried': utils.bind(this.onFiltersToggle, this, 'userTried')
       });
 
       this.products = [];
@@ -226,39 +240,14 @@ define(function(require){
       // Cleared by keyboard
       var result = this.options.filter != null;
       delete this.options.filter;
-      this.$searchClearBtn.hide();
       return result;
     }
 
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
-      this.$search.val('');
-      this.$searchClearBtn.hide();
-      this.onSearchSubmit(e);
-    }
+  , onFiltersToggle: function(property, active, e, component){
+      active ? this.options[property] = true : delete this.options[property];
 
-  , onFiltersClick: function(e){
       troller.spinner.spin();
-
-      while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
-
-      var $target = utils.dom(e.target);
-
-      var filter = (
-        $target.hasClass('btn-like') ? 'userLikes' : (
-        $target.hasClass('btn-want') ? 'userWants' : 'userTried'
-      ));
-
-      if ($target.hasClass('active')){
-        $target.removeClass('active');
-        delete this.options[filter];
-      } else {
-        $target.addClass('active');
-        this.options[filter] = true;
-      }
-
       this.options.offset = 0;
-
       this.fetchData();
     }
 

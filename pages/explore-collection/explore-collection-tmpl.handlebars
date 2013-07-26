@@ -1,47 +1,4 @@
-<header class="page-header-box">
-  <h1 class="page-title">{{collection.name}}</h1>
-
-  <div class="row">
-    {{! Search }}
-    <div class="span2 search-wrapper">
-      {{! Wrap input in form to use onSubmit event }}
-      <form id="explore-search-form">
-        <input class="field-search" placeholder="Search Gallery" type="text">
-        <button class="field-search-clear" type="button"><i class="icon-remove"></i></button>
-      </form>
-    </div>
-
-    {{! Filters Button Group }}
-    <div class="span6 filters-wrapper">
-      {{! Need to put search button here Like design}}
-      <button class="btn btn-primary search-form-btn">Search</button>
-
-      <div class="btn-group filters-btn-group">
-        <button class="btn btn-large btn-want">
-          <i class="icon"></i>
-          Want <span class="count">({{collection.totalMyWants}})</span>
-        </button>
-        <button class="btn btn-large btn-like">
-          <i class="icon"></i>
-          Like <span class="count">({{collection.totalMyLikes}})</span>
-        </button>
-        <button class="btn btn-large btn-tried">
-          <i class="icon"></i>
-          Tried <span class="count">({{collection.totalMyTries}})</span>
-        </button>
-      </div>
-    </div>
-
-    {{! Edit Collection}}
-    <div class="span2 edit-collection-wrapper header-actions-right">
-      {{#if collection.isEditable}}
-      <button class="btn btn-edit-collection">
-        Edit Collection
-      </button>
-      {{/if}}
-    </div>
-  </div>
-</header>
+<header class="page-header-box"></header>
 
 <ul class="products-list"></ul>
 
