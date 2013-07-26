@@ -1,6 +1,6 @@
 <h1 class="page-title">{{title}}</h1>
 
-<div class="row">
+<div class="row header-controls">
   {{! Filters Button Group }}
   <div class="btn-group filters-btn-group span3" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">
   {{#each buttons}}
@@ -10,14 +10,16 @@
   {{/each}}
   </div>
 
-  <span class="span4">Let us help decide your next meal!</span>
+  <span class="span4 header-tagline">Let us help decide your next meal!</span>
 
   {{! Search }}
-  <form id="header-search-form" class="form-search span3">
-    <div class="input-append">
-      <input class="field-search" placeholder="Search Gallery" type="text">
-      <button class="btn btn-primary" type="submit">Search</button>
-    </div>
-    <button class="field-search-clear hide" type="button"><i class="icon-remove"></i></button>
-  </form>
+  <div class="span3">
+    <form id="header-search-form" class="form-search">
+      <div class="input-append">
+        <input class="field-search" placeholder="Search Gallery" type="text">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+      <button class="field-search-clear hide" type="button"><i class="icon-remove"></i></button>
+    </form>
+  </div>
 </div>

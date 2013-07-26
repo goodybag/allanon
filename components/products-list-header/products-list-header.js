@@ -2,7 +2,7 @@ define(function(require) {
   var utils = require('utils');
   var template = require('hbt!./products-list-header-tmpl')
 
-  // require('less!./products-list-header-style');
+  require('less!./products-list-header-style');
 
   return utils.View.extend({
     className: 'page-header-box',
