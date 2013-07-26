@@ -57,18 +57,18 @@ define(function(require) {
 
     triggerToggle: function(e) {
       var changes = [];
-      for (var key in self.btnStates) {
-        var active = self.$el.find('.btn.'+key).hasClass('active');
-        if (active !== !!self.btnStates[key]) {
-          self.trigger('toggle:' + key, active, e, self);
+      for (var key in this.btnStates) {
+        var active = this.$el.find('.btn.'+key).hasClass('active');
+        if (active !== !!this.btnStates[key]) {
+          this.trigger('toggle:' + key, active, e, this);
           var change = {};
           change[key] = active;
           changes.push(change);
         }
-        self.btnStates[key] = active;
+        this.btnStates[key] = active;
       }
 
-      if (changes.length > 0) self.trigger('toggle', changes, e, self);
+      if (changes.length > 0) this.trigger('toggle', changes, e, this);
     },
 
     clearSearch: function(e) {
