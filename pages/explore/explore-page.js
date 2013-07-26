@@ -23,9 +23,20 @@ define(function(require){
     , 'click .filters-btn-group > .btn':    'onFiltersClick'
     }
 
-  , initialize: function(options){
+
+  , headerContext: {
+      'data-toggle': 'radio'
+    , buttons: [
+        {class:'filter-popular', name: 'Popular', active: true}
+      , {class:'filter-nearby',  name: 'Nearby'}
+      , {class:'filter-random',  name: 'Mix It Up!'}
+      ]
+    }
+
+  , initialize: function(options) {
       this.children = {
         products: new Components.ProductsList.Main()
+      , header:   new Components.ProductsListHeader(this.headerContext)
       };
 
       // Override products list render to reset pagination height
@@ -158,6 +169,11 @@ define(function(require){
 
   , render: function(){
       this.$el.html( template({ options: this.options }) );
+
+      // Attach header
+      this.children.header.setElement(
+        this.$el.find('.page-header-box')[0]
+      ).render();
 
       // Attach products list
       this.children.products.setElement(
