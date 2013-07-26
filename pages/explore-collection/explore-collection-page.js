@@ -11,29 +11,37 @@ define(function(require){
   ;
 
   return Components.Pages.Page.extend({
-    className: 'page page-explore'
+    className: 'page page-explore explore-collection'
 
   , title: 'Explore My Collection'
 
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'keyup .field-search':                'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
+  , headerContext: function() {
+      var context = {
+        'data-toggle': 'checkbox'
+      , buttons: [
+          {class: 'btn-want',  name: 'Want <span class="count">('  + this.collection.totalMyWants + ')</span>'}
+        , {class: 'btn-like',  name: 'Like <span class="count">('  + this.collection.totalMyLikes + ')</span>'}
+        , {class: 'btn-tried', name: 'Tried <span class="count">(' + this.collection.totalMyTries + ')</span>'}
+        ]
+      , tagline: this.collection.name
+      };
 
-    , 'click .btn-edit-collection':         'onEditCollectionClick'
+      if (this.collection.isEditable) context[topButtons] = {right: 'Edit Collection'};
+      return context;
     }
 
   , children: {
       products: new Components.ProductsList.Main()
+    , header: new Components.ProductsListHeader()
     }
 
   , regions: {
       products: '.products-list'
+    , header: '.page-header-box'
     }
 
   , initialize: function(options){
+      this.children.header.context = this.headerContext();
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function(){
@@ -62,6 +70,14 @@ define(function(require){
         );
       });
 
+      this.children.header.on({
+        'click:top-right-btn': utils.bind(this.onEditCollectionClick, this)
+      , 'search': utils.bind(this.onSearchSubmit, this)
+      , 'toggle:btn-want':  utils.bind(this.onFiltersToggle, this, 'userWants')
+      , 'toggle:btn-like':  utils.bind(this.onFiltersToggle, this, 'userLikes')
+      , 'toggle:btn-tried': utils.bind(this.onFiltersToggle, this, 'userTried')
+      });
+
       this.products = [];
 
       this.spinner = new utils.Spinner();
@@ -81,9 +97,6 @@ define(function(require){
       this.children.products.on('product-details-modal:close', function(){
         troller.app.setTitle(this_.title);
       });
-
-      troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
-      troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
     }
 
   , onShow: function(options){
@@ -138,12 +151,6 @@ define(function(require){
         this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
 
-        this_.$head = this_.$el.find('.page-header-box');
-
-        this_.$head = this_.$el.find('.page-header-box');
-        troller.scrollWatcher.addEvent(120);
-        if (window.scrollY >= 120) this_.stickHead();
-
         if (products.length < this_.options.limit) // if it's the last page
           this_.destroyPagination();
 
@@ -186,30 +193,19 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
-      e.preventDefault();
-
-      var value = this.$search.val(), this_ = this;
-
+  , onSearchSubmit: function(value, component){
       if (value == this.options.filter) return;
 
       if (value) {
         this.options.filter = value;
-        this.$searchClearBtn.show();
       }
       else if (!this.onSearchClear()) return;
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
 
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
-
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
+      var this_ = this;
+      this.fetchData({ spin: true }, function(error, results){
         if (error) return troller.error(error);
 
         this_.children.products.render()
@@ -226,39 +222,14 @@ define(function(require){
       // Cleared by keyboard
       var result = this.options.filter != null;
       delete this.options.filter;
-      this.$searchClearBtn.hide();
       return result;
     }
 
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
-      this.$search.val('');
-      this.$searchClearBtn.hide();
-      this.onSearchSubmit(e);
-    }
+  , onFiltersToggle: function(property, active, e, component){
+      active ? this.options[property] = true : delete this.options[property];
 
-  , onFiltersClick: function(e){
       troller.spinner.spin();
-
-      while (e.target.tagName != 'BUTTON') e.target = e.target.parentElement;
-
-      var $target = utils.dom(e.target);
-
-      var filter = (
-        $target.hasClass('btn-like') ? 'userLikes' : (
-        $target.hasClass('btn-want') ? 'userWants' : 'userTried'
-      ));
-
-      if ($target.hasClass('active')){
-        $target.removeClass('active');
-        delete this.options[filter];
-      } else {
-        $target.addClass('active');
-        this.options[filter] = true;
-      }
-
       this.options.offset = 0;
-
       this.fetchData();
     }
 
@@ -277,16 +248,6 @@ define(function(require){
       this.fetchData({ append: true, spin: false }, function() {
         this_.spinner.stop();
       });
-    }
-
-  , stickHead: function() {
-      this.$head.addClass('stuck');
-      this.$el.addClass('fixed-header');
-    }
-
-  , unStickHead: function() {
-      this.$head.removeClass('stuck');
-      this.$el.removeClass('fixed-header');
     }
   });
 });
