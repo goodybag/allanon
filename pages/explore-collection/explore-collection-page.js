@@ -26,7 +26,7 @@ define(function(require){
       , tagline: this.collection.name
       };
 
-      if (this.collection.isEditable) context[topButtons] = {right: 'Edit Collection'};
+      if (this.collection.isEditable) context.topButtons = {right: 'Edit Collection'};
       return context;
     }
 
