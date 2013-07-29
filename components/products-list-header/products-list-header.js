@@ -11,7 +11,7 @@ define(function(require) {
     tagName: 'header',
 
     events: {
-      'submit #header-search-form': 'search',
+      'submit .header-search-form': 'search',
       'keyup .field-search': 'search',
       'click .field-search-clear': 'clearSearch',
       'click .top-left-btn': 'clickTopLeft',
