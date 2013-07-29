@@ -87,6 +87,7 @@ define(function(require){
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       troller.spinner.spin();
 
       var isDifferent = false;
@@ -126,6 +127,7 @@ define(function(require){
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 

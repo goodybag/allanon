@@ -26,13 +26,8 @@ define(function(require){
       , tagline: this.collection.name
       };
 
-      if (this.collection.isEditable) context[topButtons] = {right: 'Edit Collection'};
+      if (this.collection.isEditable) context.topButtons = {right: 'Edit Collection'};
       return context;
-    }
-
-  , children: {
-      products: new Components.ProductsList.Main()
-    , header: new Components.ProductsListHeader()
     }
 
   , regions: {
@@ -41,7 +36,11 @@ define(function(require){
     }
 
   , initialize: function(options){
-      this.children.header.context = this.headerContext();
+      this.children = {
+        products: new Components.ProductsList.Main()
+      , header: new Components.ProductsListHeader(this.headerContext())
+      };
+
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function(){
@@ -100,6 +99,7 @@ define(function(require){
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       // Don't worry about this. Data might go stale
       // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
@@ -120,6 +120,7 @@ define(function(require){
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 
