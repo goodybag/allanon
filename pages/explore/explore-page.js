@@ -15,18 +15,28 @@ define(function(require){
 
   , title: 'Explore Goodybag'
 
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'keyup  .field-search':               'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
+  , headerContext: {
+      'data-toggle': 'radio'
+    , buttons: [
+        {class:'filter-popular', name: 'Popular', active: true}
+      , {class:'filter-nearby',  name: 'Nearby'}
+      , {class:'filter-random',  name: 'Mix It Up!'}
+      ]
     }
 
-  , initialize: function(options){
+  , initialize: function(options) {
       this.children = {
         products: new Components.ProductsList.Main()
+      , header:   new Components.ProductsListHeader(this.headerContext)
       };
+
+
+      this.listenTo(this.children.header, 'search', this.onSearchSubmit, this);
+      this.listenTo(this.children.header, {
+        'toggle:filter-popular': utils.bind(this.onFilterToggle, this, '/explore/popular')
+      , 'toggle:filter-nearby':  utils.bind(this.onFilterToggle, this, '/explore/nearby')
+      , 'toggle:filter-random':  utils.bind(this.onFilterToggle, this, '/explore/random')
+      });
 
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
@@ -74,12 +84,10 @@ define(function(require){
       this.children.products.on('product-details-modal:close', function(){
         troller.app.setTitle(this_.title);
       });
-
-      troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
-      troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       troller.spinner.spin();
 
       var isDifferent = false;
@@ -113,16 +121,13 @@ define(function(require){
 
         troller.spinner.stop();
         this_.render();
-
-        this_.$head = this_.$el.find('.page-header-box');
-        troller.scrollWatcher.addEvent(120);
-        if (window.scrollY >= 120) this_.stickHead();
       });
 
       return this;
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 
@@ -164,24 +169,31 @@ define(function(require){
     }
 
   , render: function(){
+      // reset button states.  this will be significantly less ugly in the #160 version
+      utils.each(this.headerContext.buttons, function(button) { button.active = false });
+
+      var btnClass = {
+        '-popular': 'filter-popular'
+      , '-distance': 'filter-nearby'
+      , '-random': 'filter-random'
+      }[this.options.sort]
+
+      utils.find(this.headerContext.buttons, function(button) {return button.class === btnClass}).active = true;
+
+
       this.$el.html( template({ options: this.options }) );
+
+      // Attach header
+      this.children.header.setElement(
+        this.$el.find('.page-header-box')[0]
+      ).render(this.headerContext);
 
       // Attach products list
       this.children.products.setElement(
         this.$el.find('.products-list')[0]
       ).render();
 
-      this.$search = this.$el.find('.field-search');
-      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
-
-      if (!troller.app.bannerShown()){
-        this.bannerShown = true;
-        troller.app.showBanner();
-        setTimeout(function(){
-          troller.app.hideBanner();
-        }, 6500);
-      };
 
       return this;
     }
@@ -204,26 +216,16 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: function(e){
-      e.preventDefault();
-
-      var value = this.$search.val(), this_ = this;
-
+  , onSearchSubmit: function(value, component){
       if (value == this.options.filter) return;
 
       if (value) {
         this.options.filter = value;
-        this.$searchClearBtn.show();
       } else if (!this.onSearchClear()) return;
 
       // Reset offset so results don't get effed
       this.options.offset = 0;
       this._page = 1;
-
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        troller.spinner.spin();
-      }, 1000);
 
       // goodybag/allonon#133 Don't sort when searching, except by distance
       if (this.options.sort != null) {
@@ -236,9 +238,8 @@ define(function(require){
         delete this.options.sort;
       }
 
-      this.fetchData({ spin: e.type != 'keyup' }, function(error, results){
-        clearTimeout( loadTooLong );
-
+      var this_ = this;
+      this.fetchData({ spin: true }, function(error, results){
         if (error) return troller.error(error);
 
         this_.children.products.render();
@@ -256,23 +257,14 @@ define(function(require){
       var result = this.options.filter != null;
       delete this.options.filter;
       this.$oldSortBtn.addClass('active');
-      this.$searchClearBtn.hide();
       this.options.sort = this.oldSort;
       return result;
     }
 
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
-      this.$search.val('');
-      this.$searchClearBtn.hide();
-      this.onSearchSubmit(e);
-    }
-
-  , onFiltersClick: function(e){
-      if (utils.dom(e.target).hasClass('active')) e.preventDefault();
-      this.$el.find('.filters-btn-group > .btn').removeClass('active');
-      utils.dom(e.target).addClass('active');
-      troller.analytics.track('Click Explore Filter', { filter: e.target.href });
+  , onFilterToggle: function(href, active, e, component){
+      if (!active) return;
+      utils.history.navigate(href, {trigger: true});
+      troller.analytics.track('Click Explore Filter', { filter: href });
     }
 
   , onScrollNearEnd: function() {
@@ -290,16 +282,6 @@ define(function(require){
         if (error) troller.error(error);
         this_.children.products.render();
       })
-    }
-
-  , stickHead: function() {
-      this.$head.addClass('stuck');
-      this.$el.addClass('fixed-header');
-    }
-
-  , unStickHead: function() {
-      this.$head.removeClass('stuck');
-      this.$el.removeClass('fixed-header');
     }
   });
 });

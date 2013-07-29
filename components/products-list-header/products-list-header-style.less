@@ -1,0 +1,52 @@
+@import "/styles/variables.less";
+@import "/styles/mixins.less";
+
+.header-controls {
+  padding-top: 10px;
+}
+
+.header-top-buttons .top-right-btn {
+  float:right;
+}
+
+.header-tagline {
+  text-align: center;
+  line-height: 42px;
+  height: 42px;
+  overflow: hidden; /* truncate should take care of this, but just in case */
+  color: #eb2217;
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.header-tagline.custom-tagline {
+  font-size: 26px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.header-search-form {
+  padding-top: 4px;
+  margin-bottom: 0; /* override rule for forms */
+  float: right;
+  position: relative;
+}
+
+.header-search-form input.field-search {
+  font-size: 15px;
+  width: 229px;
+}
+
+.header-search-form .field-search-clear {
+  position: absolute;
+  top: 0;
+  margin-top: 11px;
+  right: 81px;
+  z-index: 2;
+  border: none;
+  background: none;
+}
+
+.header-search-form .field-search-submit {
+  .box-shadow(none);
+}
