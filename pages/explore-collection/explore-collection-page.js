@@ -12,18 +12,9 @@ define(function(require){
   ;
 
   return Components.Pages.Page.extend({
-    className: 'page page-explore'
+    className: 'page page-explore explore-collection'
 
   , title: 'Explore My Collection'
-
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'keyup .field-search':                'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClearClick'
-
-    , 'click .btn-edit-collection':         'onEditCollectionClick'
-    }
 
   , defaultOptions: {
       pageSize: 30
@@ -36,29 +27,49 @@ define(function(require){
       // TODO: make sure sort agrees with presence of lat/lon
     }
 
-  , children: {
-      products: new Components.ProductsList.Main()
+  , headerContext: function() {
+      var context = {
+        'data-toggle': 'checkbox'
+      , buttons: [
+          {class: 'btn-want',  name: 'Want (<span class="count">'  + this.collection.get('totalMyWants') + '</span>)'}
+        , {class: 'btn-like',  name: 'Like (<span class="count">'  + this.collection.get('totalMyLikes') + '</span>)'}
+        , {class: 'btn-tried', name: 'Tried (<span class="count">' + this.collection.get('totalMyTries') + '</span>)'}
+        ]
+      , tagline: this.collection.name
+      };
+
+      if (this.collection.isEditable) context.topButtons = {right: 'Edit Collection'};
+      return context;
     }
 
   , regions: {
       products: '.products-list'
+    , header: '.page-header-box'
     }
 
   , initialize: function(options) {
       this.options = this.getOptions(options);
-
-      // I love partial appliation of functions
-      utils.extend(this.events, {
-        'click .filters-btn-group > .btn.btn-like':  utils.bind(this.onFiltersClick, this, 'userLikes')
-      , 'click .filters-btn-group > .btn.btn-want':  utils.bind(this.onFiltersClick, this, 'userWants')
-      , 'click .filters-btn-group > .btn.btn-tried': utils.bind(this.onFiltersClick, this, 'userTried')
-      });
 
       if (!options.cid && !options.collection) {
         troller.modals.close();
         troller.app.changePage('404');
         return;
       }
+
+      this.children = {
+        products: new Components.ProductsList.Main()
+      , header: new Components.ProductsListHeader(this.headerContext())
+      };
+
+      this.children.header.on({
+        'click:top-right-btn': utils.bind(this.onEditCollectionClick, this)
+      , 'search': utils.bind(this.onSearchSubmit, this)
+      , 'toggle:btn-want':  utils.bind(this.onFiltersToggle, this, 'userWants')
+      , 'toggle:btn-like':  utils.bind(this.onFiltersToggle, this, 'userLikes')
+      , 'toggle:btn-tried': utils.bind(this.onFiltersToggle, this, 'userTried')
+      });
+
+      this.products = [];
 
       if (options.collection) {
         this.provideCollection(options.collection);
@@ -76,14 +87,12 @@ define(function(require){
       });
 
       this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this.title);
-      }, this);
-
-      troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
-      troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
+        troller.app.setTitle(this_.title);
+      });
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       this.options = this.getOptions(options);
 
       // Don't worry about this. Data might go stale
@@ -113,6 +122,7 @@ define(function(require){
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 
@@ -121,6 +131,7 @@ define(function(require){
 
       this.model = collection;
 
+      // TODO: this would be nicer with partial application in events hash instead of btnSelector hash
       this.listenTo(this.model, 'change:totalMyLikes change:totalMyWants change:TotalMyTries', function(model, value, options) {
         utils.each(utils.pick(model.changed, ['totalMyLikes', 'totalMyWants', 'totalMyTries']), function(val, key, changed) {
           var btnSelector = '.btn-' + {
@@ -174,22 +185,10 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: utils.throttle(function(e){
-      e.preventDefault();
-
-      var value = this.$search.val();
-
-      this.$searchClearBtn.toggle(!!value);
+  , onSearchSubmit: function(value, component){
 
       var self = this;
-
-      // If keyup takes too long, put up spinner
-      if (e.type === 'keyup') {
-        var loadTooLong = setTimeout(function(){
-          self.spinner.spin();
-        }, 1000);
-      } else
-        this.spinner.spin();
+      this.spinner.spin();
 
       this.model.products.search(value, {
         error: function(err) {
@@ -204,20 +203,14 @@ define(function(require){
           self.spinner.stop();
         }
       })
-    }, 666)
-
-  , onSearchClearClick: function(e) {
-      // Cleared by mouse
-      this.$search.val('');
-      this.onSearchSubmit(e);
     }
 
-  , onFiltersClick: function(filter, e){
+  , onFiltersToggle: function(property, active, e, component){
+      this.model.products.toggleFilter(property, active);
+
+      if (!active) return; // should cause only one fetch
+
       this.spinner.spin();
-
-      var active = this.model.products.toggleFilter(filter);
-      utils.dom(e.target).toggleClass('active', active);
-
       var self = this;
       this.model.products.nextPage({
         complete: function(err, data) {
@@ -239,16 +232,6 @@ define(function(require){
           self.spinner.stop();
         }
       });
-    }
-
-  , stickHead: function() {
-      this.$head.addClass('stuck');
-      this.$el.addClass('fixed-header');
-    }
-
-  , unStickHead: function() {
-      this.$head.removeClass('stuck');
-      this.$el.removeClass('fixed-header');
     }
   });
 });

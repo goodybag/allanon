@@ -43,7 +43,7 @@ define(function(require){
     }
 
   , render: function(){
-      this.$el.html( template({ user: user.toJSON() }) );
+      this.$el.html( template({ user: user.toJSON({displayName: true}) }) );
 
       this.$badge = this.$el.find('.badge');
       this.$badgeWrapper = this.$el.find('.badge-wrapper');

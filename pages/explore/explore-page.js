@@ -17,14 +17,6 @@ define(function(require){
 
   , title: 'Explore Goodybag'
 
-  , events: {
-      'submit #explore-search-form':        'onSearchSubmit'
-    , 'keyup  .field-search':               'onSearchSubmit'
-    , 'click .search-form-btn':             'onSearchSubmit'
-    , 'click .field-search-clear':          'onSearchClear'
-    , 'click .filters-btn-group > .btn':    'onFiltersClick'
-    }
-
   , defaultOptions: {
       sort: 'popular'
     , pageSize: 30
@@ -32,14 +24,34 @@ define(function(require){
 
   , allowedOptions: ['sort', 'lat', 'lon', 'pageSize', 'filter']
 
+  , headerContext: function() {
+      'data-toggle': 'radio'
+    // TODO: set active based on current state
+    , buttons: [
+        {class:'filter-popular', name: 'Popular', active: true}
+      , {class:'filter-nearby',  name: 'Nearby'}
+      , {class:'filter-random',  name: 'Mix It Up!'}
+      ]
+    }
+
   , getOptions: function(options) {
       return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
       // TODO: make sure sort agrees with presence of lat/lon
     }
 
   , initialize: function(options){
-
       this.options = this.getOptions(options);
+
+      this.children = {
+        header:   new Components.ProductsListHeader(this.headerContext)
+      };
+
+      this.listenTo(this.children.header, 'search', this.onSearchSubmit, this);
+      this.listenTo(this.children.header, {
+        'toggle:filter-popular': utils.bind(this.onFilterToggle, this, '/explore/popular')
+      , 'toggle:filter-nearby':  utils.bind(this.onFilterToggle, this, '/explore/nearby')
+      , 'toggle:filter-random':  utils.bind(this.onFilterToggle, this, '/explore/random')
+      });
 
       this.products = {
         popular: new collections.Products([], {
@@ -61,7 +73,6 @@ define(function(require){
         })
       };
 
-      this.children = {}
       for (var key in this.products) {
         this.children[key] = new Components.ProductsList.Main({products: this.products[key]})
         this.children[key].on('render', this.setupPagination, this);
@@ -79,18 +90,11 @@ define(function(require){
 
       this.spinner = new utils.Spinner();
 
-      troller.scrollWatcher.on('scroll-120', this.unStickHead, this);
-      troller.scrollWatcher.on('scrollOut-120', this.stickHead, this);
-
       this.render();
-      this.$head = this.$el.find('.page-header-box');
-      troller.scrollWatcher.addEvent(120);
-      if (window.scrollY >= 120) this.stickHead();
-
-      this.once('show', this.showBanner, this);
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       troller.spinner.spin();
 
       options = this.getOptions(options);
@@ -109,7 +113,7 @@ define(function(require){
       var coll = this.products[options.sort];
       var subview = this.children[options.sort];
 
-      utils.invoke(this.children, 'hide');
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
 
       subview.show();
 
@@ -128,6 +132,7 @@ define(function(require){
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 
@@ -146,25 +151,18 @@ define(function(require){
 
       // TODO: do we need to defer the rest until the dom update?
 
+      // Attach header
+      this.children.header.setElement(
+        this.$el.find('.page-header-box')[0]
+      ).render(this.headerContext());
+
       // Attach products list
-      for (var key in this.children)
+      for (var key in this.products)
         this.children[key].setElement(this.$el.find('.products-list#' + key)[0]);
 
-      this.$search = this.$el.find('.field-search');
-      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       return this;
-    }
-
-  , showBanner: function() {
-      if (!troller.app.bannerShown()){
-        this.bannerShown = true;
-        troller.app.showBanner();
-        setTimeout(function(){
-          troller.app.hideBanner();
-        }, 2500);
-      };
     }
 
   , destroyPagination: function() {
@@ -186,18 +184,14 @@ define(function(require){
       return this;
     }
 
-  , onSearchSubmit: utils.throttle(function(e){
-      e.preventDefault();
-
-      var value = this.$search.val();
-
+  , onSearchSubmit: function(value, component){
       // empty search should be noop
       if (!value) return this.onSearchClear();
 
       // cache old state for reverting on clear
       if (this.preSearchState == null) this.preSearchState = {
         activeChild: utils.find(this.children, function(child) { return child.$el.is(':visible'); })
-      , activeBtn: this.$el.find('.filters-btn-group > .btn.active')
+      , activeBtns: this.children.header.activeButtons();
       }
 
       var key = this.options.sort === 'nearby' ? 'searchNearby' : 'search';
@@ -205,7 +199,7 @@ define(function(require){
       var coll = this.products[key];
       var view = this.children[key];
 
-      utils.invoke(this.children, 'hide');
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
       view.show();
 
       // if you're searching for the same thing as last time:
@@ -213,16 +207,12 @@ define(function(require){
       if (coll.queryParams.filter === value) return;
 
       // unless it's a nearby search, remove the active state on the current active button
-      if (key === 'search') this.$el.find('.filters-btn-group > .btn').removeClass('active');
+      if (key === 'search') this.children.header.clearButtons();
 
       var spinner = this.spinner;
-      // If keyup takes too long, put up spinner
-      var loadTooLong = setTimeout(function(){
-        spinner.spin();
-      }, 1000);
-      if (e.type !== 'keyup') spinner.spin();
-
+      spinner.spin();
       var $noResults = this.$el.find('.no-results');
+
       coll.fetch({
         queryParams: {filter: value}
       , reset: true
@@ -241,24 +231,23 @@ define(function(require){
 
   , onSearchClear: function(e) {
       this.$search.val('');
-      this.$searchClearBtn.hide();
 
       if (this.preSearchState == null) return;
-      this.$el.find('.filters-btn-group > .btn').removeClass('active');
+      this.children.header.clearButtons();
       utils.invoke(this.children, 'hide')
 
-      this.preSearchState.activeBtn.addClass('active');
+      for (var btnClass in this.preSearchState.activeBtns)
+        this.children.header.toggle(btnClass);
       this.preSearchState.activeChild.show();
 
       this.preSearchState = null;
     }
 
-  , onFiltersClick: function(e){
-      if (utils.dom(e.target).hasClass('active')) e.preventDefault();
-      else this.onSearchClear();
-      this.$el.find('.filters-btn-group > .btn').removeClass('active');
-      utils.dom(e.target).addClass('active');
-      troller.analytics.track('Click Explore Filter', { filter: e.target.href });
+  , onFilterToggle: function(href, active, e, component){
+      if (!active) return;
+      this.onSearchClear();
+      utils.history.navigate(href, {trigger: true});
+      troller.analytics.track('Click Explore Filter', { filter: href });
     }
 
   , onScrollNearEnd: function() {
@@ -277,16 +266,6 @@ define(function(require){
           troller.analytics.track('InfiniScroll Paginated', { page: this_.page });
         }
       });
-    }
-
-  , stickHead: function() {
-      this.$head.addClass('stuck');
-      this.$el.addClass('fixed-header');
-    }
-
-  , unStickHead: function() {
-      this.$head.removeClass('stuck');
-      this.$el.removeClass('fixed-header');
     }
   });
 });
