@@ -30,18 +30,17 @@ define(function(require){
       return context;
     }
 
-  , children: {
-      products: new Components.ProductsList.Main()
-    , header: new Components.ProductsListHeader()
-    }
-
   , regions: {
       products: '.products-list'
     , header: '.page-header-box'
     }
 
   , initialize: function(options){
-      this.children.header.context = this.headerContext();
+      this.children = {
+        products: new Components.ProductsList.Main()
+      , header: new Components.ProductsListHeader(this.headerContext())
+      };
+
       // Override products list render to reset pagination height
       var oldRender = this.children.products.render, this_ = this;
       this.children.products.render = function(){
