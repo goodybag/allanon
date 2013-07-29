@@ -138,7 +138,7 @@ define(function(require){
         'change:totalMyLikes': utils.bind(this.onCountChange, this, 'btn-like')
       , 'change:totalMyWants': utils.bind(this.onCountChange, this, 'btn-want')
       , 'change:totalMyTries': utils.bind(this.onCountChange, this, 'btn-tried')
-      , 'change:name': utils.compose(this.children.header.render, this.headerContext);
+      , 'change:name': utils.compose(this.children.header.render, this.headerContext)
       });
 
       this.children.products.provideData(this.model.products);
@@ -147,7 +147,7 @@ define(function(require){
       return this;
     }
 
-  , onCountChange(btnClass, model, value, options) {
+  , onCountChange: function(btnClass, model, value, options) {
       this.children.header.$el.find('.filters-btn-group .' + btnClass + ' .count').text(value);
     }
 
