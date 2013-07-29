@@ -64,6 +64,14 @@ define(function(require) {
       utils.dom('body').off('click', '.filters-btn-group .btn', this.triggerToggle);
     },
 
+    onShow: function() {
+      this.delegateEvents();
+    },
+
+    onHide: function() {
+      this.undelegateEvents();
+    },
+
     search: function(e) {
       e.preventDefault();
       var val = this.$searchInput.val();

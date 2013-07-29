@@ -99,6 +99,7 @@ define(function(require){
     }
 
   , onShow: function(options){
+      utils.invokeIf(this.children, 'onShow', options);
       // Don't worry about this. Data might go stale
       // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
@@ -119,6 +120,7 @@ define(function(require){
     }
 
   , onHide: function() {
+      utils.invokeIf(this.children, 'onHide');
       this.destroyPagination();
     }
 
