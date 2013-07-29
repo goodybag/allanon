@@ -232,11 +232,9 @@ define(function(require){
     }
 
   , onSearchClear: function(e) {
-      this.$search.val('');
-
       if (this.preSearchState == null) return;
       this.children.header.clearButtons();
-      utils.invoke(this.children, 'hide')
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
 
       for (var btnClass in this.preSearchState.activeBtns)
         this.children.header.toggle(btnClass);
