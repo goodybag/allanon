@@ -28,17 +28,18 @@ define(function(require){
     }
 
   , headerContext: function() {
+      var model = this.model || new models.Collection();
       var context = {
         'data-toggle': 'checkbox'
       , buttons: [
-          {class: 'btn-want',  name: 'Want (<span class="count">'  + this.collection.get('totalMyWants') + '</span>)'}
-        , {class: 'btn-like',  name: 'Like (<span class="count">'  + this.collection.get('totalMyLikes') + '</span>)'}
-        , {class: 'btn-tried', name: 'Tried (<span class="count">' + this.collection.get('totalMyTries') + '</span>)'}
+          {class: 'btn-want',  name: 'Want (<span class="count">'  + model.get('totalMyWants') + '</span>)'}
+        , {class: 'btn-like',  name: 'Like (<span class="count">'  + model.get('totalMyLikes') + '</span>)'}
+        , {class: 'btn-tried', name: 'Tried (<span class="count">' + model.get('totalMyTries') + '</span>)'}
         ]
-      , tagline: this.collection.name
+      , tagline: model.get('name')
       };
 
-      if (this.collection.isEditable) context.topButtons = {right: 'Edit Collection'};
+      if (model.isEditable()) context.topButtons = {right: 'Edit Collection'};
       return context;
     }
 
@@ -110,6 +111,8 @@ define(function(require){
       var self = this;
       this.spinner.spin();
 
+      this.children.header.render(this.headerContext());
+
       this.model.products.nextPage({
         complete: function(err, data) {
           if (data.length < self.options.pageSize) self.destroyPagination();
@@ -131,26 +134,21 @@ define(function(require){
 
       this.model = collection;
 
-      // TODO: this would be nicer with partial application in events hash instead of btnSelector hash
-      this.listenTo(this.model, 'change:totalMyLikes change:totalMyWants change:TotalMyTries', function(model, value, options) {
-        utils.each(utils.pick(model.changed, ['totalMyLikes', 'totalMyWants', 'totalMyTries']), function(val, key, changed) {
-          var btnSelector = '.btn-' + {
-            totalMyWants: 'want'
-          , totalMyLikes: 'like'
-          , totalMyTries: 'tried'
-          }[key];
-          this.$el.find('.filters-btn-group > ' + btnSelector + ' > .count').text(val);
-        }, this);
+      this.listenTo(this.model, {
+        'change:totalMyLikes': utils.bind(this.onCountChange, this, 'btn-like')
+      , 'change:totalMyWants': utils.bind(this.onCountChange, this, 'btn-want')
+      , 'change:totalMyTries': utils.bind(this.onCountChange, this, 'btn-tried')
+      , 'change:name': utils.compose(this.children.header.render, this.headerContext);
       });
 
-      this.listenTo(this.model, 'change:name', function(model, value, options) {
-        this.$el.find('.page-title').text(value);
-      });
-
-      utils.each(this.children, function(val, key, obj) { val.provideData(this.model.products) }, this);
+      this.children.products.provideData(this.model.products);
 
       this.render();
       return this;
+    }
+
+  , onCountChange(btnClass, model, value, options) {
+      this.children.header.$el.find('.filters-btn-group .' + btnClass + ' .count').text(value);
     }
 
   , render: function(){
@@ -159,10 +157,7 @@ define(function(require){
       this.applyRegions();
 
       // TODO: does this need to be defered?  will this ever run before the dom update on any browser?
-      this.$search = this.$el.find('.field-search');
-      this.$searchClearBtn = this.$el.find('.field-search-clear');
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
-      this.$head = this.$el.find('.page-header-box');
 
       return this;
     }
