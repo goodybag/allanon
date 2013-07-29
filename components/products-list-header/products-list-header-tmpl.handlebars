@@ -1,0 +1,34 @@
+<div class="row header-top-buttons{{#unless topButtons}} hide{{/unless}}">
+  <div class="span5">
+    <button class="btn top-left-btn{{#unless topButtons.left}} hide{{/unless}}">{{topButtons.left}}</button>
+  </div>
+  <div class="span5">
+    <button class="btn top-right-btn{{#unless topButtons.right}} hide{{/unless}}">{{topButtons.right}}</button>
+  </div>
+</div>
+
+<div class="row header-controls">
+  {{! Filters Button Group }}
+  <div class="btn-group filters-btn-group span3" data-toggle="buttons-{{#if data-toggle}}{{data-toggle}}{{else}}checkbox{{/if}}">
+  {{#each buttons}}
+    <button type="button" class="btn btn-large {{this.class}} {{#if this.active}}active{{/if}}">
+      {{{this.name}}}
+    </button>
+  {{/each}}
+  </div>
+
+  <span class="span4 header-tagline{{#if tagline}} custom-tagline{{/if}}">
+    {{#if tagline}}{{truncate tagline 30}}{{else}}Let us help decide your next meal!{{/if}}
+  </span>
+
+  {{! Search }}
+  <div class="span3">
+    <form class="form-search header-search-form">
+      <div class="input-append">
+        <input class="field-search" placeholder="Search Gallery" type="text">
+        <button class="btn btn-primary field-search-submit" type="submit">Search</button>
+      </div>
+      <button class="field-search-clear hide" type="button"><i class="icon-remove"></i></button>
+    </form>
+  </div>
+</div>
