@@ -192,7 +192,8 @@ define(function(require){
 
       // cache old state for reverting on clear
       if (this.preSearchState == null) this.preSearchState = {
-        activeChild: utils.find(this.children, function(child) { return child.$el.is(':visible'); })
+        activeChild: utils.find(utils.pick(this.children, utils.keys(this.products)),
+                                function(child) { return child.$el.is(':visible'); })
       , activeBtns: this.children.header.activeButtons()
       }
 
@@ -218,16 +219,9 @@ define(function(require){
       coll.fetch({
         queryParams: {filter: value}
       , reset: true
-      , error: function(err) {
-          troller.error(err);
-        }
-      , success: function(data) {
-          $noResults.toggleClass('hide', data.length > 0);
-        }
-      , complete: function(err, data) {
-          clearTimeout( loadTooLong );
-          spinner.stop();
-        }
+      , error: function(err) { troller.error(err); }
+      , success: function(data) { $noResults.toggleClass('hide', data.length > 0); }
+      , complete: function(err, data) { spinner.stop(); }
       });
     }
 
@@ -236,8 +230,7 @@ define(function(require){
       this.children.header.clearButtons();
       utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
 
-      for (var btnClass in this.preSearchState.activeBtns)
-        this.children.header.toggle(btnClass);
+      utils.each(utils.pluck(this.preSearchState.activeBtns, 'btnClass'), this.children.header.toggle, this.children.header);
       this.preSearchState.activeChild.show();
 
       this.preSearchState = null;
