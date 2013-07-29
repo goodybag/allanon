@@ -22,7 +22,7 @@
   border: 1px solid @btnBorder;
   *border: 0; // Remove the border to prevent IE7's black border on input:focus
   border-bottom-color: darken(@btnBorder, 10%);
-  color: @gray;
+  color: @gb-text-primary;
 
   .border-radius(@border-radius-base);
   .ie7-restore-left-whitespace(); // Give IE7 some love
@@ -172,9 +172,9 @@ input[type="button"] {
 }
 
 .btn-white {
-  background: white;
-  border: 1px solid @gray-light;
+  #gradient > .vertical(#ffffff, #faf8f5);
   border-radius: 7px;
+  border: 1px solid #d1cdc5;
   padding: 11px 12px 9px 12px;
 }
 
