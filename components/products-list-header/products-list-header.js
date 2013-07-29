@@ -19,15 +19,14 @@ define(function(require) {
     },
 
     initialize: function(options) {
-      var triggerToggle = utils.bind(this.triggerToggle, this);
-      this.triggerToggle = function() {
-        utils.defer(triggerToggle, arguments);
-      };
-      this.context = options || {};
-      this.render();
+      // defer triggerToggle to ensure bootstrap has updated active state before it runs
+      // unfortunately, defer nukes this, so triggerToggle has to be bound first.
+      this.triggerToggle = utils.partial(utils.defer, utils.bind(this.triggerToggle, this));
+      this.context = options;
     },
 
     render: function(context) {
+      if (!context && !this.context) return;
       this.$el.html(template(context || this.context));
       var buttons = (context || this.context).buttons;
       this.btnStates = utils.object(utils.pluck(buttons, 'class'), utils.pluck(buttons, 'active'));
