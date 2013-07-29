@@ -333,5 +333,19 @@ define(function(require) {
         options.data = utils.pick(this.toJSON(), ['username', 'firstName', 'lastName', 'email', 'cardId', 'avatarUrl']);
       utils.Model.prototype.sync.apply(this, arguments);
     }
+
+  , toJSON: function(options) {
+      var obj = utils.Model.prototype.toJSON.apply(this, arguments);
+      if (options && options.displayName) {
+        obj.displayName =
+          this.get('screenName')
+       || (this.get('firstName') && this.get('lastName') ? this.get('firstName') + ' ' + this.get('lastName')[0] + '.' : '')
+       || this.get('firstName')
+       || this.get('lastName')
+       || '[add name]';
+      }
+
+      return obj;
+    }
   });
 });
