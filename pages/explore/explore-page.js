@@ -25,13 +25,15 @@ define(function(require){
   , allowedOptions: ['sort', 'lat', 'lon', 'pageSize', 'filter']
 
   , headerContext: function() {
-      'data-toggle': 'radio'
-    // TODO: set active based on current state
-    , buttons: [
-        {class:'filter-popular', name: 'Popular', active: true}
-      , {class:'filter-nearby',  name: 'Nearby'}
-      , {class:'filter-random',  name: 'Mix It Up!'}
-      ]
+      return {
+        'data-toggle': 'radio'
+        // TODO: set active based on current state
+        , buttons: [
+          {class:'filter-popular', name: 'Popular', active: true}
+          , {class:'filter-nearby',  name: 'Nearby'}
+          , {class:'filter-random',  name: 'Mix It Up!'}
+        ]
+      };
     }
 
   , getOptions: function(options) {
@@ -191,7 +193,7 @@ define(function(require){
       // cache old state for reverting on clear
       if (this.preSearchState == null) this.preSearchState = {
         activeChild: utils.find(this.children, function(child) { return child.$el.is(':visible'); })
-      , activeBtns: this.children.header.activeButtons();
+      , activeBtns: this.children.header.activeButtons()
       }
 
       var key = this.options.sort === 'nearby' ? 'searchNearby' : 'search';
@@ -227,7 +229,7 @@ define(function(require){
           spinner.stop();
         }
       });
-    }, 666)
+    }
 
   , onSearchClear: function(e) {
       this.$search.val('');
@@ -255,7 +257,7 @@ define(function(require){
 
       this.spinner.spin(this.$spinnerContainer);
 
-      var activeChild = utils.find(this.children, function(child) { return child.$el.is(':visible'); });
+      var activeChild = utils.find(utils.pick(this.children, utils.keys(this.products)), function(child) { return child.$el.is(':visible'); });
 
       activeChild.products.nextPage({
         error: function(err) {
