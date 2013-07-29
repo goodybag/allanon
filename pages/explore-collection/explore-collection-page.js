@@ -181,7 +181,6 @@ define(function(require){
     }
 
   , onSearchSubmit: function(value, component){
-
       var self = this;
       this.spinner.spin();
 
