@@ -42,7 +42,7 @@ define(function(require){
       var this_ = this;
       troller.spinner.spin();
       this.collection.save('name', this.$el.find('#edit-collection-name').val(), {
-        error: function(err) { troller.error(error); }
+        error: function(err) { troller.error(err); }
       , success: function(data) {
           this_.$el.find('#edit-collection-name').val("");
           this_.close();
