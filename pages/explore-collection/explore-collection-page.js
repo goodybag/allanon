@@ -114,6 +114,8 @@ define(function(require){
 
       this.title = this.collection.name;
 
+      this.children.header.render(this.headerContext());
+
       this.fetchData();
 
       return this;
@@ -151,6 +153,7 @@ define(function(require){
 
         this_.products = options.append ? this_.products.concat(products) : products;
         this_.children.products.provideData(this_.products).render();
+        this_.children.products.$el.toggleClass('collection-products', this_.collection.isEditable);
 
         if (products.length < this_.options.limit) // if it's the last page
           this_.destroyPagination();
