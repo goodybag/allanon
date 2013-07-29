@@ -15,14 +15,7 @@
   border-radius: @border-radius-base;
   .box-shadow(0 1px 5px rgba(0,0,0, 0.4));
 
-  background: rgb(245,245,245); /* Old browsers */
-  background: -moz-linear-gradient(top,  @page-header-gradient-top 50%, @page-header-gradient-bottom 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, @page-header-gradient-top), color-stop(100%,@page-header-gradient-bottom)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, @page-header-gradient-top 50%, @page-header-gradient-bottom 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, @page-header-gradient-top 50%, @page-header-gradient-bottom 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, @page-header-gradient-top 50%, @page-header-gradient-bottom 100%); /* IE10+ */
-  background: linear-gradient(to bottom, @page-header-gradient-top 50%, @page-header-gradient-bottom 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fffdf2',GradientType=0 ); /* IE6-9 */
+  #gradient .vertical(@page-header-gradient-top, @page-header-gradient-bottom);
 }
 
 // Normalize form stylings for search boxes
