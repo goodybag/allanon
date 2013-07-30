@@ -53,7 +53,6 @@
   font-size: 18px;
   font-weight: 300;
   line-height: 24px;
-  color: lighten(@text-color, 10%);
 }
 
 .product-details-modal .product-details h1 {
@@ -65,7 +64,7 @@
 
 .product-details-modal .product-details .product-business {
   font-size: 14px;
-  color: #808080;
+  color: @gb-text-secondary;
   font-style: italic;
   font-weight: 500;
 }
@@ -75,7 +74,7 @@
   width: 100%;
   margin: 16px 0;
   font-size: 18px;
-  color: #b2b2b2;
+  color: @gb-text-secondary;
   text-shadow: 0 -1px 0 rgba(0,0,0, 0.8);
 }
 
@@ -89,12 +88,17 @@
   margin-bottom: 24px;
 }
 
+.product-details-modal .btn, .wlt-btn-group .btn {
+  #gradient > .vertical(#ffffff, #f5efe1);
+  color: @gb-text-primary;
+}
+
 a.add-new-collection {
   display: inline-block;
   margin-bottom: 4px;
-  color: #4d4d4d;
   font-style: italic;
   font-size: 19px;
+  color: @gb-text-primary;
 }
 
 a.add-new-collection > .icon {
