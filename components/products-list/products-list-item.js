@@ -80,7 +80,7 @@ define(function(require){
       if (!user.loggedIn) return troller.promptUserLogin();
 
       // changing the property triggers an event which switches the button state
-      this.model.save(prop, !this.model.get('prop'), {patch: true});
+      this.model.save(prop, !this.model.get(prop), {patch: true});
     }
 
   , onProductPhotoClick: function(e){
