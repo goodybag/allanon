@@ -30,7 +30,12 @@ define(function(require) {
       utils.Collection.prototype.initialize.apply(this, arguments);
       if (options && options.collection) this.collection = options.collection;
       this.on('add remove', function(model, collection, options) {
-        if (collection === this) this.collection.set('numProducts', this.length);
+        if (collection === this) {
+          this.collection.set('numProducts', this.length);
+          var propmap = {userWants: 'totalMyWants', userLikes: 'totalMyLikes', userTried: 'totalMyTries'};
+          for (var key in propmap)
+            this.collection.set(propmap[key], this.where(utils.object([[key, true]])).length);
+        }
       }, this);
     },
 
