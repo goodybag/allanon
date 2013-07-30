@@ -71,7 +71,7 @@ define(function(require){
           }
 
           this_.showSuccessAlert();
-        });
+        }, {patch: true});
       });
 
       this.$el.find('.field-password').val("");
