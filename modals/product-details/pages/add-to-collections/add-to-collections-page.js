@@ -55,6 +55,7 @@ define(function(require){
   , onShow: function(options){
       this.product = options.product;
       this.children.addToCollections.provideProduct(this.product);
+      this.children.addToCollections.render();
 
       var this_ = this;
 
