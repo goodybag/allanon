@@ -138,7 +138,7 @@ define(function(require){
         'change:totalMyLikes': utils.bind(this.onCountChange, this, 'btn-like')
       , 'change:totalMyWants': utils.bind(this.onCountChange, this, 'btn-want')
       , 'change:totalMyTries': utils.bind(this.onCountChange, this, 'btn-tried')
-      , 'change:name': utils.compose(this.children.header.render, this.headerContext)
+      , 'change:name': utils.compose(utils.bind(this.children.header.render, this.children.header), this.headerContext)
       });
 
       this.children.products.provideData(this.model.products);
