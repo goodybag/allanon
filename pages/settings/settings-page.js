@@ -57,9 +57,12 @@ define(function(require){
         next();
       })(function(){
         var updates = this_.getFormDataForModel();
+        var same = utils.filter(utils.keys(updates)
+                              , function(key) { return updates[key] === this_.model.get(key); })
+
         this_.$el.find('form .error').removeClass('error');
 
-        this_.model.save(updates, {
+        this_.model.save(utils.omit(updates, same), {
           success: function(data) {
             this_.showSuccessAlert();
           }
