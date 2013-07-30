@@ -64,8 +64,10 @@ define(function(require){
       var views = utils.map(products, function(prod) {
         var item = (new self.ItemView( {model: prod} )).render();
         item.listenToOnce(prod, 'remove', function(model, collection, options) {
-          item.remove();
-          self.views = utils.without(self.views, item);
+          if (collection === self.products) {
+            item.remove();
+            self.views = utils.without(self.views, item);
+          }
         });
         fragment.appendChild(item.el);
         item.on('product-details-modal:open', self.onProductModalOpen, self);
