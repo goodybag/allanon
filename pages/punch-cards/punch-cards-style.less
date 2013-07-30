@@ -44,20 +44,26 @@
 // ----------------
 
 .punchcard-group-header {
-  // Stupid require-less normalizes urls for me
-  background-image: url("../../styles/@{texture-jeans-blue}");
+  background-color: #f7382e;
+  color: #66130d;
   box-shadow:
-    inset 0  2px 2px rgba(255,255,255, 0.3),
-    inset 0 -2px 4px rgba(0,0,0, 0.2),
-          0  2px 4px rgba(0,0,0, 0.2);
+    inset 0 -1px 1px rgba(0,0,0, 0.2),
+          0  1px 1px rgba(0,0,0, 0.2);
+}
+
+.punchcard-group-header h1, h2, h3, h4, h5, h6 {
+  color: #66130d;
 }
 
 .punchcard-group-elite .punchcard-group-header {
-  // Stupid require-less normalizes urls for me
-  background-image: url("../../styles/@{texture-jeans-yellow}");
+  background-color: #ffd414;
+  color: #5e5308;
   .add-border-tops()
 }
 
+.punchcard-group-elite .punchcard-group-header h1, h2, h3, h4, h5, h6 {
+  color: #5e5308;
+}
 .punchcard-group-header,
 .punchcard-group-header h1 {
   font-size: 16px;
@@ -69,6 +75,10 @@
 .punchcard-group-header h1 {
   margin: 0;
   .add-gutter-left();
+}
+
+.no-punch-cards {
+  color: @gb-text-primary;
 }
 
 // Details
@@ -83,6 +93,8 @@
   border-top: 1px #ddd solid;
 
   cursor: pointer;
+
+  #gradient > .vertical(#ffffff, #fcfcfa);
 }
 
 .punchcard-group > .punchcard:first-child {
@@ -90,7 +102,7 @@
 }
 
 .punchcard-group > .punchcard:hover {
-  #gradient > .vertical(#e1f4fa, #e5f9ff);
+  background: @row-hover-highlight;
 }
 
 .punchcard .details {
@@ -117,7 +129,7 @@
 .title-and-description > .title {
   font-size: 20px;
   font-weight: normal;
-  color: #555;
+  color: @gb-text-primary;
   line-height: 20px;
   margin: 4px 0 4px 0;
 }
@@ -127,7 +139,7 @@
   margin-bottom: 0;
   font-size: 14px;
   font-style: italic;
-  color: @gray-light;
+  color: @gb-text-secondary;
 }
 
 .punchcard .num-punches {
@@ -135,6 +147,7 @@
   font-size: 22px;
   margin-top: 16px;
   font-weight: 100;
+  color: @gb-text-primary;
 }
 
 .punchcard .num-rewards-wrapper {

@@ -20,21 +20,18 @@
   width: 322px;
   margin: @collection-margins;
   padding-bottom: 30px;
-
-  // Require less/css is doing stupid shit with the URI
-  // background-image: url('@{texture-wood}');
-  background-image: url('../../img/texture-wood.jpg');
+  background-color: #faf2e1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.36);
   border-radius: 8px;
 
   text-align: center;
   line-height: 0;
-  color: lighten(@text-color, 6%);
+  color: @gb-text-primary;
 }
 
 .collections-list .collection:hover {
   opacity: 0.8;
-  border: solid #39c3e6 3px;
+  border: solid #f7382e 3px;
 
   cursor: pointer;
   box-shadow: none;
@@ -49,7 +46,7 @@
 .collections-list .collection.collection-new {
   background: transparent;
   box-shadow: none;
-  border: dashed #c2c2c2 2px;
+  border: dashed #d1cdc5 2px;
   padding-bottom: 24px;
 }
 
@@ -60,8 +57,8 @@
 .collection-new .product-main-wrapper,
 .collection-new .product-secondary-wrapper {
   display: inline-block;
-  background: #f5f5f5;
-  border: solid #e1e1e1 1px;
+  background: #f5f2eb;
+  border: solid #d1cdc5 1px;
   border-radius: @photo-border-radius;
 }
 
@@ -76,7 +73,7 @@
   line-height: 28px;
   font-size: 26px;
   font-style: italic;
-  color: @gray-light;
+  color: #998f8a;
 }
 
 .collection-new .icon {
