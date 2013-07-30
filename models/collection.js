@@ -130,20 +130,16 @@ define(function(require) {
     initialize: function(attrs, options) {
       this.products = new GBCollection([], {collection: this});
 
-      this.listenTo(this.products, 'change:userWants', function(model, value, options) {
-        if (model.changed.userWants != null && model.previousAttributes().userWants != null && !options.deauth)
-          this.set('totalMyWants', this.get('totalMyWants') + (value ? 1 : -1));
+      this.listenTo(this.products, {
+        'change:userWants': utils.bind(this.feelingsChange, this, 'userWants', 'totalMyWants'),
+        'change:userLikes': utils.bind(this.feelingsChange, this, 'userLikes', 'totalMyLikes'),
+        'change:userTried': utils.bind(this.feelingsChange, this, 'userTried', 'totalMyTries')
       });
+    },
 
-      this.listenTo(this.products, 'change:userLikes', function(model, value, options) {
-        if (model.changed.userLikes != null && model.previousAttributes().userLikes != null && !options.deauth)
-          this.set('totalMyLikes', this.get('totalMyLikes') + (value ? 1 : -1));
-      });
-
-      this.listenTo(this.products, 'change:userTried', function(model, value, options) {
-        if (model.changed.userTried != null && model.previousAttributes().userTried != null && !options.deauth)
-          this.set('totalMyTries', this.get('totalMyTries') + (value ? 1 : -1));
-      });
+    feelingsChange: function(feeling, countProp, model, value, options) {
+      if (model.changed[feeling] != null && model.previousAttributes()[feeling] != null && !options.deauth)
+        this.set(countProp, this.get(countProp) + (value ? 1 : -1));
     }
   });
 });
