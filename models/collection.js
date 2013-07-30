@@ -29,6 +29,9 @@ define(function(require) {
     initialize: function(models, options) {
       utils.Collection.prototype.initialize.apply(this, arguments);
       if (options && options.collection) this.collection = options.collection;
+      this.on('add remove', function(model, collection, options) {
+        if (collection === this) this.collection.set('numProducts', this.length);
+      }, this);
     },
 
     toggleFilter: function(filter, bool) {
@@ -135,6 +138,9 @@ define(function(require) {
         'change:userLikes': utils.bind(this.feelingsChange, this, 'userLikes', 'totalMyLikes'),
         'change:userTried': utils.bind(this.feelingsChange, this, 'userTried', 'totalMyTries')
       });
+
+      this.on('change:numProducts', utils.debounce(this.getSecondaries, 100), this);
+
     },
 
     feelingsChange: function(feeling, countProp, model, value, options) {
