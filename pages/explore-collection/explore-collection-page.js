@@ -87,8 +87,9 @@ define(function(require){
         troller.app.setTitle(product.get('name'));
       });
 
+      var self = this;
       this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this_.title);
+        troller.app.setTitle(self.title);
       });
     }
 
@@ -104,6 +105,7 @@ define(function(require){
       this.model.products.clear();
 
       this.title = this.model.get('name');
+      troller.app.setTitle(this.title);
 
       troller.scrollWatcher.addEvent(120);
       if (window.scrollY >= 120) this.stickHead();
