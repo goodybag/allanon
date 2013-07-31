@@ -215,60 +215,6 @@ define(function(require) {
       return this;
     }
 
-  // TODO: replace with model.save on product model.  should work now.
-  , updateProductFeelings: function(pid, feelings, callback){
-      var this_ = this;
-
-      this.isLoggedIn(function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        // For now, manually throw this guy in. We need to bring in
-        // errors.js from magic
-        if (!result){
-          var error = {
-            type:     'AUTHENTICATION'
-          , message:  'You must be authenticated to perform this action'
-          };
-
-          return callback ? callback(error) : troller.error(error);
-        }
-
-        var
-          batch = [
-            function(done){ api.products.feelings(pid, feelings, done); }
-          , function(done){ this_.addToCollection('all',  pid, done); }
-          , function(done){ this_.addToCollection('food', pid, done); }
-          ]
-
-        , total   = batch.length
-        , current = 0
-        , cancel  = false
-
-        , done = function(){
-            var track = { productId: pid };
-            for (var key in feelings) track[key] = feelings[key];
-
-            troller.analytics.track('Feelings.Update', track);
-
-            if (callback) callback();
-          }
-        ;
-
-        while (batch.length > 0){
-          batch.pop()(function(error){
-            if (cancel) return;
-
-            if (error){
-              cancel = true;
-              return callback ? callback(error) : troller.error(error);
-            }
-
-            if (++current >= current && callback) done();
-          });
-        }
-      });
-    }
-
   // TODO: again, this is just this.save()
   , setKeytag: function(keytag, callback) {
       var this_ = this
