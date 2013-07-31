@@ -56,9 +56,9 @@ define(function(require) {
       return true;
     },
 
-    clear: function() {
+    clear: function(options) {
       this.queryParams = utils.omit(this.queryParams, ['filter', 'userWants', 'userLikes', 'userTried']);
-      this.reset([]);
+      this.reset([], options);
     },
 
     // I'm not sure if this should go here or on the containing model.
