@@ -35,30 +35,8 @@ define(function(require) {
 
   // TODO: figure out why this is a separate route
   , updatePassword: function(currPw, newPw, callback){
-      utils._ajax({
-        type: 'POST'
-      , url: config.apiUrl + 'consumers/' + this.get('id') + '/password'
-      , data: { password: newPw }
-      , headers: {
-          authorization: 'Basic ' + utils.base64.encode( this.get('email') + ":" + currPw )
-        }
-      , xhrFields: { withCredentials: true }
-      , crossDomain: true
-      , success: function(results){
-          if (typeof results == 'string' && results) results = JSON.parse(results);
-          results = results || {};
-          callback && callback(results.error, results.data, results.meta);
-        }
-      , error: function(error, results, res, r){
-          try {
-            callback && callback(error.responseText ? JSON.parse(error.responseText).error : error);
-          } catch (e) {
-            callback && callback({
-              type: 'UNKNOWN'
-            , message: "An unknown error occurred"
-            });
-          }
-        }
+      utils.api.post('/consumers/' + this.id + '/password', {password: newPw}, callback, {
+        headers: { authorization: 'Basic ' + utils.base64.encode( this.get('email') + ":" + currPw ) }
       });
 
       return this;
