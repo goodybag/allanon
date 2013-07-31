@@ -30,7 +30,7 @@ define(function(require){
 
     , defaults: {
         photoUrl: 'http://cdn.filepicker.io/api/file/TovGkwF7TCeFj3MQowEr'
-      , avatarUrl:'http://cdn.filepicker.io/api/file/waj6E0kDQNKN9npxHIPR'
+      , avatarUrl:'http://cdn.filepicker.io/api/file/31l3OEiQSaMKF3kazHCe'
 
         // Around Guadalup and E MLK blvd
       , position: {
