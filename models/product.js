@@ -50,26 +50,19 @@ define(function(require){
     urlRoot: '/products',
 
     initialize: function() {
-      this.on({'change:userWants': this.onChangeUserWants,
-               'change:userLikes': this.onChangeUserLikes,
-               'change:userTried': this.onChangeUserTried
+      this.on({'change:userWants': utils.bind(this.onChangeFeeling, this, 'userWants', 'wants'),
+               'change:userLikes': utils.bind(this.onChangeFeeling, this, 'userLikes', 'likes'),
+               'change:userTried': utils.bind(this.onChangeFeeling, this, 'userTried', 'tries')
               });
       this.listenTo(require('user'), 'deauth', this.onUserDeAuth, this);
     },
 
-    onChangeUserWants: function(model, collection, options) {
-      if (this.changed.userWants != null && this.previousAttributes().userWants != null && !options.deauth)
-        this.set('wants', this.get('wants') + (this.changed.userWants ? 1 : -1));
-    },
-
-    onChangeUserLikes: function(model, collection, options) {
-      if (this.changed.userLikes != null && this.previousAttributes().userLikes != null && !options.deauth)
-        this.set('likes', this.get('likes') + (this.changed.userLikes ? 1 : -1));
-    },
-
-    onChangeUserTried: function(model, collection, options) {
-      if (this.changed.userTried != null && this.previousAttributes().userTried != null && !options.deauth)
-        this.set('tries', this.get('tries') + (this.changed.userTried ? 1 : -1));
+    onChangeFeeling: function(prop, count, model, value, options) {
+      if (this.changed[prop] != null && this.previousAttributes()[prop] != null && !options.deauth) {
+        this.set(count, this.get(count) + (value ? 1 : -1));
+        if (value && !utils.contains(this.get('collections'), 'food'))
+          require('user').collections.get('food').products.addProduct(this);
+      }
     },
 
     onUserDeAuth: function(e) {
