@@ -69,7 +69,7 @@ define(function(require){
      }
 
   , onLikeCountChange: function(e) {
-      this.$likeCount.text(this.model.get('likes'));
+      if (this.$likeCount) this.$likeCount.text(this.model.get('likes'));
     }
 
   , onFeelingsClick: function(prop, message, e) {
