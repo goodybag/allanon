@@ -16,6 +16,8 @@ define(function(require){
 
   , title: 'Explore My Collection'
 
+  , manualRender: true
+
   , defaultOptions: {
       pageSize: 30
     }
@@ -102,7 +104,7 @@ define(function(require){
 
       if (this.options.collection != null) this.provideCollection(this.options.collection);
 
-      this.model.products.clear();
+      this.model.products.clear({silent:true});
 
       this.title = this.model.get('name');
       troller.app.setTitle(this.title);
