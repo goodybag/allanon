@@ -71,7 +71,6 @@ define(function(require) {
             }
           , success: function(result) {
               this_.trigger('auth');
-              troller.trigger('user.auth')
               troller.analytics.track('Auth Email');
 
               if (callback) callback(null, result);
@@ -92,7 +91,6 @@ define(function(require) {
         this_.set(result);
 
         this_.trigger('auth');
-        troller.trigger('user.auth')
         troller.analytics.track('Auth Facebook');
 
         if (callback) callback(null, result);
@@ -132,7 +130,6 @@ define(function(require) {
             }
           , success: function(result) {
               this_.trigger('auth');
-              troller.trigger('user.auth')
               troller.analytics.track('User Registered Email');
 
               if (callback) callback(null, result);
@@ -166,7 +163,6 @@ define(function(require) {
           }
         , success: function(result) {
             this_.trigger('auth');
-            troller.trigger('user.auth')
 
             if (callback) callback(null, result);
           }
@@ -186,7 +182,6 @@ define(function(require) {
         this_.set(this_.defaults);
         this_.loggedIn = false;
         this_.trigger('deauth');
-        troller.trigger('user.deauth')
 
         if (callback) callback();
       })
@@ -212,8 +207,6 @@ define(function(require) {
           }
         , success: function(result) {
             this_.trigger('auth');
-            troller.trigger('user.auth')
-
             if (callback) callback(null, result);
           }
         });
