@@ -31,6 +31,8 @@ define(function(require) {
 
   , initialize: function(attrs, options) {
       this.collections = new UserCollections([], {user: this});
+      this.on('auth', this.collections.fetch, this.collections);
+      this.on('deauth', this.collections.reset, this.collections);
     }
 
   // TODO: figure out why this is a separate route
