@@ -32,13 +32,16 @@ define(function(require) {
 
       //TODO: validate form
       troller.spinner.spin();
-      user.setKeytag(this.$el.find('#keytag').val(), function(error) {
-        troller.spinner.stop();
-
-        if (error) return troller.error(error);
-
-        this_.$el.find('#keytag').val('');
-        this_.close();
+      user.save({cardId: this.$el.find('#keytag').val()}, {
+        error: function(err) { troller.error(err); }
+      , success: function(data) {
+          this_.$el.find('#keytag').val('');
+          this_.close();
+        }
+      , complete: function(err, data) {
+          troller.spinner.stop();
+        }
+      , patch: true
       });
     }
 

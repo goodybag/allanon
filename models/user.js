@@ -215,28 +215,6 @@ define(function(require) {
       return this;
     }
 
-  // TODO: again, this is just this.save()
-  , setKeytag: function(keytag, callback) {
-      var this_ = this
-
-      this.isLoggedIn(function(error, result){
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        // For now, manually throw this guy in. We need to bring in
-        // errors.js from magic
-        if (!result){
-          var error = {
-            type:     'AUTHENTICATION'
-          , message:  'You must be authenticated to perform this action'
-          };
-
-          return callback ? callback(error) : troller.error(error);
-        }
-
-        api.consumers.update(this_.get('id'), {cardId:keytag}, callback);
-      });
-    }
-
   , forgotPassword: function(email, callback) {
       var url = 'users/password-reset';
       utils.api.post(url, {email: email}, callback);
