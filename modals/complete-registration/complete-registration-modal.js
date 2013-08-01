@@ -11,7 +11,7 @@ define(function(require) {
     className: 'modal hide fade modal-span4 login-modal complete-registration-modal',
 
     events: {
-      'click .facebook-login-button': 'oauth',
+      'click .btn-fb-connect': 'oauth',
       'submit .register-form':        'register'
     },
 
