@@ -96,12 +96,7 @@ define(function(require){
     }
 
   , onOpen: function(options){
-      var trackingData = utils.clone(options);
-      for (var key in trackingData) {
-        if (trackingData[key] instanceof utils.Model || trackingData[key] instanceof utils.Collection)
-          trackingData[key] = trackingData[key].toJSON();
-      }
-      troller.analytics.track('Product Details Opened', trackingData);
+      troller.analytics.track('Product Details Opened', options);
 
       options = options || {};
 

@@ -180,8 +180,6 @@
 
             troller.trigger('change-page', {page: page});
 
-            if (page != 'explore') app.hideBanner();
-
             var title = app.appView.children.pages.pages[page].title || 'Goodybag'
             app.setTitle( title );
 
@@ -189,12 +187,7 @@
             if (typeof options == 'object')
               utils.extend( _options, options );
 
-            var trackingOpts = utils.clone(_options);
-            utils.each(trackingOpts, function(val, key, obj) {
-              obj[key] = val instanceof utils.Collection || val instanceof utils.Model ? val.toJSON() : val;
-            })  ;
-
-            troller.analytics.track( 'Page.Loaded ' + title, trackingOpts );
+            troller.analytics.track( 'Page.Loaded ' + title, _options );
             troller.analytics.pageview();
           }, function(func, page) {
             var go = troller.pages.Pages[page].requiresLogin ? user.loginGatedFunction(func) : func;
@@ -316,13 +309,7 @@
             if (typeof options == 'object')
               utils.extend( _options, options );
 
-            var trackingData = utils.clone(_options);
-            for (var key in trackingData) {
-              if (trackingData[key] instanceof utils.Model || trackingData[key] instanceof utils.Collection)
-                trackingData[key] = trackingData[key].toJSON();
-            }
-
-            troller.analytics.track( 'Modal.Opened ' + modal, trackingData );
+            troller.analytics.track( 'Modal.Opened ' + modal, _options );
           }
 
         , closeModal: function(modal, options){
@@ -387,6 +374,15 @@
       troller.add('promptUserLogin',  app.promptUserLogin);
 
       troller.add('analytics',        analytics);
+
+      // sanatize data before passing it in to analytics
+      troller.analytics.track = utils.wrap(troller.analytics.track, function(track, action, properties) {
+        var trackingData = utils.object(utils.map(properties, function(val, key, obj) {
+          return [key, val == null ? val : utils.isFunction(val.toJSON) ? val.toJSON() : utils.clone(val)];
+        }));
+        track.call(this, action, properties ? trackingData : properties);
+      });
+
 
       // Make sure analytics reference is correct
       var checkAnalytics = function(){
