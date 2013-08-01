@@ -163,45 +163,44 @@
             user.on('auth', function(){ troller.analytics.track('Auth'); });
           })
 
-        , changePage: function(page, options, callback){
-            var changePage = function(page, options, callback) {
-              if (typeof options === 'function') {
-                callback  = options;
-                options   = null;
-              }
-
-              options = options || {};
-
-              options.transitionOptions = options.transitionOptions || {};
-              options.transitionOptions.onViewAAnimationComplete = function(viewA) {
-                window.scrollTo(0);
-              }
-
-              app.appView.changePage(page, options, callback);
-
-              troller.trigger('change-page', {page: page});
-
-              if (page != 'explore') app.hideBanner();
-
-              var title = app.appView.children.pages.pages[page].title || 'Goodybag'
-              app.setTitle( title );
-
-              var _options = { hash: utils.history.location.hash };
-              if (typeof options == 'object')
-                utils.extend( _options, options );
-
-              var trackingOpts = utils.clone(_options);
-              utils.each(trackingOpts, function(val, key, obj) {
-                obj[key] = val instanceof utils.Collection || val instanceof utils.Model ? val.toJSON() : val;
-              });
-
-              troller.analytics.track( 'Page.Loaded ' + title, trackingOpts );
-              troller.analytics.pageview();
+        , changePage: utils.wrap(function(page, options, callback) {
+            if (typeof options === 'function') {
+              callback  = options;
+              options   = null;
             }
 
-            var go = troller.pages.Pages[page].requiresLogin ? user.loginGatedFunction(changePage) : changePage;
-            go.apply(this, arguments);
-          }
+            options = options || {};
+
+            options.transitionOptions = options.transitionOptions || {};
+            options.transitionOptions.onViewAAnimationComplete = function(viewA) {
+              window.scrollTo(0);
+            }
+
+            app.appView.changePage(page, options, callback);
+
+            troller.trigger('change-page', {page: page});
+
+            if (page != 'explore') app.hideBanner();
+
+            var title = app.appView.children.pages.pages[page].title || 'Goodybag'
+            app.setTitle( title );
+
+            var _options = { hash: utils.history.location.hash };
+            if (typeof options == 'object')
+              utils.extend( _options, options );
+
+            var trackingOpts = utils.clone(_options);
+            utils.each(trackingOpts, function(val, key, obj) {
+              obj[key] = val instanceof utils.Collection || val instanceof utils.Model ? val.toJSON() : val;
+            })  ;
+
+            troller.analytics.track( 'Page.Loaded ' + title, trackingOpts );
+            troller.analytics.pageview();
+          }, function(func, page) {
+            var go = troller.pages.Pages[page].requiresLogin ? user.loginGatedFunction(func) : func;
+            go.apply(this, Array.prototype.slice.call(arguments, 1));
+          })
+
 
         , currentPage: function(){
             return app.appView.children.pages.current;
