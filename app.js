@@ -199,8 +199,8 @@
               troller.analytics.pageview();
             }
 
-            var go = troller.pages.Pages[page].prototype.requiresLogin ? user.loginGatedFunction(changePage) : changePage;
-            go(page, options, callback);
+            var go = troller.pages.Pages[page].requiresLogin ? user.loginGatedFunction(changePage) : changePage;
+            go.apply(this, arguments);
           }
 
         , currentPage: function(){

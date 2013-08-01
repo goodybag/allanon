@@ -14,8 +14,6 @@ define(function(require){
 
   , title: 'My Collections'
 
-  , requiresLogin: true
-
   , events: {
       'click .collection-new':                  'onNewCollectionClick'
     , 'click .collection:not(.collection-new)': 'onCollectionClick'
@@ -68,5 +66,5 @@ define(function(require){
   , onNewCollectionClick: function(e){
       troller.modals.open('add-new-collection');
     }
-  });
+  }, { requiresLogin: true});
 });
