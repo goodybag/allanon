@@ -124,5 +124,5 @@ define(function(require){
       this.$el.find('.btn-cancel, .btn-save').toggleClass('hide', !save);
       this.$el.find('.btn-back').toggleClass('hide', save);
     }
-  });
+  }, {requiresLogin: true});
 });

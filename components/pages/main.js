@@ -3,6 +3,7 @@ define(function(require){
     utils       = require('utils')
   , troller     = require('troller')
   , transitions = require('./transitions')
+  , user        = require('user')
   ;
 
   return utils.View.extend({
@@ -75,7 +76,7 @@ define(function(require){
       this.$el.append(this.pages[page].$el);
     }
 
-  , changePage: function(page, options, callback){
+  , changePage: utils.wrap(function(page, options, callback) {
       var this_ = this, transition, transitionOptions;
 
       if (typeof options == 'function'){
@@ -131,6 +132,9 @@ define(function(require){
       });
 
       return this;
-    }
+    }, function(func, page) {
+      var go = this.Pages[page].requiresLogin ? user.loginGatedFunction(func) : func;
+      go.apply(this, Array.prototype.slice.call(arguments, 1));
+    })
   });
 });
