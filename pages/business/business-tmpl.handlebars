@@ -19,10 +19,7 @@
         {{! Address }}
         <div class="biz-info biz-info-address">
           <h4 class="biz-info-title">Address</h4>
-          <address class="location-address">
-            {{location.street1}}, {{#if location.street2}}{{location.street2}}, {{/if}}<br />
-            {{location.city}}, {{location.state}} {{location.zip}}
-          </address>
+          <address class="location-address">{{{address location}}}</address>
         </div>
 
         {{! Phone }}
