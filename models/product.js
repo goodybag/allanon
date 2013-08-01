@@ -1,5 +1,6 @@
 define(function(require){
   var utils = require('utils');
+  var config = require('config');
 
   var acceptable = [
     'id',
@@ -43,7 +44,8 @@ define(function(require){
       tries:       0,
       userLikes:   false,
       userWants:   false,
-      userTried:   false
+      userTried:   false,
+      photoUrl:    config.defaults.photoUrl
     },
 
     urlRoot: '/products',
