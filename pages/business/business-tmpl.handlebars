@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="span10 plateau page-plateau">
-    <div class="row">
+    <div class="row biz-info-area">
       {{! Logo and Punchcard button }}
       <div class="span4 logo-wrapper">
         <img src="{{filepicker business.logoUrl 240 240}}" alt="{{business.name}}" class="business-logo">
@@ -28,7 +28,7 @@
         {{! Phone }}
         <div class="biz-info biz-info-phone">
           <h4 class="biz-info-title">Phone</h4>
-          {{location.phone}}
+          {{phone location.phone}}
         </div>
 
         {{! Website }}
@@ -57,7 +57,7 @@
         <h1 class="product-menu-section-title">{{this.name}}</h1>
 
         {{! Section Products }}
-        <div class="products-list">
+        <div class="product-menu-list">
           {{#each this.products}}
           <div class="row">
             <div class="span10 product-item" id="product-list-item-{{this.id}}" data-id="{{this.id}}">

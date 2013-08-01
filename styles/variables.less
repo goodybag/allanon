@@ -6,6 +6,13 @@
 // Global values
 // --------------------------------------------------
 
+// Branding Palette
+@gb-primary:            #eb2217; // Bright red
+@gb-secondary:          #fff;    // White
+@gb-accent:             #feffba; // Pastel yellow
+@gb-text-primary:       #6b594f;
+@gb-text-secondary:     #9e9b95;
+@row-hover-highlight:   #fffae5;
 
 // Grays
 // -------------------------
@@ -20,7 +27,7 @@
 // Brand colors
 // -------------------------
 
-@brand-primary:         #50cbf0;
+@brand-primary:         @gb-primary;
 @brand-success:         #28dd5c;
 @brand-warning:         #ffea61;
 @brand-danger:          #ff6161;
@@ -44,7 +51,7 @@
 @white:                 #fff;
 @black:                 #000;
 @body-bg:               @white;
-@text-color:            @gray-dark;
+@text-color:            @gb-text-primary;
 
 // Links
 // -------------------------
@@ -89,7 +96,7 @@
 // Buttons
 // -------------------------
 @btnBackground:                     @white;
-@btnBackgroundHighlight:            darken(@white, 10%);
+@btnBackgroundHighlight:            #f5efe1;
 @btnBorder:                         #ccc;
 
 @btnPrimaryBackground:              #ffeb5a;

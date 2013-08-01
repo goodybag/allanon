@@ -147,6 +147,10 @@ module.exports = function(grunt) {
           , dest: 'fonts'
           , gzip: true
           }
+        , {
+            src: 'favicon.ico'
+          , dest: 'favicon.ico'
+          }
         ]
       },
 
@@ -173,6 +177,10 @@ module.exports = function(grunt) {
             src: 'build/fonts/*'
           , dest: 'fonts'
           , gzip: true
+          }
+        , {
+            src: 'favicon.ico'
+          , dest: 'favicon.ico'
           }
         ]
       }
