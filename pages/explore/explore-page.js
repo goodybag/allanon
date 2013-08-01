@@ -6,8 +6,10 @@ define(function(require){
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('components')
+  , models      = require('models')
 
   , template    = require('hbt!./explore-tmpl')
+  , collections = require('./collections')
   ;
 
   return Components.Pages.Page.extend({
@@ -15,21 +17,36 @@ define(function(require){
 
   , title: 'Explore Goodybag'
 
-  , headerContext: {
-      'data-toggle': 'radio'
-    , buttons: [
-        {class:'filter-popular', name: 'Popular', active: true}
-      , {class:'filter-nearby',  name: 'Nearby'}
-      , {class:'filter-random',  name: 'Mix It Up!'}
-      ]
+  , defaultOptions: {
+      sort: 'popular'
+    , pageSize: 30
     }
 
-  , initialize: function(options) {
-      this.children = {
-        products: new Components.ProductsList.Main()
-      , header:   new Components.ProductsListHeader(this.headerContext)
-      };
+  , allowedOptions: ['sort', 'lat', 'lon', 'pageSize', 'filter']
 
+  , headerContext: function() {
+      return {
+        'data-toggle': 'radio'
+        // TODO: set active based on current state
+        , buttons: [
+          {class:'filter-popular', name: 'Popular', active: true}
+          , {class:'filter-nearby',  name: 'Nearby'}
+          , {class:'filter-random',  name: 'Mix It Up!'}
+        ]
+      };
+    }
+
+  , getOptions: function(options) {
+      return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
+      // TODO: make sure sort agrees with presence of lat/lon
+    }
+
+  , initialize: function(options){
+      this.options = this.getOptions(options);
+
+      this.children = {
+        header:   new Components.ProductsListHeader(this.headerContext)
+      };
 
       this.listenTo(this.children.header, 'search', this.onSearchSubmit, this);
       this.listenTo(this.children.header, {
@@ -38,89 +55,79 @@ define(function(require){
       , 'toggle:filter-random':  utils.bind(this.onFilterToggle, this, '/explore/random')
       });
 
-      // Override products list render to reset pagination height
-      var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function() {
-        this_.destroyPagination();
-
-        oldRender.apply(this_.children.products, arguments);
-
-        if (this.products.length === 0) return;
-
-        this_.setupPagination();
+      this.products = {
+        popular: new collections.Products([], {
+          queryParams: { sort: '-popular' }
+          , pageSize: this.options.pageSize
+        })
+      , nearby: new collections.Nearby([], {
+          pageSize: this.options.pageSize
+        })
+      , random: new collections.Products([], {
+          queryParams: { sort: 'random' }
+        , pageSize: this.options.pageSize
+        })
+      , search: new collections.Products([], {
+          pageSize: this.options.pageSize
+        })
+      , searchNearby: new collections.Nearby([], {
+          pageSize: this.options.pageSize
+        })
       };
 
-      this._page = 1;
+      for (var key in this.products) {
+        this.children[key] = new Components.ProductsList.Main({products: this.products[key]})
+        this.children[key].on('render', this.setupPagination, this);
 
-      this.products = [];
+        // Set Correct Title
+        // TODO: listen to the modal directly instead of bubbling up the event
+        this.children[key].on('product-details-modal:open', function(product){
+          troller.app.setTitle(product.get('name'));
+        });
+
+        this.children[key].on('product-details-modal:close', function(){
+          troller.app.setTitle(this.title);
+        }, this);
+      }
 
       this.spinner = new utils.Spinner();
 
-      // Page state
-      this.options = utils.extend({
-        sort:       '-popular'
-      , limit:      30
-      , offset:     0
-      , include:    ['collections']
-      , hasPhoto:   true
-      }, options);
-
-      // Reset products on auth/de-auth
-      user.on('auth', function(){
-        this_.products = [];
-        this_.onShow();
-      });
-
-      user.on('deauth', function(){
-        this_.products = [];
-        this_.onShow();
-      });
-
-      // Set Correct Title
-      this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.get('name'));
-      });
-
-      this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this_.title);
-      });
+      this.render();
     }
 
   , onShow: function(options){
       utils.invokeIf(this.children, 'onShow', options);
       troller.spinner.spin();
 
-      var isDifferent = false;
-      for (var key in options) {
-        if (this.options[key] !== options[key]) {
-          this.options[key] = options[key];
-          isDifferent = true;
-        }
-      }
+      options = this.getOptions(options);
+      var isDifferent = !utils.isEqual(this.options, options);
+      this.options = options;
 
       // Don't fetch again if nothing has changed
-      if (!isDifferent && this.products && this.products.length > 0){
+      if (!isDifferent && this.products[options.sort] && this.products[options.sort].length > 0){
         this.setupPagination();
         troller.spinner.stop();
         return this;
       }
 
-      // Reset offset/query
-      this.options.offset = 0;
-      delete this.options.filter;
-      this.products = [];
-
-      // this makes onSearchClear a nop if you call it before running a search
-      this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
-      this.oldSort = this.options.sort;
-
       var this_ = this;
 
-      this.fetchData(function(error, results){
-        if (error) return troller.error(error), troller.spinner.stop();
+      var coll = this.products[options.sort];
+      var subview = this.children[options.sort];
 
-        troller.spinner.stop();
-        this_.render();
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
+
+      subview.show();
+
+      coll.reset([]);
+
+      coll.nextPage({
+        error: function(err) { troller.error(err); }
+      , success: function(data) {
+          subview.render(null, {reset: true});
+          if (data.length < this_.options.pageSize) this_.destroyPagination();
+        }
+      , complete: function(err, data) { troller.spinner.stop(); }
       });
 
       return this;
@@ -131,81 +138,44 @@ define(function(require){
       this.destroyPagination();
     }
 
-  , fetchData: function(options, callback){
-      if (typeof options == 'function'){
-        callback = options;
-        options = null;
-      }
-
-      options = options || { spin: true };
-
-      var this_ = this;
-
-      if (options.spin) troller.spinner.spin();
-
-      if (this.previousRequest)
-        this.previousRequest.abort();
-
-      this.previousRequest = api.products.food(this.options, function(error, results){
-        troller.spinner.stop();
-        this_.previousRequest = null;
-
-        if (error) return typeof callback === 'function' ? callback(error) : troller.error(error);
-
-        this_.provideData(options.append ? this_.products.concat(results) : results);
-
-        if (results.length < this_.options.limit) // if it's the last page
-          this_.destroyPagination();
-
-        if (callback) callback(null, results);
-      });
-    }
-
   , provideData: function(data){
-      this.products = data;
-      this.children.products.provideData(data); // multiple references to the same piece of mutable state break modularity.  TODO: fix
+      if (data instanceof utils.Collection) {
+        this.products = data;
+        this.children.products.provideData(data);
+      } else
+        this.products.reset(data);
 
       return this;
     }
 
-  , render: function(){
-      // reset button states.  this will be significantly less ugly in the #160 version
-      utils.each(this.headerContext.buttons, function(button) { button.active = false });
-
-      var btnClass = {
-        '-popular': 'filter-popular'
-      , '-distance': 'filter-nearby'
-      , '-random': 'filter-random'
-      }[this.options.sort]
-
-      utils.find(this.headerContext.buttons, function(button) {return button.class === btnClass}).active = true;
-
-
+  , render: function() {
       this.$el.html( template({ options: this.options }) );
+
+      // TODO: do we need to defer the rest until the dom update?
 
       // Attach header
       this.children.header.setElement(
         this.$el.find('.page-header-box')[0]
-      ).render(this.headerContext);
+      ).render(this.headerContext());
 
       // Attach products list
-      this.children.products.setElement(
-        this.$el.find('.products-list')[0]
-      ).render();
+      for (var key in this.products)
+        this.children[key].setElement(this.$el.find('.products-list#' + key)[0]);
 
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       return this;
     }
 
-  , destroyPagination: function(){
+  , destroyPagination: function() {
       troller.scrollWatcher.removeEvent(this.paginationTrigger);
       this.paginationTrigger = null;
 
       return this;
     }
 
-  , setupPagination: function(){
+  , setupPagination: function() {
+      if (this.$el.is(':hidden')) return;
       if (this.paginationTrigger) this.destroyPagination();
 
       // height at which to trigger fetching next page
@@ -217,52 +187,58 @@ define(function(require){
     }
 
   , onSearchSubmit: function(value, component){
-      if (value == this.options.filter) return;
+      // empty search should be noop
+      if (!value) return this.onSearchClear();
 
-      if (value) {
-        this.options.filter = value;
-      } else if (!this.onSearchClear()) return;
-
-      // Reset offset so results don't get effed
-      this.options.offset = 0;
-      this._page = 1;
-
-      // goodybag/allonon#133 Don't sort when searching, except by distance
-      if (this.options.sort != null) {
-        this.$oldSortBtn = this.$el.find('.filters-btn-group > .btn.active');
-        this.oldSort = this.options.sort;
+      // cache old state for reverting on clear
+      if (this.preSearchState == null) this.preSearchState = {
+        activeChild: utils.find(utils.pick(this.children, utils.keys(this.products)),
+                                function(child) { return child.$el.is(':visible'); })
+      , activeBtns: this.children.header.activeButtons()
       }
 
-      if (value && this.options.sort !== '-distance') {
-        this.$el.find('.filters-btn-group > .btn').removeClass('active');
-        delete this.options.sort;
-      }
+      var key = this.options.sort === 'nearby' ? 'searchNearby' : 'search';
 
-      var this_ = this;
-      this.fetchData({ spin: true }, function(error, results){
-        if (error) return troller.error(error);
+      var coll = this.products[key];
+      var view = this.children[key];
 
-        this_.children.products.render();
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
+      view.show();
 
-        // Add/Remove hide class based on number of products
-        this_.$el.find('.no-results')[
-          (results.length == 0 ? 'remove' : 'add')
-        + 'Class'
-        ]('hide');
+      // if you're searching for the same thing as last time:
+      // TODO: might think about having some sort of cache expires value and redoing the search if it's expired.
+      if (coll.queryParams.filter === value) return;
+
+      // unless it's a nearby search, remove the active state on the current active button
+      if (key === 'search') this.children.header.clearButtons();
+
+      var spinner = this.spinner;
+      spinner.spin();
+      var $noResults = this.$el.find('.no-results');
+
+      coll.fetch({
+        queryParams: {filter: value}
+      , reset: true
+      , error: function(err) { troller.error(err); }
+      , success: function(data) { $noResults.toggleClass('hide', data.length > 0); }
+      , complete: function(err, data) { spinner.stop(); }
       });
     }
 
   , onSearchClear: function(e) {
-      // Cleared by keyboard
-      var result = this.options.filter != null;
-      delete this.options.filter;
-      this.$oldSortBtn.addClass('active');
-      this.options.sort = this.oldSort;
-      return result;
+      if (this.preSearchState == null) return;
+      this.children.header.clearButtons();
+      utils.invoke(utils.pick(this.children, utils.keys(this.products)), 'hide');
+
+      utils.each(utils.pluck(this.preSearchState.activeBtns, 'btnClass'), this.children.header.toggle, this.children.header);
+      this.preSearchState.activeChild.show();
+
+      this.preSearchState = null;
     }
 
   , onFilterToggle: function(href, active, e, component){
       if (!active) return;
+      this.onSearchClear();
       utils.history.navigate(href, {trigger: true});
       troller.analytics.track('Click Explore Filter', { filter: href });
     }
@@ -270,18 +246,19 @@ define(function(require){
   , onScrollNearEnd: function() {
       var this_ = this;
 
-      if (this.options.offset > this.products.length) return;
-
-      troller.analytics.track('InfiniScroll Paginated', { page: this._page++ });
-
-      this.options.offset += this.options.limit; // bump the page
-
       this.spinner.spin(this.$spinnerContainer);
-      this.fetchData({ append: true, spin: false }, function(error, results) {
-        this_.spinner.stop();
-        if (error) troller.error(error);
-        this_.children.products.render();
-      })
+
+      var activeChild = utils.find(utils.pick(this.children, utils.keys(this.products)), function(child) { return child.$el.is(':visible'); });
+
+      activeChild.products.nextPage({
+        error: function(err) {
+          troller.error(err);
+        }
+      , complete: function(err, data) {
+          this_.spinner.stop();
+          troller.analytics.track('InfiniScroll Paginated', { page: this_.page });
+        }
+      });
     }
   });
 });

@@ -12,21 +12,21 @@ define(function(require){
   , tagName: 'li'
 
   , events: {
-      'click .feeling-like':      'onLikeClick'
-    , 'click .feeling-try':       'onTriedClick'
-    , 'click .feeling-want':      'onWantClick'
-
-    , 'click .product-photo':     'onProductPhotoClick'
+      'click .product-photo':     'onProductPhotoClick'
     }
 
   , initialize: function(options){
       this.template = options.template || template;
 
       this.listenTo(this.model, {
-        'change:userWants': this.onFeelingsChange
-      , 'change:userLikes': this.onFeelingsChange
-      , 'change:userTried': this.onFeelingsChange
-      , 'change:likes':     this.onLikeCountChange
+        'change:userWants change:userLikes change:userTried': this.onFeelingsChange
+      , 'change:likes': this.onLikeCountChange
+      });
+
+      utils.extend(this.events, {
+        'click .feeling-like': utils.bind(this.onFeelingsClick, this, 'userLikes', 'Click Like')
+      , 'click .feeling-try':  utils.bind(this.onFeelingsClick, this, 'userTried', 'Click Tried')
+      , 'click .feeling-want': utils.bind(this.onFeelingsClick, this, 'userWants', 'Click Want')
       });
 
       return this;
@@ -62,44 +62,25 @@ define(function(require){
       return this;
     }
 
-  , onFeelingsChange: function(e) {
+  , onFeelingsChange: function(model, collection, options) {
       var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
       for (var prop in this.model.changed)
         if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
-
-      //TODO: consider replacing this with this.model.save().  but maybe not here.
-      user.updateProductFeelings(this.model.get('id'), {
-        isWanted: this.model.get('userWants')
-      , isLiked:  this.model.get('userLikes')
-      , isTried:  this.model.get('userTried')
-      });
      }
 
   , onLikeCountChange: function(e) {
-      this.$likeCount.text(this.model.get('likes'));
+      if (this.$likeCount) this.$likeCount.text(this.model.get('likes'));
     }
 
-  , onFeelingsClick: function(e, prop, message) {
+  , onFeelingsClick: function(prop, message, e) {
       e.preventDefault();
 
       troller.analytics.track(message, this.model.toJSON());
 
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
+      if (!user.loggedIn) return troller.promptUserLogin();
 
       // changing the property triggers an event which switches the button state
-      this.model.set(prop, !this.model.get(prop));
-    }
-
-  , onWantClick: function(e){
-      this.onFeelingsClick(e, 'userWants', 'Click Want');
-    }
-
-  , onTriedClick: function(e){
-      this.onFeelingsClick(e, 'userTried', 'Click Tried');
-    }
-
-  , onLikeClick: function(e){
-      this.onFeelingsClick(e, 'userLikes', 'Click Like');
+      this.model.save(prop, !this.model.get(prop), {patch: true});
     }
 
   , onProductPhotoClick: function(e){

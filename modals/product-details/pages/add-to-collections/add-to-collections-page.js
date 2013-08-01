@@ -24,6 +24,8 @@ define(function(require){
       addToCollections: new Components.AddToCollections.Main()
     }
 
+  , manualRender: true
+
   , regions: {
       addToCollections:    '.add-to-collections'
     }
@@ -34,9 +36,18 @@ define(function(require){
 
       if (options.product) this.children.addToCollections.provideProduct(this.product);
 
-      troller.on('user:collections:change', utils.bind(this.render, this));
+      var done = utils.bind(function() {
+        this.provideCollections(user.collections);
+        this.render();
+      }, this);
 
-      this.children.addToCollections.on('checkbox:change', utils.bind(this.onCheckboxChange, this))
+      if (user.collections.length === 0)
+        user.collections.fetch({ success: done });
+      else
+        done();
+
+
+      this.children.addToCollections.on('checkbox:change', this.onCheckboxChange, this)
 
       return this;
     }
@@ -44,24 +55,24 @@ define(function(require){
   , onShow: function(options){
       this.product = options.product;
       this.children.addToCollections.provideProduct(this.product);
+      this.children.addToCollections.render();
 
       var this_ = this;
 
-      troller.spinner.spin();
+      if (options.collections) {
+        this.provideCollections(options.collections);
+        this.render();
+      }
 
-      user.getCollections(function(error, collections){
-        if (error) return troller.error(error);
-
-        this_.provideCollections(collections);
-
-        troller.spinner.stop();
-
-        this_.render();
-      });
+      this.delegateEvents();
+      utils.invoke(this.children, 'delegateEvents');
     }
 
   , provideCollections: function(collections){
+      this.stopListening(this.collections);
       this.collections = collections;
+      this.listenTo(this.collections, 'change', this.render, this);
+
       this.children.addToCollections.provideCollections(collections);
       return this;
     }
@@ -74,12 +85,10 @@ define(function(require){
 
   , render: function(){
       this.$el.html(
-        template({ collections: this.collections, product: this.product })
+        template({ collections: this.collections.toJSON(), product: this.product.toJSON() })
       );
 
       this.applyRegions();
-
-      this.delegateEvents();
 
       return this;
     }
@@ -97,7 +106,7 @@ define(function(require){
 
   , onSaveClick: function(e){
       e.preventDefault();
-      this.children.addToCollections.save();
+      this.children.addToCollections.save(utils.bind(this.onCheckboxChange, this));
       this.pageManager.changePage('details');
     }
 
@@ -110,13 +119,10 @@ define(function(require){
     }
 
   , onCheckboxChange: function(collectionId, checked){
-      if (this.children.addToCollections.numPending == 0){
-        this.$el.find('.btn-cancel, .btn-save').addClass('hide');
-        this.$el.find('.btn-back').removeClass('hide');
-      } else {
-        this.$el.find('.btn-cancel, .btn-save').removeClass('hide');
-        this.$el.find('.btn-back').addClass('hide');
-      }
+      // TODO: think about using .toggle instead of .toggleClass('hide'
+      var save = utils.size(this.children.addToCollections.pending) > 0;
+      this.$el.find('.btn-cancel, .btn-save').toggleClass('hide', !save);
+      this.$el.find('.btn-back').toggleClass('hide', save);
     }
   });
 });

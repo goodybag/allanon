@@ -19,12 +19,14 @@ define(function(require){
 
   , show: function(options){
       this.$el.fadeIn();
+      this.trigger('show', this, options);
       if (this.onShow) this.onShow(options);
       return this;
     }
 
   , hide: function(options){
       this.$el.fadeOut();
+      this.trigger('hide', this, options);
       if (this.onHide) this.onHide(options);
       return this;
     }

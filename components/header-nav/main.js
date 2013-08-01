@@ -101,7 +101,7 @@ define(function(require){
 
   , onEditKeytag: function(e) {
       e.preventDefault();
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
+      if (!user.loggedIn) return troller.promptUserLogin();
       troller.modals.open('enter-keytag');
     }
 

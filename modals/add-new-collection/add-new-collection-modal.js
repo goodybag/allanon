@@ -5,6 +5,7 @@ define(function(require){
   , user        = require('user')
   , config      = require('config')
   , Components  = require('components')
+  , models      = require('models')
   , template    = require('hbt!./add-new-collection-tmpl')
   ;
 
@@ -30,34 +31,36 @@ define(function(require){
       return this;
     }
 
+  , onClose: function() {
+      utils.history.navigate(
+        utils.history.location.hash.replace('/add-new-collection', '')
+      );
+    }
+
   , onAddCollectionSubmit: function(e){
       e.preventDefault();
-
       var this_ = this;
 
       troller.spinner.spin();
-      user.addCollection(this.$el.find('#add-new-collection-name').val(), function(error){
-        troller.spinner.stop();
-
-        if (error) return troller.error(error);
-
-        this_.$el.find('#add-new-collection-name').val("");
-
-        utils.history.navigate(
-          utils.history.location.hash.replace('/add-new-collection', '')
-        );
-
-        this_.close();
-      });
+      user.collections.create(
+        {name: this.$el.find('#add-new-collection-name').val()}
+      , {
+          error: function(err) {
+            troller.error(err);
+          }
+        , success: function(data) {
+            this_.$el.find('#add-new-collection-name').val("");
+            this_.close();
+          }
+        , complete: function(err, data) {
+            troller.spinner.stop();
+          }
+        }
+      );
     }
 
   , onCancelClick: function(e){
       e.preventDefault();
-
-      utils.history.navigate(
-        utils.history.location.hash.replace('/add-new-collection', '')
-      );
-
       this.close();
     }
   });

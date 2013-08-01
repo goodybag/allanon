@@ -125,7 +125,7 @@
         }
 
       , app = {
-          init: function(){
+          init: utils.partial(require, ['./models/sync'], function(){
             // Initial call to session
             utils.parallel({
               session: function(done){ user.isLoggedIn(done); }
@@ -159,7 +159,7 @@
             if (!utils.support.cors) app.loadIEModules();
 
             user.on('auth', function(){ troller.analytics.track('Auth'); });
-          }
+          })
 
         , changePage: function(page, options, callback){
             if (typeof options === 'function') {
@@ -187,7 +187,12 @@
             if (typeof options == 'object')
               utils.extend( _options, options );
 
-            troller.analytics.track( 'Page.Loaded ' + title, _options );
+            var trackingOpts = utils.clone(_options);
+            utils.each(trackingOpts, function(val, key, obj) {
+              obj[key] = val instanceof utils.Collection || val instanceof utils.Model ? val.toJSON() : val;
+            });
+
+            troller.analytics.track( 'Page.Loaded ' + title, trackingOpts );
             troller.analytics.pageview();
           }
 
