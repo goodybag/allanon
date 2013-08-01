@@ -378,7 +378,7 @@
       // sanatize data before passing it in to analytics
       troller.analytics.track = utils.wrap(troller.analytics.track, function(track, action, properties) {
         var trackingData = utils.object(utils.map(properties, function(val, key, obj) {
-          return [key, val == null ? val : utils.isFunction(val.toJSON) ? val.toJSON() : utils.clone(val)];
+          return [key, !utils.isObject(val) ? val : utils.isFunction(val.toJSON) ? val.toJSON() : utils.clone(val)];
         }));
         track.call(this, action, properties ? trackingData : properties);
       });
