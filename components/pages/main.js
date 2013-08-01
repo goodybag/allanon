@@ -122,6 +122,7 @@ define(function(require){
 
       if ( this.pages[old] && this.pages[old].onHide ) this.pages[old].onHide( options );
       transitions[transition]( this.pages[old], this.pages[page], transitionOptions, function() {
+        this_.pages[page].trigger('show', this_.pages[page], options);
         if ( this_.pages[page].onShow ) this_.pages[page].onShow( options );
 
         if (callback) callback(null, this_.pages[page]);

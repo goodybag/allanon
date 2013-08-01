@@ -20,55 +20,87 @@ define(function(require){
   , initialize: function(options) {
       options = options || {};
 
-      this.products = new ProductsCollection();;
+      this.products = options.products || new ProductsCollection();
+
+      this.collectionEvents = {
+        'coll-add': this.onCollectionAdd
+      , 'reset': this.onReset
+      };
+
+      this.listenTo(this.products, this.collectionEvents);
+
       this._views = [];
 
       this.ItemView = options.ItemView || ItemView;
     }
 
   , provideData: function(data) {
-      this.products.reset(data);
+      if (data instanceof utils.Collection) {
+        this.stopListening(this.products);
+        this.products = data;
+        this.listenTo(this.products, this.collectionEvents);
+      } else
+        this.products.reset(data);
       return this;
     }
 
   , prepareViews: function(products) {
       var self = this;
+      return { fragment: fragment, views: views };
+    }
+
+  , render: function(models, options) {
+      options = options || {};
+
+      var reset = options.reset || models == null;
+      var products = models || this.products.models;
+
+      // Remove old views
+      if (reset) utils.invoke(this._views, 'remove');
+
+      var self = this;
+
       var fragment = document.createDocumentFragment();
       var views = utils.map(products, function(prod) {
         var item = (new self.ItemView( {model: prod} )).render();
+        item.listenToOnce(prod, 'remove', function(model, collection, options) {
+          if (collection === self.products) {
+            item.remove();
+            self.views = utils.without(self.views, item);
+          }
+        });
         fragment.appendChild(item.el);
         item.on('product-details-modal:open', self.onProductModalOpen, self);
         item.on('product-details-modal:close', self.onProductModalClose, self);
         return item;
       });
-      return { fragment: fragment, views: views };
-    }
 
-  , render: function() {
-      // Remove old views
-      utils.invoke(this._views, 'remove');
+      this._views = reset ? views : this._views.concat(views);
+      var method = reset ? 'html' : 'append';
+      this.$el[method](fragment);
 
-      var res = this.prepareViews(this.products.models);
-      this._views = res.views;
-      this.$el.html(res.fragment);
+      if (!options.silent) this.trigger('render', products, this, options);
 
       return this;
     }
 
-  , appendRender: function(data) {
-      var self = this;
-      this.products.add(data);
-      var addedProds = data instanceof utils.Collection ? data.models : utils.map(data, function(p) {
-        return self.products.get(p.id);
-      });
-
-      var res = this.prepareViews(addedProds);
-      this._views = this._views.concat(res.views);
-      this.$el.append(res.fragment);
-
-      return this;
+  , show: function() {
+      if (this.$el.is(':hidden')) this.trigger('show', this);
+      this.$el.show();
     }
 
+  , hide: function() {
+      if (this.$el.is(':visible')) this.trigger('hide', this);
+      this.$el.hide();
+    }
+
+  , onCollectionAdd: function(added, coll, options) {
+      this.render(added);
+    }
+
+  , onReset: function() {
+      this.render(null, {reset: true});
+    }
 
   , onProductModalOpen: function(model){
       this.trigger('product-details-modal:open', model);

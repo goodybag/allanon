@@ -41,6 +41,8 @@ define(function(require){
       e.preventDefault();
 
       (function(next){
+        troller.spinner.spin();
+
         if ((password = this_.$el.find('#form-settings-password').val()).length > 0){
           if (this_.$el.find('#form-settings-password-confirm').val() != password){
             return troller.error({ message: "Passwords must match", details: { password: null } }, this_.$el, this_.showMismatchingPasswordsAlert);
@@ -54,23 +56,24 @@ define(function(require){
 
         next();
       })(function(){
-        troller.spinner.spin();
+        var updates = this_.getFormDataForModel();
+        var same = utils.filter(utils.keys(updates)
+                              , function(key) { return updates[key] === this_.model.get(key); })
 
-        this_.updateModelWithFormData();
         this_.$el.find('form .error').removeClass('error');
 
-        this_.model.save(function(error){
-          troller.spinner.stop();
-
-          if (error){
-            if (error.name == 'SCREENNAME_TAKEN') error.details = {
-              screenName: null
-            };
-
+        this_.model.save(utils.omit(updates, same), {
+          success: function(data) {
+            this_.showSuccessAlert();
+          }
+        , error: function(error) {
+            if (error.name == 'SCREENNAME_TAKEN') error.details = { screenName: null };
             return troller.error(error, this_.$el, this_.showScreenNameTakenAlert);
           }
-
-          this_.showSuccessAlert();
+        , complete: function(error, data) {
+            troller.spinner.stop();
+          }
+        , patch: true
         });
       });
 

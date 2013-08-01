@@ -39,7 +39,7 @@ define(function(require) {
       var $active = this.$el.find('.filters-btn-group .btn.active');
       return utils.compact(utils.map(this.btnStates, function(val, key, obj) {
         var $btn = $active.filter('.' + key);
-        return $btn.length > 0 ? {key: $btn} : undefined;
+        return $btn.length > 0 ? {btnClass: key, $btn: $btn} : undefined;
       }));
     },
 

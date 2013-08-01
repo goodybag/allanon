@@ -23,7 +23,7 @@ define(function(require) {
     },
 
     onOpen: function() {
-      if (user.get('loggedIn')) utils.history.history.back();
+      if (user.loggedIn) utils.history.history.back();
       this.$el.find('.field-username').focus();
     },
 

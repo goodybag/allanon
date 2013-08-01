@@ -6,6 +6,7 @@ define(function(require){
   , api         = require('api')
   , troller     = require('troller')
   , Components  = require('components')
+  , models      = require('models')
 
   , template    = require('hbt!./explore-collection-tmpl')
   ;
@@ -15,18 +16,32 @@ define(function(require){
 
   , title: 'Explore My Collection'
 
+  , manualRender: true
+
+  , defaultOptions: {
+      pageSize: 30
+    }
+
+  , allowedOptions: ['pageSize', 'filter', 'collection', 'cid', 'pid']
+
+  , getOptions: function(options) {
+      return utils.defaults(utils.pick(options || {}, this.allowedOptions), this.defaultOptions);
+      // TODO: make sure sort agrees with presence of lat/lon
+    }
+
   , headerContext: function() {
+      var model = this.model || new models.Collection();
       var context = {
         'data-toggle': 'checkbox'
       , buttons: [
-          {class: 'btn-want',  name: 'Want <span class="count">('  + this.collection.totalMyWants + ')</span>'}
-        , {class: 'btn-like',  name: 'Like <span class="count">('  + this.collection.totalMyLikes + ')</span>'}
-        , {class: 'btn-tried', name: 'Tried <span class="count">(' + this.collection.totalMyTries + ')</span>'}
+          {class: 'btn-want',  name: 'Want (<span class="count">'  + model.get('totalMyWants') + '</span>)'}
+        , {class: 'btn-like',  name: 'Like (<span class="count">'  + model.get('totalMyLikes') + '</span>)'}
+        , {class: 'btn-tried', name: 'Tried (<span class="count">' + model.get('totalMyTries') + '</span>)'}
         ]
-      , tagline: this.collection.name
+      , tagline: model.get('name')
       };
 
-      if (this.collection.isEditable) context.topButtons = {right: 'Edit Collection'};
+      if (model.isEditable()) context.topButtons = {right: 'Edit Collection'};
       return context;
     }
 
@@ -35,39 +50,19 @@ define(function(require){
     , header: '.page-header-box'
     }
 
-  , initialize: function(options){
+  , initialize: function(options) {
+      this.options = this.getOptions(options);
+
+      if (!options.cid && !options.collection) {
+        troller.modals.close();
+        troller.app.changePage('404');
+        return;
+      }
+
       this.children = {
         products: new Components.ProductsList.Main()
       , header: new Components.ProductsListHeader(this.headerContext())
       };
-
-      // Override products list render to reset pagination height
-      var oldRender = this.children.products.render, this_ = this;
-      this.children.products.render = function(){
-        this_.destroyPagination();
-
-        oldRender.apply(this_.children.products, arguments);
-
-        if (this_.products.length === 0) return;
-
-        this_.setupPagination();
-      };
-
-      this.children.products.on('feelings:change', function(feeling, direction){
-        var pluralFeel = (
-          feeling == 'like' ? 'Likes' : (
-          feeling == 'want' ? 'Wants' :
-                              'Tries'
-        ));
-
-        this_.$el.find('.filters-btn-group > .btn-' + feeling + ' > .count').html(
-          '(' + (
-            direction
-            ? ++this_.collection['totalMy' + pluralFeel]
-            : --this_.collection['totalMy' + pluralFeel]
-           ) + ')'
-        );
-      });
 
       this.children.header.on({
         'click:top-right-btn': utils.bind(this.onEditCollectionClick, this)
@@ -79,44 +74,56 @@ define(function(require){
 
       this.products = [];
 
+      if (options.collection) {
+        this.provideCollection(options.collection);
+      } else {
+        var model = new models.Collection({id: options.cid});
+        model.fetch({success: utils.bind(this.provideCollection, this, model)});
+      }
+
       this.spinner = new utils.Spinner();
 
-      // Page state
-      this.options = {
-        limit:      30
-      , offset:     0
-      , include:    ['collections', 'userPhotos']
-      };
-
+      // TODO: listen to modal directly
       // Set Correct Title
       this.children.products.on('product-details-modal:open', function(product){
-        troller.app.setTitle(product.name);
+        troller.app.setTitle(product.get('name'));
       });
 
+      var self = this;
       this.children.products.on('product-details-modal:close', function(){
-        troller.app.setTitle(this_.title);
+        troller.app.setTitle(self.title);
       });
     }
 
   , onShow: function(options){
       utils.invokeIf(this.children, 'onShow', options);
+      this.options = this.getOptions(options);
+
       // Don't worry about this. Data might go stale
       // if (options.collection.id == this.collection.id && this.products.length > 0) return this;
 
-      // Data might be stale, reset query params
-      this.options.offset = 0;
-      delete this.options.filter;
-      delete this.options.userWants;
-      delete this.options.userLikes;
-      delete this.options.userTried;
+      if (this.options.collection != null) this.provideCollection(this.options.collection);
 
-      this.collection = options.collection;
+      this.model.products.clear();
 
-      this.title = this.collection.name;
+      this.title = this.model.get('name');
+      troller.app.setTitle(this.title);
+
+      troller.scrollWatcher.addEvent(120);
+      if (window.scrollY >= 120) this.stickHead();
+
+      var self = this;
+      this.spinner.spin();
 
       this.children.header.render(this.headerContext());
 
-      this.fetchData();
+      this.model.products.nextPage({
+        complete: function(err, data) {
+          if (data.length < self.options.pageSize) self.destroyPagination();
+          self.spinner.stop();
+          self.setupPagination();
+        }
+      });
 
       return this;
     }
@@ -126,54 +133,34 @@ define(function(require){
       this.destroyPagination();
     }
 
-  , fetchData: function(options, callback){
-      if (typeof options === 'function'){
-        callback = options;
-        options = null;
-      }
-
-      options = options || { spin: true };
-
-      var this_ = this;
-
-      if (options.spin) troller.spinner.spin();
-
-      if (this.previousRequest)
-        this.previousRequest.abort();
-
-      this.previousRequest = api.collections.products(user.get('id'), this.collection.id, this.options, function(error, products){
-        troller.spinner.stop();
-
-        if (error) return callback ? callback(error) : troller.error(error);
-
-        for (var i = 0, l = products.length, p; i < l; ++i){
-          p = products[i];
-          if (!p.photoUrl && p.photos && p.photos.length > 0) p.photoUrl = p.photos[0].url;
-        }
-
-        this_.products = options.append ? this_.products.concat(products) : products;
-        this_.children.products.provideData(this_.products).render();
-        this_.children.products.$el.toggleClass('collection-products', this_.collection.isEditable);
-
-        if (products.length < this_.options.limit) // if it's the last page
-          this_.destroyPagination();
-
-        if (callback) callback(null, products);
-      });
-    }
-
   , provideCollection: function(collection){
-      this.collection = collection;
+      this.stopListening(this.model);
+
+      this.model = collection;
+
+      this.listenTo(this.model, {
+        'change:totalMyLikes': utils.bind(this.onCountChange, this, 'btn-like')
+      , 'change:totalMyWants': utils.bind(this.onCountChange, this, 'btn-want')
+      , 'change:totalMyTries': utils.bind(this.onCountChange, this, 'btn-tried')
+      , 'change:name': utils.compose(utils.bind(this.children.header.render, this.children.header), this.headerContext)
+      });
+
+      this.children.products.provideData(this.model.products);
+
+      this.render();
       return this;
     }
 
+  , onCountChange: function(btnClass, model, value, options) {
+      this.children.header.$el.find('.filters-btn-group .' + btnClass + ' .count').text(value);
+    }
+
   , render: function(){
-      this.$el.html( template({ collection: this.collection }) );
+      this.$el.html( template({ collection: utils.extend(this.model.toJSON(), {isEditable: this.model.isEditable()}) }) );
 
       this.applyRegions();
 
-      this.$search = this.$el.find('.field-search');
-      this.$searchClearBtn = this.$el.find('.field-search-clear');
+      // TODO: does this need to be defered?  will this ever run before the dom update on any browser?
       this.$spinnerContainer = this.$el.find('.products-list-spinner')[0];
 
       return this;
@@ -198,59 +185,50 @@ define(function(require){
     }
 
   , onSearchSubmit: function(value, component){
-      if (value == this.options.filter) return;
+      var self = this;
+      this.spinner.spin();
 
-      if (value) {
-        this.options.filter = value;
-      }
-      else if (!this.onSearchClear()) return;
-
-      // Reset offset so results don't get effed
-      this.options.offset = 0;
-
-      var this_ = this;
-      this.fetchData({ spin: true }, function(error, results){
-        if (error) return troller.error(error);
-
-        this_.children.products.render()
-
-        // Add/Remove hide class based on number of products
-        this_.$el.find('.no-results')[
-          (results.length == 0 ? 'remove' : 'add')
-        + 'Class'
-        ]('hide');
-      });
-    }
-
-  , onSearchClear: function(e) {
-      // Cleared by keyboard
-      var result = this.options.filter != null;
-      delete this.options.filter;
-      return result;
+      this.model.products.search(value, {
+        error: function(err) {
+          troller.error(err);
+        }
+      , success: function(data) {
+          self.$el.find('.no-results').toggleClass('hide', data.length > 0);
+          self.setupPagination();
+        }
+      , complete: function(error, data) {
+          clearTimeout(loadTooLong);
+          self.spinner.stop();
+        }
+      })
     }
 
   , onFiltersToggle: function(property, active, e, component){
-      active ? this.options[property] = true : delete this.options[property];
+      this.model.products.toggleFilter(property, active);
 
-      troller.spinner.spin();
-      this.options.offset = 0;
-      this.fetchData();
+      if (!active) return; // should cause only one fetch
+
+      this.spinner.spin();
+      var self = this;
+      this.model.products.nextPage({
+        complete: function(err, data) {
+          self.spinner.stop();
+          self.setupPagination();
+        }
+      });
     }
 
   , onEditCollectionClick: function(e){
-      troller.modals.open('edit-collection', { collection: this.collection });
+      troller.modals.open('edit-collection', { collection: this.model });
     }
 
   , onScrollNearEnd: function() {
-      var this_ = this;
-
-      if (this.options.offset > this.products.length) return;
-
-      this.options.offset += this.options.limit; // bump the page
-
+      var self = this;
       this.spinner.spin(this.$spinnerContainer);
-      this.fetchData({ append: true, spin: false }, function() {
-        this_.spinner.stop();
+      this.model.products.nextPage({
+        complete: function() {
+          self.spinner.stop();
+        }
       });
     }
   });

@@ -1,6 +1,7 @@
 define(function(require){
-  require('./sync');
   return {
-    Product: require('./product')
+    Product: require('./product'),
+    Collection: require('./collection'),
+    User: require('./user')
   };
 });

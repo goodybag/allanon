@@ -50,28 +50,21 @@ define(function(require) {
       return this;
     }
 
-  , onUserFeelingsChange: function(e) {
+  , onUserFeelingsChange: function(model, collection, options) {
       var buttons = {userWants: this.$wantBtn, userLikes: this.$likeBtn, userTried: this.$triedBtn};
       for (var prop in this.model.changed)
         if (buttons[prop] != null) buttons[prop].toggleClass('active', this.model.get(prop));
-
-      //TODO: consider replacing this with this.model.save().  but maybe not here.
-      user.updateProductFeelings(this.model.get('id'), {
-        isWanted: this.model.get('userWants')
-      , isLiked:  this.model.get('userLikes')
-      , isTried:  this.model.get('userTried')
-      });
     }
 
   , onFeelingsClick: function(e, prop, message) {
       e.preventDefault();
 
-      if (!user.get('loggedIn')) return troller.promptUserLogin();
+      troller.analytics.track(message, this.model.toJSON());
+
+      if (!user.loggedIn) return troller.promptUserLogin();
 
       // changing the property triggers an event which switches the button state
-      this.model.set(prop, !this.model.get(prop));
-
-      troller.analytics.track(message, this.model.toJSON());
+      this.model.save(prop, !this.model.get(prop), {patch: true});
     }
 
   , onWantClick: function(e){

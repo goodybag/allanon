@@ -4,6 +4,7 @@ define(function(require){
   , config      = require('config')
   , troller     = require('troller')
   , Components  = require('components')
+  , user        = require('user')
 
   , template    = require('hbt!./collections-tmpl')
   ;
@@ -16,44 +17,49 @@ define(function(require){
   , requiresLogin: true
 
   , events: {
-      'click .add-new-collection':          'onNewCollectionClick'
-    , 'click .collection':                  'onCollectionClick'
+      'click .collection-new':                  'onNewCollectionClick'
+    , 'click .collection:not(.collection-new)': 'onCollectionClick'
     }
 
   , initialize: function(){
-      troller.on('user:collections:change', utils.bind(this.render, this));
+      var self = this;
+      user.collections.fetch({
+        success: function() {
+          self.provideCollections(user.collections);
+          self.render();
+        }
+      , withSecondaries: true
+      });
+    }
+
+  , onShow: function(options) {
+      if (options && options.collections) {
+        this.provideCollections(opitons.collections);
+        this.render();
+      }
     }
 
   , provideCollections: function(collections){
+      this.stopListening(this.collections);
       this.collections = collections;
+      this.listenTo(this.collections, 'change', this.render);
+      var self = this;
+      this.listenTo(this.collections, 'destroy', function(model, collection, options) {
+        self.$el.find('.collection[data-id="' + model.id + '"]').remove();
+      });
       return this;
     }
 
-  , render: function(){
-      // Ensure secondaries
-      for (var i = 0, l = this.collections.length; i < l; ++i){
-        if (!this.collections[i].secondaries)
-          this.collections[i].secondaries = [{}, {}, {}];
-      }
-
-      this.$el.html( template({ collections: this.collections }) );
+  , render: utils.debounce(function(){
+      this.$el.html( template({ collections: this.collections.toJSON({withSecondaries: true}) }) );
       return this;
-    }
+    }, 100)
 
   , onCollectionClick: function(e){
-      if (e.target.className.indexOf('add-new-collection') > -1) return;
+      var $target = utils.dom(e.target);
 
-      // Get parent LI
-      while (e.target.tagName != 'LI') e.target = e.target.parentElement;
-
-      var id = $(e.target).data('id'), collection;
-
-      for (var i = 0, l = this.collections.length; i < l; ++i){
-        if (this.collections[i].id == id){
-          collection = this.collections[i];
-          break;
-        }
-      }
+      var id = $target.closest('li.collection').data('id');
+      var collection = this.collections.get(id);
 
       utils.navigate('/collections/' + collection.id + '/explore');
       troller.app.changePage('explore-collection', { collection: collection });

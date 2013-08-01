@@ -32,7 +32,7 @@ define(function(require){
     }
 
   , render: function(){
-      this.$el.html( template({ collection: this.collection }) );
+      this.$el.html( template({ collection: this.collection.toJSON() }) );
       return this;
     }
 
@@ -40,15 +40,14 @@ define(function(require){
       e.preventDefault();
 
       var this_ = this;
-
       troller.spinner.spin();
-      user.editCollection(this.collection.id, { name: this.$el.find('#edit-collection-name').val() }, function(error){
-        troller.spinner.stop();
-
-        if (error) return troller.error(error);
-
-        this_.$el.find('#edit-collection-name').val("");
-        this_.close();
+      this.collection.save('name', this.$el.find('#edit-collection-name').val(), {
+        error: function(err) { troller.error(err); }
+      , success: function(data) {
+          this_.$el.find('#edit-collection-name').val("");
+          this_.close();
+        }
+      , complete: function(err, data) { troller.spinner.stop(); }
       });
     }
 
@@ -65,12 +64,10 @@ define(function(require){
       troller.spinner.spin();
       this.close();
 
-      user.removeCollection(this.collection.id, function(error){
-        troller.spinner.stop();
-
-        if (error) return troller.error(error);
-
-        utils.history.navigate('/collections', { trigger: true });
+      this.collection.destroy({
+        error: function(err) { troller.error(error); }
+      , success: function(data) { utils.history.navigate('/collections', { trigger: true }); }
+      , complete: function(err, data) { troller.spinner.stop(); }
       });
     }
   });
