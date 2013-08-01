@@ -122,5 +122,5 @@ define(function(require){
   , onHide: function() {
       utils.invoke(this.children, 'close');
     }
-  });
+  }, { requiresLogin: true});
 });

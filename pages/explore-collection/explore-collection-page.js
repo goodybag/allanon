@@ -231,5 +231,5 @@ define(function(require){
         }
       });
     }
-  });
+  }, { requiresLogin: true});
 });

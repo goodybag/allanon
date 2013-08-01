@@ -69,5 +69,5 @@ define(function(require){
         punchcard: this.punchcards.get(utils.dom(e.target).data('id')).toJSON()
       });
     }
-  });
+  }, { requiresLogin: true});
 });
