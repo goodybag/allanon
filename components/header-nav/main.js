@@ -23,6 +23,7 @@ define(function(require){
     , 'click .logout':            'onLogoutClick'
     , 'click .login':             'onLoginClick'
     , 'click .more':              'onMoreClick'
+    , 'click .register':          'onRegisterClick'
     }
 
   , initialize: function(){
@@ -53,6 +54,7 @@ define(function(require){
       return this;
     }
 
+  // if this was a bootstrap dropdown, could we get rid of this
   , onBadgeClick: function(e){
       // Toggle active class, bind/unbind document click
       if (this.$badge.hasClass('active')){
@@ -111,6 +113,12 @@ define(function(require){
   , onLoginClick: function(e){
       e.preventDefault();
       troller.promptUserLogin();
+    }
+
+  , onRegisterClick: function(e) {
+      e.preventDefault();
+      troller.modals.open('register');
+      troller.analytics.track('Click Badge Register');
     }
 
   , onMoreClick: function(e){

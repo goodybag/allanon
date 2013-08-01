@@ -235,7 +235,8 @@ define(function(require) {
       var obj = utils.Model.prototype.toJSON.apply(this, arguments);
       if (options && options.displayName) {
         obj.displayName =
-          this.get('screenName')
+          !this.get('loggedIn') ? 'New User?' : ''
+       || this.get('screenName')
        || (this.get('firstName') && this.get('lastName') ? this.get('firstName') + ' ' + this.get('lastName')[0] + '.' : '')
        || this.get('firstName')
        || this.get('lastName')

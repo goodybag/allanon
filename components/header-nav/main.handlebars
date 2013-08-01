@@ -37,10 +37,15 @@
         <span class="username">{{truncate user.displayName 12}}</span>
         <i class="icon-chevron-down expansion-indicator"></i>
         <ul class="dropdown-menu">
+          {{#if user.id}}
           <li><a href="#" class="edit-keytag-link">Connect Your Keytag</a></li>
           <li><a href="#/my-punchcards">Your PunchCards</a></li>
           <li><a href="#/settings">Settings</a></li>
-          <li><a href="#" class={{#if user.id}}"logout">Log Out{{else}}"login">Log In{{/if}}</a></li>
+          <li><a href="#" class="logout">Log Out</a></li>
+          {{else}}
+          <li><a href="#" class="login">Log In</a></li>
+          <li><a href="#" class="register">Sign Up</a></li>
+          {{/if}}
         </ul>
       </div>
     </div>
