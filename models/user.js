@@ -235,7 +235,7 @@ define(function(require) {
       var obj = utils.Model.prototype.toJSON.apply(this, arguments);
       if (options && options.displayName) {
         obj.displayName =
-          !this.get('loggedIn') ? 'New User?' : ''
+          !this.loggedIn ? 'New User?' : ''
        || this.get('screenName')
        || (this.get('firstName') && this.get('lastName') ? this.get('firstName') + ' ' + this.get('lastName')[0] + '.' : '')
        || this.get('firstName')
@@ -251,11 +251,11 @@ define(function(require) {
       return function() {
         var self = this;
         var args = arguments;
-        if (user.get('loggedIn')) return func.apply(self, args);
+        if (user.loggedIn) return func.apply(self, args);
         else troller.modals.open('login', function(error, modal){
           if (error) return troller.error(error)
           modal.once('close', function() {
-            if (user.get('loggedIn')) func.apply(self, args);
+            if (user.loggedIn) func.apply(self, args);
           });
         });
       }
